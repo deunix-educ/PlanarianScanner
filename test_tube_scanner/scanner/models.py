@@ -244,7 +244,7 @@ def create_periodic_task(sender, instance, created, **kwargs):
         except:
             pass
         
-    if instance.expected_export:
+    if instance.expected_scanning:
         try:
             clocked, _ = ClockedSchedule.objects.get_or_create(clocked_time=instance.expected_scanning)
             scanning_task = PeriodicTask.objects.create(
