@@ -344,8 +344,8 @@ class GridScanner:
                         "[%02d/%02d] row=%d col=%d  →  X=%.1f mm  Y=%.1f mm",
                         cell, max_cells, row, col, x, y,
                     )
-                    if cell>1:
-                        self.grbl.move_to(x, y, feed=self.feed)
+                    
+                    self.grbl.move_to(x, y, feed=self.feed)
 
                     uuid = f'{self.proc.session}-{position}-{self.row_to_char[row]}{col+1}'
                     self._capture(uuid, self.duration, self.stop_playing)

@@ -12,7 +12,7 @@ from reduct.time import unix_timestamp_to_iso
 from modules.system_stats import get_cached_stats, start_background_updater
 from modules import reductstore
 
-from .tasks import download_video, export_images, export_videos, export_all_images, export_all_videos
+from .tasks import download_video, export_all_images, export_all_videos
 from .process import CameraRecordManager, cameraDB
 from . import models
 
@@ -63,11 +63,11 @@ def supervisor_view(request):
 
 @login_required
 def supervisor_worker(request):
-    return render(request, "scanner/iframe.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/logtail/test_tube:workers'))
+    return render(request, "scanner/iframe.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/logtail/test_tube:services'))
 
 @login_required
 def supervisor_scheduler(request):
-    return render(request, "scanner/iframe.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/logtail/test_tube:beat'))
+    return render(request, "scanner/iframe.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/logtail/test_tube:planification'))
 
 ## Mainboard
 @login_required
