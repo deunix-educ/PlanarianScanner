@@ -175,6 +175,7 @@ class MultiWellManager:
             obs.save()
         session.finished = timezone.now()
         session.active = False
+        session.scanning_task.enabled = False
         session.save()
         logger.info(f"==== Session {session.name} terminée à {session.finished} après {session.finished - started} secondes.")
 
