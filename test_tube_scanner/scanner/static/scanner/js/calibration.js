@@ -14,6 +14,14 @@ class ScannerManager {
 
     init_controls() {
         this.ts       = sId("_ts");
+        this.cx =  sId("_cx");
+        this.cy =  sId("_cy");
+        this.speed_px_s =  sId("_speed_px_s");
+        this.axial_speed = sId("_axial_speed");
+        this.axial_pos = sId("_axial_pos");
+        this.area_px = sId("_area_px");
+        this.frame_count = sId("_count");
+        
         const goto_0  = sId("_goto-0");
         const goto_xy = sId("_goto-xy");
         const xy_base = sId("_xy-base");
@@ -34,7 +42,7 @@ class ScannerManager {
         this.debug  = sId("_debug");
         const test   = sId("_test");
         const halt   = sId("_halt");
-
+        
         const median = sId("_median");
         const crop = sId("_crop");
         const crop_radius = sId("_crop_radius");
@@ -76,6 +84,16 @@ class ScannerManager {
             if (payload.xy)     { this.x.textContent=payload.x.toFixed(2); this.y.textContent=payload.y.toFixed(2); }
             if (payload.state)  { this.debug.insertAdjacentHTML('afterbegin', `<li>[ ${++this.debug_count} - ${payload.state} ]: ${payload.msg}</li>`); }
             if (payload.ts)     { this.ts.textContent = timestampToLocalISOString(payload.ts); }
+
+            if (payload.detected) { 
+                this.cx.textContent = payload.cx; this.cy.textContent = payload.cy;
+                this.speed_px_s.textContent = payload.speed_px_s; 
+                this.axial_speed.textContent = payload.axial_speed; 
+                this.axial_pos.textContent = payload.axial_pos;
+                this.area_px.textContent = payload.area_px; 
+                this.frame_count.textContent = payload.count;           
+            }
+
         } catch(e) { console.log(e); }
     }
 

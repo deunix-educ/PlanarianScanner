@@ -36,7 +36,7 @@
             </button>
             <button id="_halt" class="w3-button w3-red w3-round-large w3-padding-16 w3-block w3-margin-top"><i class="fa-solid fa-hand"></i><br>{% trans 'ARRET' %}</button>
         </div>
-        <div class="scanner"><img id="scan-img" class="w3-image"></div>
+        {% include 'scanner/scan-image.html' %}
     </div>
     <ul id="_debug" class="w3-scroll-y" style="height: 50vh"></ul>
 {% endblock %}

@@ -234,7 +234,7 @@ class GRBLController:
 
 class GridScanner:
 
-    def __init__(self, grbl, proc=None, **config):
+    def __init__(self, grbl, process=None, **config):
         '''
             xbase        # Position X de départ (col 0) en mm
             ybase        # Position Y de départ (row 0) en mm
@@ -246,7 +246,7 @@ class GridScanner:
             feed         # Vitesse de déplacement entre éprouvettes (mm/min)
         '''
         self.grbl = grbl
-        self.proc = proc
+        self.process = process
 
         self.position = config.get('position', 'HG')
         self.xbase = config.get('xbase', 50)
@@ -266,7 +266,7 @@ class GridScanner:
 
 
     def halt(self):
-        self.proc.record = False
+        self.process.tag.record = False
         return self.stop_playing.set()
 
     def _capture(self, uuid: str, duration: float, stop_running: Optional[threading.Event]) -> None:
@@ -274,8 +274,10 @@ class GridScanner:
         Déclenche la caméra ArduCam et attend la fin de l'acquisition.
         """
         print(f"# démarrer l'enregistrement {uuid}")
-        self.proc.uuid = uuid
-        self.proc.record = True
+        self.process.cam.on_well_change()
+        
+        self.process.tag.uuid = uuid
+        self.process.tag.record = True
 
         start = time.monotonic()
         while not stop_running.is_set():
@@ -284,8 +286,8 @@ class GridScanner:
             self.grbl.wait_for(1.0)
 
         print("# arrêter l'enregistrement")
-        self.proc.record = False
-        self.proc.uuid = None
+        self.process.tag.record = False
+        self.process.tag.uuid = None
 
     def start(self, xnext=None, ynext=None, position=None):
         """
@@ -347,7 +349,7 @@ class GridScanner:
                     
                     self.grbl.move_to(x, y, feed=self.feed)
 
-                    uuid = f'{self.proc.session}-{position}-{self.row_to_char[row]}{col+1}'
+                    uuid = f'{self.process.tag.session}-{position}-{self.row_to_char[row]}{col+1}'
                     self._capture(uuid, self.duration, self.stop_playing)
 
             # Retour à nexr après le scan

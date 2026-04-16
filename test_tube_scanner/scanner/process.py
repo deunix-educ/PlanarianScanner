@@ -134,11 +134,12 @@ class CameraRecordManager():
 
 class MultiWellManager:
 
-    def __init__(self, position, feed=None, step=None, proc=None):       
+    def __init__(self, position, feed=None, step=None, process=None):       
         self.set_multiwell(position)
         self._feed = feed
         self._step = step
-        self.proc = proc
+        self.process = process
+        self.tag = process.tag
         self.scanner = None
 
     def set_multiwell(self, position):
@@ -159,11 +160,11 @@ class MultiWellManager:
         xynext.append((0, 0))
 
         pos = 1
-        self.proc.session = session.id
+        self.tag.session = session.id
         started = timezone.now()
         for obs in observations:
             conf = obs.multiwell.config()
-            self.scanner = grbl.GridScanner(machine, proc=self.proc, **conf)
+            self.scanner = grbl.GridScanner(machine, process=self.process, **conf)
             obs.started = timezone.now()
             obs.save()
 
@@ -187,8 +188,8 @@ class MultiWellManager:
         conf['xnext'] = self._xbase
         conf['ynext'] = self._ybase
 
-        self.proc.session = 0
-        self.scanner = grbl.GridScanner(machine, proc=self.proc, **conf)
+        self.tag.session = 0
+        self.scanner = grbl.GridScanner(machine, process=self.process, **conf)
         Thread(target=self._start_test, daemon=True).start()
 
     def scan(self, machine, sid):
@@ -293,7 +294,7 @@ class ScannerProcess(Task):
         self.multiwel = None
         self.conf = None
         self.record_queue = Queue()
-        self.proc = ProcTag()
+        self.tag = ProcTag()
         self.manager = None
         self.recordDB = CameraRecordManager(cameraDB)
 
@@ -325,6 +326,7 @@ class ScannerProcess(Task):
                     
             #self.crop = CircularCrop(radius=self.crop_radius, strategy=CropStrategy.CROP_JPEG, jpeg_quality=self.image_quality)
             self.crop = self.set_crop_radius(self.crop_radius)
+            '''
             if not self.conf.use_rpicam:
                 from modules.webcam_capture import WebcamCapture
                 self.cam = WebcamCapture(
@@ -342,6 +344,23 @@ class ScannerProcess(Task):
                     height=self.video_height,
                     jpeg_quality=self.video_quality,
                 )
+            '''
+            from modules.videofile_capture import VideoFileCapture
+            self.cam = VideoFileCapture(
+                video_file=settings.MEDIA_ROOT / 'simulation' / 'part2-5fps.mp4',
+                fps=self.video_fps,
+                width=self.video_width,
+                height=self.video_height,
+                jpeg_quality=self.video_quality,
+                video_lists = [
+                    settings.MEDIA_ROOT / 'simulation' / 'part1-5fps.mp4',
+                    settings.MEDIA_ROOT / 'simulation' / 'part2-5fps.mp4',
+                    settings.MEDIA_ROOT / 'simulation' / 'part3-5fps.mp4',
+                    settings.MEDIA_ROOT / 'simulation' / 'part4-5fps.mp4',
+                    settings.MEDIA_ROOT / 'simulation' / 'part5-5fps.mp4',
+                ]       
+            )            
+            
             self.cam.set_frame_callback(self._on_frame)
             self.cam.set_median(False)
             self.cam.set_circular_crop(None)
@@ -379,20 +398,29 @@ class ScannerProcess(Task):
         if self.grbl:
             self._send(**msg)
 
-    def _on_frame(self, jpeg_bytes: bytes, ts: datetime) -> None:
-        if self.proc.record:
+    def _on_frame(self, jpeg_bytes: bytes, ts: datetime, metrics: dict) -> None:
+        if self.tag.record:
             # record images
-            self.record_queue.put((self.proc.uuid, ts, jpeg_bytes))
-        if self.proc.play:
+            self.record_queue.put((self.tag.uuid, ts, jpeg_bytes, metrics))
+        if self.tag.play:
             # play image
-            self._send(ts=ts.timestamp(), jpeg=base64.b64encode(jpeg_bytes).decode(), )
+            self._send(ts=ts.timestamp(), jpeg=base64.b64encode(jpeg_bytes).decode(), **metrics)
 
     def _recording(self):
         logger.info(f"Scanner {self.group}: start recorder")
         while not self.stop_event.is_set():
             try:
-                (uuid, ts, frame) = self.record_queue.get()
-                labels = dict(fps=self.video_fps, session=self.proc.session)
+                (uuid, ts, frame, metrics) = self.record_queue.get()
+                labels = dict(fps=self.video_fps, session=self.tag.session, detected="1" if metrics.get("detected") else "0")
+                if metrics.get("detected"):
+                    labels.update({
+                        "cx"          : str(metrics["cx"]),
+                        "cy"          : str(metrics["cy"]),
+                        "area_px"     : str(metrics["area_px"]),
+                        "speed_px_s"  : str(metrics["speed_px_s"]),
+                        "axial_pos"   : str(metrics["axial_pos"]),
+                        "axial_speed" : str(metrics["axial_speed"]),
+                    })                
                 self.recordDB.write(uuid, frame, labels, ts=ts)
                 self.record_queue.task_done()
             except Exception as e:
@@ -418,7 +446,7 @@ class ScannerProcess(Task):
                 self.default_multiwell,
                 feed=self.default_feed,
                 step=self.default_step,
-                proc=self.proc
+                process=self
             )
             
             for message in pubsub.listen():

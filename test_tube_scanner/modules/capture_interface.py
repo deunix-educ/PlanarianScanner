@@ -22,6 +22,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, Callable, TYPE_CHECKING
 
+from modules.planarian_tracker import PlanarianTracker 
+
 if TYPE_CHECKING:
     from .circular_crop import CircularCrop     # Evite l'import circulaire au runtime
 
@@ -59,6 +61,20 @@ class VideoCaptureInterface(abc.ABC):
         self._on_frame: Optional[Callable[[bytes, datetime], None]] = None  # Callback image
         self._circular_crop: Optional["CircularCrop"] = None  # Recadrage circulaire optionnel
         self._active_median = False
+        self._error_occured = False
+        
+        self._tracker = PlanarianTracker(
+            tube_axis   = "vertical",   # à rendre configurable via settings
+            min_area_px = 20,
+        )
+        
+              
+    def on_well_change(self):
+        """
+        Appelé par le CNC lors du changement de puits.
+        Réinitialise le fond appris et l'état inter-frame du tracker.
+        """
+        self._tracker.reset()        
 
     # ------------------------------------------------------------------
     # Méthodes abstraites — obligatoires dans les sous-classes
@@ -196,8 +212,25 @@ class VideoCaptureInterface(abc.ABC):
         :return:           Image traitée (JPEG ou PNG selon la stratégie)
         """
         if self._circular_crop is not None:
-            return self._circular_crop.process(jpeg_bytes)
-        return jpeg_bytes
+            jpeg = self._circular_crop.process(jpeg_bytes)
+            
+            # --- tracking ---
+            nparr   = np.frombuffer(jpeg, np.uint8)
+            frame   = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            ts      = datetime.now(timezone.utc).timestamp()
+            #metrics = self._tracker.process(frame, ts) if frame is not None else {}    
+            if frame is not None:
+                frame_annotated, metrics = self._tracker.process(frame, ts)
+                # Ré-encodage JPEG de la frame annotée
+                ok, buf = cv2.imencode(".jpg", frame_annotated, [cv2.IMWRITE_JPEG_QUALITY, 85])
+                if ok:
+                    jpeg = buf.tobytes()
+            else:
+                metrics = {"detected": False}                    
+            
+            return jpeg, metrics
+        
+        return jpeg_bytes, {"detected": False}
 
     def save_frame(self, jpeg_bytes: bytes, directory: str = ".", prefix: str = "frame") -> Path:
         """
@@ -250,9 +283,6 @@ class VideoCaptureInterface(abc.ABC):
             cv2.line(frame, (0, center_y), (width, center_y), (0, 255, 0), 1)
             cv2.circle(frame, (center_x, center_y), 2, (0, 0, 255), -1)
 
-            cv2.putText(frame, f"Num: {self._frame_count}", (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-
             _, buffer = cv2.imencode('.jpg', frame)
             jpeg_bytes = buffer.tobytes()
             return jpeg_bytes
@@ -276,20 +306,25 @@ class VideoCaptureInterface(abc.ABC):
             try:
                 jpeg = self.capture_frame()
                 jpeg = self.display_median(jpeg)
-                jpeg = self.process_frame(jpeg)  # Recadrage circulaire si configuré
+                ## 
+                jpeg, metrics = self.process_frame(jpeg)  # Recadrage circulaire si configuré
+
+                metrics.update({
+                    "count": self._frame_count,
+                }) 
 
                 self._frame_count += 1
-
                 ts = datetime.now(timezone.utc)
 
                 if self._on_frame:
                     try:
-                        self._on_frame(jpeg, ts)
+                        self._on_frame(jpeg, ts, metrics)
                     except Exception as cb_err:  # noqa: BLE001
                         logger.error("Erreur dans le callback image : %s", cb_err)
 
             except CaptureError as err:
                 logger.error("Échec de capture (#%d) : %s", self._frame_count, err)
+                self._error_occured = True
 
             # Compensation du temps d'exécution pour tenir la cadence
             elapsed = time.monotonic() - loop_start
