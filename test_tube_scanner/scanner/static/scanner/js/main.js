@@ -1,40 +1,34 @@
 
 class ScannerManager {
 
-    constructor(container) {
+    constructor(container, options = {}) {
         this.container = container;
         this.socket = null;
-        this.axes = 0;
-        this.cropping = 1;
-        this.debug_count = 0
+        this.debug_count = 0;
+        
+        this.ts = options.ts; 
+        this.cx = options.cx; 
+        this.cy = options.cy; 
+        this.x  = options.x; 
+        this.y  = options.y; 
+        this.session = options.session; 
+        this.scan_bt  = options.scan; 
+        this.halt_bt    = options.halt; 
+        this.debug   = options.debug; 
+        this.median  = options.median; 
+        this._rop    = options.crop; 
+        this.speed_px_s   = options.speed_px_s; 
+        this.axial_speed  = options.axial_speed; 
+        this.axial_pos    = options.axial_pos; 
+        this.area_px      = options.area_px; 
+        this.frame_count  = options.frame_count; 
     }
 
-    toggle_median() { this.axes = !this.axes; return this.axes; }
-    toggle_crop()   { this.croping = !this.croping; return this.croping; }
-
     init_controls() {
-        this.cx =  sId("_cx");
-        this.cy =  sId("_cy");
-        this.speed_px_s =  sId("_speed_px_s");
-        this.axial_speed = sId("_axial_speed");
-        this.axial_pos = sId("_axial_pos");
-        this.area_px = sId("_area_px");
-        this.frame_count = sId("_count");
-                
-        this.session= sId("_session");
-        this.ts      = sId("_ts");
-        this.x      = sId("_x");
-        this.y      = sId("_y");
-        this.debug  = sId("_debug");
-        const scan  = sId("_scan");
-        const halt   = sId("_halt");
-        const median = sId("_median");
-        const crop = sId("_crop");
-
-        median.addEventListener('click',(e) => { this._send({ type: 'calibrate', topic: "median", value: this.toggle_median() }); });
-        crop.addEventListener('click',  (e) => { this._send({ type: 'calibrate', topic: "crop", value: this.toggle_crop() }); });
-        scan.addEventListener('click',  (e) => { this.scan(); });
-        halt.addEventListener('click',  (e) => { this.halt(); });
+        this.median.addEventListener('click',(e) => { this._send({ type: 'calibrate', topic: "median" }); });
+        this.crop.addEventListener('click',  (e) => { this._send({ type: 'calibrate', topic: "crop" }); });
+        this.scan_bt.addEventListener('click',  (e) => { this.scan(); });
+        this.halt_bt.addEventListener('click',  (e) => { this.halt(); });
     }
 
     registerSocket(socket)  {

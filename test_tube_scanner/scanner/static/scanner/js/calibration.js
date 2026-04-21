@@ -1,88 +1,76 @@
 
 class ScannerManager {
 
-    constructor(container) {
+    constructor(container, options = {}) {
         this.container = container;
         this.socket = null;
-        this.axes = 0;
-        this.cropping = 0;
-        this.debug_count = 0
+        this.debug_count = 0;
+        
+        this.ts = options.ts; 
+        this.cx = options.cx; 
+        this.cy = options.cy; 
+        this.x  = options.x; 
+        this.y  = options.y;        
+        this.xbase= options.xbase; 
+        this.ybase= options.ybase; 
+        this.test = options.test; 
+        this.halt = options.halt;      
+        this.speed_px_s  = options.speed_px_s; 
+        this.axial_speed = options.axial_speed; 
+        this.axial_pos   = options.axial_pos; 
+        this.area_px     = options.area_px; 
+        this.frame_count = options.frame_count; 
+        this.goto_0  = options.goto_0; 
+        this.goto_xy = options.goto_xy; 
+        this.xy_base = options.xy_base; 
+        this.up      = options.up; 
+        this.down    = options.down; 
+        this.left    = options.left; 
+        this.right   = options.right; 
+        this.duration= options.duration; 
+        this.feed    = options.feed; 
+        this.step    = options.step; 
+        this.well    = options.well; 
+        this.debug   = options.debug; 
+        this.calib_debug = options.calib_debug; 
+        this.calib_center= options.calib_center; 
+        this.previous    = options.previous;   
+        this.next        = options.next;     
+        this.set_well    = options.set_well; 
+        this.well_btn    = options.well_btn;  
+        this.median      = options.median; 
+        this.crop        = options.crop; 
+        this.crop_radius = options.crop_radius;
+        this.calib_auto  = options.calib_auto;
     }
+    
+    init_controls() {       
+        this.up.addEventListener('mousedown',      (e) => { this._send({ type: 'calibrate', topic: "up" }); });
+        this.down.addEventListener('mousedown',    (e) => { this._send({ type: 'calibrate', topic: "down" }); });
+        this.left.addEventListener('mousedown',    (e) => { this._send({ type: 'calibrate', topic: "left" }); });
+        this.right.addEventListener('mousedown',   (e) => { this._send({ type: 'calibrate', topic: "right" }); });
 
-    init_controls() {
-        this.ts = sId("_ts");
-        this.cx = sId("_cx");
-        this.cy = sId("_cy");
-        this.speed_px_s  = sId("_speed_px_s");
-        this.axial_speed = sId("_axial_speed");
-        this.axial_pos   = sId("_axial_pos");
-        this.area_px     = sId("_area_px");
-        this.frame_count = sId("_count");
+        this.goto_0.addEventListener('click',      (e) => { this.clear_buttons(); this._send({ type: 'calibrate', topic: "goto_0" }); });
+        this.goto_xy.addEventListener('click',     (e) => { this.clear_buttons(); this._send({ type: 'calibrate', topic: "goto_xy" }); });
+        this.xy_base.addEventListener('click',     (e) => { this._send({ type: 'calibrate', topic: "xy_base" }); });
         
-        const goto_0  = sId("_goto-0");
-        const goto_xy = sId("_goto-xy");
-        const xy_base = sId("_xy-base");
-        const xy_step  = sId("_xy-step");
-        const up    = sId("_up");
-        const down  = sId("_down");
-        const left  = sId("_left");
-        const right = sId("_right");
-        this.duration = sId("_duration");
-        this.feed   = sId("_feed");
-        this.step   = sId("_step");
-        this.well   = sId("_well");
-        this.x      = sId("_x");
-        this.y      = sId("_y");
-        this.dx     = sId("_dx");
-        this.dy     = sId("_dy");
-        this.xbase  = sId("_xbase");
-        this.ybase  = sId("_ybase");
-        this.debug  = sId("_debug");
-        this.well_btn = sId("_well_btn");  
+        this.calib_debug.addEventListener('click', (e) => { this._send({ type: 'calibrate', topic: "calib_debug" }); });       
+        this.previous.addEventListener('click',    (e) => { this._send({ type: 'calibrate', topic: "previous" }); });
+        this.next.addEventListener('click',        (e) => { this._send({ type: 'calibrate', topic: "next" }); });       
+        this.set_well.addEventListener('click',    (e) => { this._send({ type: 'calibrate', topic: "set_well" }); });       
         
-        const test   = sId("_test");
-        const halt   = sId("_halt");
-        
-        const calib_debug = sId("_calib_debug");
-        const calib_center = sId("_calib_center");
-        const previous = sId("_previous");        
-        const next = sId("_next");        
-        const set_well = sId("_set_well");  
-             
-        const median = sId("_median");
-        const crop = sId("_crop");
-        const crop_radius = sId("_crop_radius");
-        
+        this.median.addEventListener('click',      (e) => { this._send({ type: 'calibrate', topic: "median" }); });
+        this.crop.addEventListener('click',        (e) => { this._send({ type: 'calibrate', topic: "crop" }); });
+        this.crop_radius.addEventListener('change',(e) => { this._send({ type: 'calibrate', topic: "crop_radius", value: this.crop_radius.value }); });
+        this.well.addEventListener("change",       (e) => { this._send({ type: 'calibrate', topic: "position", value: e.target.value }); });
+        this.step.addEventListener("change",       (e) => { this._send({ type: 'calibrate', topic: "step", value: e.target.value }); });
+        this.feed.addEventListener("change",       (e) => { this._send({ type: 'calibrate', topic: "feed", value: e.target.value }); });
+        this.duration.addEventListener("change",   (e) => { this._send({ type: 'calibrate', topic: "duration", value: e.target.value }); });
 
-        up.addEventListener('mousedown',      (e) => { this._send({ type: 'calibrate', topic: "up" }); });
-        down.addEventListener('mousedown',    (e) => { this._send({ type: 'calibrate', topic: "down" }); });
-        left.addEventListener('mousedown',    (e) => { this._send({ type: 'calibrate', topic: "left" }); });
-        right.addEventListener('mousedown',   (e) => { this._send({ type: 'calibrate', topic: "right" }); });
-
-        goto_0.addEventListener('click',     (e) => { this.clear_buttons(); this._send({ type: 'calibrate', topic: "goto_0" }); });
-        goto_xy.addEventListener('click',    (e) => { this.clear_buttons(); this._send({ type: 'calibrate', topic: "goto_xy" }); });
-        xy_base.addEventListener('click',    (e) => { this._send({ type: 'calibrate', topic: "xy_base" }); });
-        xy_step.addEventListener('click',    (e) => { this._send({ type: 'calibrate', topic: "xy_step" }); });
-        
-        calib_debug.addEventListener('click',(e) => { this._send({ type: 'calibrate', topic: "calib_debug" }); });       
-        previous.addEventListener('click',    (e) => { this._send({ type: 'calibrate', topic: "previous" }); });
-        next.addEventListener('click',    (e) => { this._send({ type: 'calibrate', topic: "next" }); });       
-        set_well.addEventListener('click',(e) => { this._send({ type: 'calibrate', topic: "set_well" }); });       
-        
-        median.addEventListener('click',     (e) => { this._send({ type: 'calibrate', topic: "median" }); });
-        crop.addEventListener('click',       (e) => { this._send({ type: 'calibrate', topic: "crop" }); });
-        crop_radius.addEventListener('change',(e) => { this._send({ type: 'calibrate', topic: "crop_radius", value: crop_radius.value }); });
-        this.well.addEventListener("change", (e) => { this._send({ type: 'calibrate', topic: "position", value: e.target.value }); });
-        this.step.addEventListener("change", (e) => { this._send({ type: 'calibrate', topic: "step", value: e.target.value }); });
-        this.feed.addEventListener("change", (e) => { this._send({ type: 'calibrate', topic: "feed", value: e.target.value }); });
-        this.duration.addEventListener("change", (e) => { this._send({ type: 'calibrate', topic: "duration", value: e.target.value }); });
-        
-        this.dx.addEventListener("change", (e) => { this._send({ type: 'calibrate', topic: "dx", value: e.target.value }); });
-        this.dy.addEventListener("change", (e) => { this._send({ type: 'calibrate', topic: "dy", value: e.target.value }); });
-
-        test.addEventListener('click',  (e) => { this._send({ type: 'calibrate', topic: "test" }); });
-        calib_center.addEventListener('click',  (e) => { this._send({ type: 'calibrate', topic: "center" }); });
-        halt.addEventListener('click',  (e) => { this._send({ type: 'calibrate', topic: "halt" }); });
+        this.test.addEventListener('click',         (e) => { this._send({ type: 'calibrate', topic: "test" }); });
+        this.calib_center.addEventListener('click', (e) => { this._send({ type: 'calibrate', topic: "center" }); });
+        this.calib_auto.addEventListener('click',   (e) => { this._send({ type: 'calibrate', topic: "auto" }); });
+        this.halt.addEventListener('click',         (e) => { this._send({ type: 'calibrate', topic: "halt" }); });
     }
 
     registerSocket(socket)  {
@@ -91,10 +79,9 @@ class ScannerManager {
     }
 
     update(payload) {
-        try {
+        try {            
             if (payload.jpeg)   { this.container.src = `data:image/jpeg;base64,${payload.jpeg}`; }
             if (payload.xbase)  { this.xbase.textContent = payload.xbase;  this.ybase.textContent = payload.ybase; }
-            if (payload.dxy)    { this.dy.value=payload.dy; this.dx.value=payload.dx; }
             if (payload.xy)     { this.x.textContent=payload.x.toFixed(2); this.y.textContent=payload.y.toFixed(2); }
             if (payload.state)  { this.debug.insertAdjacentHTML('afterbegin', `<li>[ ${++this.debug_count} - ${payload.state} ]: ${payload.msg}</li>`); }
             if (payload.ts)     { this.ts.textContent = timestampToLocalISOString(payload.ts); }
@@ -108,6 +95,12 @@ class ScannerManager {
                 this.frame_count.textContent = payload.count;           
             }
             if (payload.buttons) { this.well_btn.innerHTML = payload.buttons; }
+            if (payload.current >= 0) {                 
+                document.querySelectorAll('button.w3-button.well').forEach(btn => {
+                    if (btn.value==payload.current) { btn.classList.add('w3-green'); return; }
+                    btn.classList.remove('w3-green'); 
+                });
+             }
 
         } catch(e) { console.log(e); }
     }
@@ -115,8 +108,6 @@ class ScannerManager {
     clear_buttons() { document.querySelectorAll('button.w3-button.well').forEach(btn => {btn.classList.remove('w3-green'); }); }
     goto_well(b)    { this.clear_buttons(); b.classList.add('w3-green'); this._send({ type: 'calibrate', topic: "goto", value: b.value }); }
     init()          {
-        this.axes = 0;
-        this.cropping = 0;
         this.clear_buttons();
         this._send({
             type: 'calibrate',

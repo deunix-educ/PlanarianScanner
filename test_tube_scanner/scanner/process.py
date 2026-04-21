@@ -4,7 +4,6 @@ import os
 os.environ['OPENCV_LOG_LEVEL']="0"
 os.environ['OPENCV_FFMPEG_LOGLEVEL']="0"
 import cv2
-import numpy as np
 
 from django.utils.translation import gettext_lazy as _
 from datetime import datetime
@@ -36,7 +35,8 @@ class ProcessData:
     record: bool = False
     uuid: str = None
     session: int = 0
-    frame: bytes = None
+    tube_diameter: float = 16.0 
+
 
 logger = get_task_logger(__name__)
 redisDB = Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0, decode_responses=True)
@@ -148,7 +148,7 @@ class ScannerProcess(Task):
         self.cam = None
         self.grbl = None
         self.crop = None
-        self.multiwel = None
+        #self.multiwel = None
         self.conf = None
         self.record_queue = Queue()
         self.data = ProcessData()
@@ -187,9 +187,9 @@ class ScannerProcess(Task):
                     height=self.video_height,
                     jpeg_quality=self.video_quality,
                     use_tracking=self.use_tracking,
-                    px_per_mm = self.conf.px_per_mm,
                     display=self._display,
                     video_lists=[],
+                    parent=self,
                 )
                 '''
                     settings.MEDIA_ROOT / 'simulation' / 'part1-5fps.mp4',
@@ -209,8 +209,8 @@ class ScannerProcess(Task):
                     height=self.video_height,
                     jpeg_quality=self.video_quality,
                     use_tracking=self.use_tracking,
-                    px_per_mm = self.conf.px_per_mm,
                     display=self._display,
+                    parent=self,
                 )
             else:
                 from modules.picamera2_capture import PiCamera2Capture
@@ -220,8 +220,8 @@ class ScannerProcess(Task):
                     height=self.video_height,
                     jpeg_quality=self.video_quality,
                     use_tracking=self.use_tracking,
-                    px_per_mm = self.conf.px_per_mm,
                     display=self._display,
+                    parent=self,
                 )
             
             self.cam.set_frame_callback(self._on_frame)
@@ -263,12 +263,9 @@ class ScannerProcess(Task):
             self._send(**msg)
 
     def _on_frame(self, jpeg_bytes: bytes, ts: datetime, metrics: dict) -> None:
-        self.data.frame = jpeg_bytes
         if self.data.record:
-            # record images
             self.record_queue.put((self.data.uuid, ts, jpeg_bytes, metrics))
         if self.data.play:
-            # play image
             self._send(ts=ts.timestamp(), jpeg=base64.b64encode(jpeg_bytes).decode(), **metrics)
 
     def _recording(self):
@@ -399,37 +396,32 @@ class ScannerProcess(Task):
                             
                         elif topic == 'goto_xy':
                             self.grbl.move_to(self.manager.xbase, self.manager.ybase, feed=self.manager.feed)
-                            self.manager.well_iterator.reset()
+                            self.manager.well_iterator.seek(0)
                             
                         elif topic == 'xy_base':
                             self.manager.set_position()
                             
-                        elif topic == 'dx':
-                            self.manager.dx = float(value)
-                            
-                        elif topic == 'dy':
-                            self.manager.dy = float(value)
-                            
-                        elif topic == 'xy_step':
-                            self.manager.set_xy_step()
-                        
                         elif topic == 'test':
-                            pass 
-                            #self.manager.scan_test()
+                            self.manager.scan_test()
                             continue
+                        
+                        elif topic == 'auto':
+                            self.manager.set_calib_debug(True)
+                            self.cam.set_circular_crop(self.crop)
+                            self.manager.scan_test(auto=True)
+                            continue
+                           
                         elif topic == 'center':
-                            #self.manager.scan_test()
                             dx_mm = self.cam._last_detection["offset_x_mm"]
                             dy_mm = self.cam._last_detection["offset_y_mm"]
                             self.grbl.move_to(self.grbl.x + dx_mm, self.grbl.y + dy_mm, feed=150)
-                            
                             msg = f"Correction CNC move_relative(dx={dx_mm:.3f}, dy={dy_mm:.3f})"
                             self._send(state='center', msg=msg)  
                             continue
                         
                         elif topic == 'halt':
                             self.manager.halt_scanning()
-                            continue
+                            
                         
                         elif topic == 'calib_debug':
                             msg = self.manager.calib_toggle_debug()
@@ -439,23 +431,19 @@ class ScannerProcess(Task):
                         elif topic == 'previous':
                             msg = self.manager.previous_well()
                             self._send(**msg)  
-                            continue
-                        
+   
                         elif topic == 'next':
                             msg = self.manager.next_well()
                             self._send(**msg)  
-                            continue
-                        
+
                         elif topic == 'goto':
                             msg = self.manager.goto_well(int(value))
                             self._send(**msg)
-                            continue      
-                                                          
+               
                         elif topic == 'set_well':
                             msg = self.manager.set_well_position()
                             self._send(**msg)
-                            continue   
-                                                  
+                 
                         self._send(
                             xbase=self.manager.xbase, 
                             ybase=self.manager.ybase, 
@@ -466,8 +454,8 @@ class ScannerProcess(Task):
                             dx=self.manager.dx, 
                             dy=self.manager.dy,
                             buttons=buttons,
+                            current=self.manager.get_well_order(),
                         )
-
                 except Exception as e:
                     logger.error(f'scanner listen_to_redis: {e}')
         finally:

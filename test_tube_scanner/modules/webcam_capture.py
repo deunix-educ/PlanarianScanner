@@ -39,8 +39,8 @@ class WebcamCapture(VideoCaptureInterface):
         width: Optional[int] = None,
         height: Optional[int] = None,
         use_tracking: bool = False,
-        px_per_mm: float = 2.1,
         display = None,
+        parent = None,
     ):
         """
         :param device_index:  Index du périphérique V4L2 (0 = première webcam)
@@ -49,7 +49,7 @@ class WebcamCapture(VideoCaptureInterface):
         :param width:         Largeur souhaitée (None = valeur par défaut du pilote)
         :param height:        Hauteur souhaitée (None = valeur par défaut du pilote)
         """
-        super().__init__(fps=fps, use_tracking=use_tracking, px_per_mm=px_per_mm, display=display)
+        super().__init__(fps=fps, use_tracking=use_tracking, display=display, parent=parent)
         self._device_index: int = device_index
         self._jpeg_quality: int = jpeg_quality
         self._width: Optional[int] = width

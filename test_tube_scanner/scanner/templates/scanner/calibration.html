@@ -11,7 +11,7 @@
     <div class="container w3-black">
         <div class="header">
             <div class="w3-row w3-row-padding">
-                <div class="w3-col" style="width:15%">
+                <div class="w3-col" style="width:20%">
 		            {% trans 'Position multi-puit' %}<br>
 		            <select id="_well" class="w3-select">
 		                {% for w in wells %}
@@ -32,7 +32,7 @@
 		            </select>
 	            </div>
 
-	            <div class="w3-col" style="width:15%">
+	            <div class="w3-col" style="width:10%">
 		            <div>{% trans 'Pas' %}</div>
 		            <select id="_step" class="w3-select">
 		                <option value="0.1">0.1 mm</option>
@@ -50,7 +50,7 @@
 		                <option value="50.0">50.0 mm</option>
 		            </select>
 	            </div>
-	            <div class="w3-col" style="width:15%">
+	            <div class="w3-col" style="width:10%">
 	                <div>{% trans 'Durée' %}</div>
 		            <select id="_duration" class="w3-select" title="{% trans 'Durée entre vidéos' %}">
 		                <option value="1.0">1 s</option>
@@ -59,10 +59,13 @@
 		                <option value="4.0">4 s</option>
 		                <option value="5.0" selected>5 s</option>
 		                <option value="10">10 s</option>
+		                <option value="15">15 s</option>
+		                <option value="20">20 s</option>
+		                <option value="30">30 s</option>
 		            </select>	            
 	            </div>
-	            <div class="w3-col" style="width:40%">
-	               <div class="w3-margin-top w3-padding w3-right">
+	            <div class="w3-col" style="width:45%">
+	               <div class="w3-margin-top w3-padding w3-right-align">
 	                   <span id="_ts"></span><br>
 	               </div>
 	            </div>
@@ -70,77 +73,105 @@
         </div>
              
         <div class="move w3-center">
-
-            <div class="w3-row">
-                <div class="w3-half">{% trans 'dx' %}<br><input id="_dx" type="number" min="15.0" max="25.0" step="0.01" value=""/></div>
-                <div class="w3-half">{% trans 'dy' %}<br><input id="_dy" type="number" min="15.0" max="25.0" step="0.01" value=""/></div>
-                <div class="w3-col">
-		            <button id="_xy-step" class="w3-button w3-warning w3-round-large w3-block w3-large">
-		                <i class="fa-solid fa-left-right"></i> {% trans 'Définir (dx, dy)' %}
-		            </button>               
-                </div>   
-            </div>
-
-            <div><button id="_up" class="w3-button w3-dark-xlight w3-round-large w3-margin-small  w3-block">&#x2191; +Y {% trans 'A Droite' %}</button></div>
-            <div><button id="_left" class="w3-button w3-dark-xlight w3-round-large w3-margin-small  w3-block">&#x2190; -X {% trans 'En bas' %}</button></div>
-            <div><button id="_right" class="w3-button w3-dark-xlight w3-round-large w3-margin-small w3-block">&#x2192; +X {% trans 'En haut' %}</button></div>
-            <div><button id="_down" class="w3-button w3-dark-xlight w3-round-large w3-margin-small w3-block">&#x2193; -Y {% trans 'A Gauche' %}</button></div>
-       
-            <div class="w3-row">
-                <div id="_well_btn" class="w3-col"></div>   
-                <div class="w3-half">
-                    <button id="_previous" class="w3-button w3-light-blue w3-round-large w3-block" title="{% trans 'Précédent' %}">
-                        <i class="fa-solid fa-circle-left w3-large"></i>
-                    </button>
-                </div>
-                <div class="w3-half">
-                    <button id="_next" class="w3-button w3-light-blue w3-round-large w3-block" title="{% trans 'Suivant' %}">
-                        <i class="fa-solid fa-circle-right w3-large"></i>
-                    </button>
-                </div>
-                <div class="w3-col">
-		            <button id="_set_well" class="w3-button w3-warning w3-round-large w3-block">
-		               <i class="fa-solid fa-circle-check"></i> {% trans 'Définir position' %}
-		            </button>                
-                </div>
-                <div class="w3-col">
-                    <button id="_calib_center" class="w3-button w3-warning w3-round-large w3-block">
-                       <i class="fa-regular fa-circle"></i> {% trans 'Centrer manuel' %}
-                    </button>                
-                </div>                
-            </div>
-        </div>
-        <div class="scan w3-center">
-             <div class="w3-row">
+            <div class="w3-row w3-border w3-bold w3-margin-bottom">
                 <div class="w3-half">X<br><span id="_x"></span></div>
                 <div class="w3-half">Y<br><span id="_y"></span></div>
-            </div>       
-            <button id="_goto-0" class="w3-button w3-light-blue w3-round w3-round-large w3-margin-small w3-block">Origine (0, 0)</button>
-            <button id="_goto-xy" class="w3-button w3-light-blue w3-round-large w3-margin-small w3-block w3-margin-bottom">
-                {% trans 'Aller à la base' %}<br>(<span id="_xbase"></span>, <span id="_ybase"></span>)
+            </div>
+            <div class="w3-row">
+                <div class="w3-col">
+		            <button id="_xy-base" class="w3-button w3-dark-xlight w3-round-large w3-margin-small w3-block" 
+		                    title="{% trans 'Définir la base (x, y) du multi-puit' %}">
+		               {% trans 'Définir base' %}<br><i class="fa-solid fa-circle-check w3-text-orange w3-xxlarge"></i>
+		            </button>              
+                </div>
+	            <div class="w3-col">
+	                <button id="_right" class="w3-button w3-dark-xlight w3-round-large w3-padding-small">
+	                   +X<br><i class="fa-solid fa-circle-up w3-xxlarge"></i>
+	                </button>
+	            </div>
+	            <div class="w3-third">
+	                <button id="_down" class="w3-button w3-dark-xlight w3-round-large w3-padding-small">
+	                   -Y<br><i class="fa-solid fa-circle-arrow-left w3-xxlarge"></i>
+	                </button>
+	            </div>
+                <div class="w3-third">
+                    <button id="_set_well" class="w3-button w3-dark-xlight w3-round-large w3-padding-small" 
+                            title="{% trans 'Sauvegarder la position du puit courant' %}">
+                        <span class="w3-small">Position</span><br><i class="fa-solid fa-circle-check w3-xxlarge w3-text-orange"></i> 
+                    </button>
+                </div>	            
+	            <div class="w3-third">
+	                <button id="_up" class="w3-button w3-dark-xlight w3-round-large w3-padding-small">
+	                   +Y<br><i class="fa-solid fa-circle-arrow-right w3-xxlarge"></i>
+	                </button>
+	            </div>
+	            <div class="w3-col">
+	                <button id="_left" class="w3-button w3-dark-xlight w3-round-large w3-padding-small">
+	                   -X<br><i class="fa-solid fa-circle-down w3-xxlarge"></i>
+	                </button>
+	            </div>
+            </div>
+       
+            <div class="w3-row">
+                <div id="_well_btn" class="w3-col w3-margin-top w3-margin-bottom"></div>   
+                
+                <div class="w3-third">
+                    <button id="_previous" class="w3-button w3-dark-xlight w3-round-large w3-padding-small">
+                        <span class="w3-small">{% trans 'Précéd.' %}</span><br><i class="fa-solid fa-circle-left w3-xxlarge"></i>
+                    </button>
+                </div>
+                <div class="w3-third">
+                    <button id="_calib_center" class="w3-button w3-dark-xlight w3-round-large w3-padding-small" title="{% trans 'Centrer manuellement' %}">
+                       <span class="w3-small">{% trans 'Centrer' %}</span><br><i class="fa-regular fa-circle w3-xxlarge w3-text-orange"></i>
+                    </button>                
+                </div>                 
+                <div class="w3-third">
+                    <button id="_next" class="w3-button w3-dark-xlight w3-round-large w3-padding-small">
+                        <span class="w3-small">{% trans 'Suivant' %}</span><br><i class="fa-solid fa-circle-right w3-xxlarge"></i>
+                    </button>
+                </div> 
+                <div class="w3-col">
+		            <button id="_calib_auto" class="w3-button w3-dark-xlight w3-round-large w3-margin-small w3-block" 
+		                  title="{% trans 'Centrage auto et sauvegarde des positions' %}">
+		               {% trans 'Calibrage auto' %}<br><i class="fa-solid fa-robot w3-text-orange w3-xxlarge"></i>
+		            </button>                   
+                </div>  
+            </div>
+        </div>
+        <div class="scan w3-center">     
+            <button id="_goto-0" class="w3-button  w3-dark-xlight w3-round w3-round-large w3-margin-small w3-block">
+                Origine (0, 0)<br><i class="fa-solid fa-house w3-text-amber w3-xlarge"></i>
             </button>
-            <button id="_xy-base" class="w3-button w3-warning w3-round-large w3-margin-small w3-block">
-                <i class="fa-solid fa-circle-check"></i> {% trans 'Définir base' %}
-            </button>           
-            <hr>
-            <button id="_calib_debug" class="w3-button w3-teal w3-round-large w3-margin-small w3-block">
-                <i class="fa-solid fa-triangle-exclamation"></i> {% trans 'Debug' %}
+            <button id="_goto-xy" class="w3-button  w3-dark-xlight w3-round-large w3-margin-small w3-block w3-margin-bottom">
+                {% trans 'Aller à la base' %}<br>(<span id="_xbase"></span>, <span id="_ybase"></span>)<br><i class="fa-solid fa-bullseye w3-text-amber w3-xlarge"></i>
             </button>
-            <button id="_median" class="w3-button w3-teal w3-round-large w3-margin-small w3-block">
-                <i class="fa-solid fa-crosshairs"></i> {% trans 'Axes' %}
-            </button>
-            <button id="_crop" class="w3-button w3-teal w3-round-large w3-margin-small w3-block w3-margin-bottom">
-                <i class="fa-solid fa-crop"></i> {% trans 'Recadrer' %}
-            </button>
-            <span>
-            {% trans 'Rayon' %}: <input id="_crop_radius" type="number" min="100" max="1200" step="1" value="{{ conf.calibration_crop_radius }}" title="{% trans 'Rayon de cadrage' %}"/>
-            </span>
-            <hr>
-            <button id="_test" class="w3-button w3-warning w3-round-large w3-margin-small w3-block">
-                <i class="fa-solid fa-circle-check"></i> {% trans 'Tester le cirduit' %}
+            <div class="w3-row">
+                <div class="w3-half">
+		            <button id="_calib_debug" class="w3-button w3-dark-xlight w3-round-large w3-padding-small">
+		                {% trans 'Debug' %}<br><i class="fa-solid fa-triangle-exclamation w3-text-amber w3-xlarge"></i>
+		            </button>                
+                </div>
+                <div class="w3-half">
+		            <button id="_median" class="w3-button w3-dark-xlight w3-round-large w3-padding-small">
+		                {% trans 'Axes' %}&nbsp;<br><i class="fa-solid fa-crosshairs w3-text-amber w3-xlarge"></i>
+		            </button>               
+                </div>
+                <div class="w3-col">
+		            <button id="_crop" class="w3-button w3-dark-xlight w3-round-large w3-padding-small w3-margin-top w3-block">
+		                {% trans 'Recadrer' %}<br><i class="fa-solid fa-crop w3-text-amber w3-xlarge"></i>
+		            </button>               
+                </div>
+                <div class="w3-col w3-padding-small w3-border w3-round-large w3-margin-top">
+                    <span class="w3-bold w3-text-amber">{% trans 'Rayon' %}</span><br>
+                    <input id="_crop_radius" type="number" min="100" max="1200" step="1" class="w3-round" title="{% trans 'Rayon du recadrement' %}"
+                            value="{{ conf.calibration_crop_radius }}" title="{% trans 'Rayon de cadrage' %}"> px
+                </div>
+            </div>        
+            <button id="_test" class="w3-button w3-dark-xlight w3-round-large w3-margin-small w3-block">
+                {% trans 'Tester le cirduit' %}<br><i class="fa-solid fa-circle-check w3-text-orange w3-xxlarge"></i>
             </button>
             <button id="_halt" class="w3-button w3-red w3-round-large w3-margin-small w3-block">
-                <i class="fa-solid fa-hand"></i> {% trans 'ARRET' %}
+                {% trans 'ARRET' %}<br><i class="fa-solid fa-hand w3-xxlarge"></i>
             </button>
         </div>
         {% include 'scanner/scan-image.html' %}
@@ -154,10 +185,49 @@
         const container = sId("scan-img");
         const ws_route = "{{ ws_route }}";   
         const use_tracking = "{{ use_tracking }}" == "True";
+        
+        const options = {
+	        ts : sId("_ts"),
+	        cx : sId("_cx"),
+	        cy : sId("_cy"),
+            x  : sId("_x"),
+            y  : sId("_y"),	       
+            xbase: sId("_xbase"),
+            ybase: sId("_ybase"),
+            test : sId("_test"),
+            halt : sId("_halt"),           
+	        speed_px_s  : sId("_speed_px_s"),
+	        axial_speed : sId("_axial_speed"),
+	        axial_pos   : sId("_axial_pos"),
+	        area_px     : sId("_area_px"),
+	        frame_count : sId("_count"),
+	        goto_0  : sId("_goto-0"),
+	        goto_xy : sId("_goto-xy"),
+	        xy_base : sId ("_xy-base"),
+	        up      : sId("_up"),
+	        down    : sId("_down"),
+	        left    : sId("_left"),
+	        right   : sId("_right"),
+	        duration: sId("_duration"),
+	        feed    : sId("_feed"),
+	        step    : sId("_step"),
+	        well    : sId("_well"),
+	        debug   : sId("_debug"),
+	        calib_debug : sId("_calib_debug"),
+	        calib_auto  : sId("_calib_auto"),
+	        calib_center: sId("_calib_center"),
+	        previous    : sId("_previous"),        
+	        next        : sId("_next"),        
+	        set_well    : sId("_set_well"), 
+	        well_btn    : sId("_well_btn"),  
+            median      : sId("_median"),
+            crop        : sId("_crop"),
+            crop_radius : sId("_crop_radius")
+        };          
     </script>
     <script src="/static/scanner/js/calibration.js"></script>
     <script>
-        const manager  = new ScannerManager(container);
+        const manager  = new ScannerManager(container, options);
         const protocol = location.protocol === "https:" ? "wss" : "ws";
         const wsUrl    = `${protocol}://${location.host}/${ws_route}`;
         const socket   = new MetadataSocket(wsUrl);

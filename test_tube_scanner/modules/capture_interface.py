@@ -45,11 +45,11 @@ class VideoCaptureInterface(abc.ABC):
     Les sous-classes doivent implémenter les méthodes abstraites
     pour gérer le matériel spécifique.
     """
-
+    
     # Cadence par défaut en images par seconde
     DEFAULT_FPS: float = 5.0
 
-    def __init__(self, fps: float = DEFAULT_FPS, use_tracking: bool = False, px_per_mm: float = 2.15, display=None):
+    def __init__(self, fps: float = DEFAULT_FPS, use_tracking: bool = False, display=None, parent=None):
         """
         Initialise l'interface de capture.
 
@@ -58,6 +58,7 @@ class VideoCaptureInterface(abc.ABC):
         self._fps: float = fps
         self.use_tracking = use_tracking
         self.display = display
+        self.parent = parent
         self._interval: float = 1.0 / fps       # Intervalle en secondes entre chaque capture
         self._running: bool = False              # Indique si la capture est en cours
         self._thread: Optional[threading.Thread] = None
@@ -73,16 +74,16 @@ class VideoCaptureInterface(abc.ABC):
             min_area_px = settings.TRACKER_MIN_AREA,
         )
         self._aligner = TubeAligner(
-            px_per_mm         = px_per_mm,    # à calibrer selon la caméra
             grbl_threshold_px = 20,      # au-delà → correction GRBL
             dead_zone_px      = 5,       # en-dessous → rien à faire
             display           = display,
         )
-        self._last_detection   = None    # résultat du dernier alignement
+        self._last_detection  = None    # résultat du dernier alignement
         
     # calibrage ou lecture réelle
     #
-    def align_on_well_arrival(self, frame: bytes, cnc_controller) -> dict:
+    
+    def align_on_well_arrival(self, frame: bytes, cnc_controller, tube_diameter: float = 16.0) -> dict:
         """
         Appelé UNE FOIS à l'arrivée sur un nouveau puits.
         Détecte le tube, décide l'action, exécute la correction.
@@ -93,7 +94,7 @@ class VideoCaptureInterface(abc.ABC):
         """
         nparr = np.frombuffer(frame, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        detection = self._aligner.detect_tube(img)
+        detection = self._aligner.detect_tube(img, tube_diameter=tube_diameter)
         
         # Stockage pour process_frame
         self._last_detection = detection        
@@ -108,7 +109,7 @@ class VideoCaptureInterface(abc.ABC):
             dy_mm = detection["offset_y_mm"]
 
             msg = f"align_on_well_arrival: correction CNC move_relative(dx={dx_mm:.3f}, dy={dy_mm:.3f})"     
-            #cnc_controller.move_relative(dx=-dx_mm, dy=-dy_mm, feed=150)    
+            cnc_controller.move_relative(dx=dx_mm, dy=dy_mm, feed=150)    
             
             self._tracker.reset()
             self._last_detection["action"] = "none"
@@ -118,7 +119,7 @@ class VideoCaptureInterface(abc.ABC):
             
         logger.info(msg)
         self.display(state='detect_tube', msg=msg)
-        return detection              
+        return detection      
               
               
     def on_well_change(self):
@@ -276,18 +277,14 @@ class VideoCaptureInterface(abc.ABC):
             
             # Mode debug
             if self._aligner.debug:
-                self._last_detection = detection = self._aligner.detect_tube(frame)
-                annotated = detection.get('frame_annotated')
+                self._last_detection = self._aligner.detect_tube(frame, self.parent.data.tube_diameter or 16.0)
+                annotated = self._last_detection.get('frame_annotated')
                 frame = annotated if annotated is not None else frame
-            '''
-            else:
-                detection = self._last_detection or {}    
-        
-            # --- Crop logiciel si nécessaire ---
-            if (detection.get("action") == "crop" and detection.get("detected") and not self._aligner.debug ):
-                frame = self._aligner.crop_to_tube(frame, detection)
-            '''
-                
+
+                #if (self._last_detection.get("action") == "crop" and self._last_detection.get("detected")):
+                #    frame = self._aligner.crop_to_tube(frame, self._last_detection)
+            
+            # mode racking
             if self.use_tracking:
                 ts = datetime.now(timezone.utc).timestamp()
                 frame, metrics = self._tracker.process(frame, ts)

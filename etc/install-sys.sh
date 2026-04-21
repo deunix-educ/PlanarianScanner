@@ -8,7 +8,7 @@ sudo apt update
 
 # system
 echo "==== system essential"
-sudo apt -y install build-essential openssl git pkg-config redis supervisor sqlitebrowser samba-client cifs-utils
+sudo apt -y install build-essential openssl git pkg-config redis supervisor sqlitebrowser samba-client cifs-utils gettext
 
 echo "==== python3 install"
 sudo apt -y install python3-dev python3-pip python3-venv default-libmysqlclient-dev libmariadb-dev libpq-dev python3-picamera2

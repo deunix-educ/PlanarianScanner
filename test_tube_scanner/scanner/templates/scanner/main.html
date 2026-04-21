@@ -44,22 +44,37 @@
 {% block js_footer %}
     {{ block.super }}
     <script>
-        const container = sId("scan-img");
-        const ws_route = "{{ ws_route }}";
-        const use_tracking = "{{ use_tracking }}" == "True";
+        const container     = sId("scan-img");
+        const ws_route      = "{{ ws_route }}";
+        const use_tracking  = "{{ use_tracking }}" == "True";
+        const options = {
+            ts: sId("_ts"),
+            cx: sId("_cx"),
+            cy: sId("_cy"),
+            x : sId("_x"),
+            y : sId("_y"),
+            session: sId("_session"),
+            scan   : sId("_scan"),
+            halt   : sId("_halt"),
+            debug  : sId("_debug"),
+            median : sId("_median"),
+            crop   : sId("_crop"), 
+            speed_px_s  : sId("_speed_px_s"),
+            axial_speed : sId("_axial_speed"),
+            axial_pos   : sId("_axial_pos"),
+            area_px     : sId("_area_px"),
+            frame_count : sId("_count")
+        };                      
     </script>        
     <script src="/static/scanner/js/main.js"></script>
     <script>
-        // ---- Point d'entrée ----
-        (async () => {
-            const manager  = new ScannerManager(container);
-            const protocol = location.protocol === "https:" ? "wss" : "ws";
-            const wsUrl    = `${protocol}://${location.host}/${ws_route}`;
-            const socket   = new MetadataSocket(wsUrl);
-            socket.setManager(manager);
-            socket.connect();
-            manager.registerSocket(socket);
-        })();
+        const manager  = new ScannerManager(container, options);
+        const protocol = location.protocol === "https:" ? "wss" : "ws";
+        const wsUrl    = `${protocol}://${location.host}/${ws_route}`;
+        const socket   = new MetadataSocket(wsUrl);
+        socket.setManager(manager);
+        socket.connect();
+        manager.registerSocket(socket);
     </script>
 {% endblock %}
 

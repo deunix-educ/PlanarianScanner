@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-24 08:51+0100\n"
+"POT-Creation-Date: 2026-04-21 23:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,49 +17,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 #: home/apps.py:7
-msgid "Automation"
-msgstr ""
-
-#: home/management/commands/init_data.py:63
-msgid "Base configuration"
-msgstr ""
-
-#: home/management/commands/init_data.py:144
-msgid "Non"
-msgstr ""
-
-#: home/management/commands/init_data.py:145
-#: home/management/commands/init_data.py:148
-msgid "Salon"
-msgstr ""
-
-#: home/management/commands/init_data.py:146
-msgid "Cellier"
-msgstr ""
-
-#: home/management/commands/init_data.py:147
-msgid "Cuisine"
-msgstr ""
-
-#: home/management/commands/init_data.py:149
-msgid "Entrée"
-msgstr ""
-
-#: home/management/commands/init_data.py:150
-msgid "Repas"
-msgstr ""
-
-#: home/management/commands/init_data.py:151
-msgid "Chambre 1"
-msgstr ""
-
-#: home/management/commands/init_data.py:152
-msgid "Chambre 2"
-msgstr ""
-
-#: home/management/commands/init_data.py:153
-msgid "Chambre 3"
+msgid "Scanner de tube à essais"
 msgstr ""
 
 #: home/templates/inc/404.html:9
@@ -78,6 +38,736 @@ msgstr ""
 msgid ""
 "This page server can't run correctly.<br>Please contact the site "
 "administrator."
+msgstr ""
+
+#: scanner/models.py:17
+msgid "Haut gauche"
+msgstr ""
+
+#: scanner/models.py:18
+msgid "Haut droit"
+msgstr ""
+
+#: scanner/models.py:19
+msgid "Bas gauche"
+msgstr ""
+
+#: scanner/models.py:20
+msgid "Bas droit"
+msgstr ""
+
+#: scanner/models.py:21
+msgid "Bas milieu"
+msgstr ""
+
+#: scanner/models.py:22
+msgid "Haut milieu"
+msgstr ""
+
+#: scanner/models.py:26 scanner/models.py:31
+msgid "MP4"
+msgstr ""
+
+#: scanner/models.py:27
+msgid "XVID"
+msgstr ""
+
+#: scanner/models.py:32
+msgid "AVI"
+msgstr ""
+
+#: scanner/models.py:36
+msgid "Nom de la Configuration"
+msgstr ""
+
+#: scanner/models.py:36
+msgid "Nom de la configuration"
+msgstr ""
+
+#: scanner/models.py:36
+msgid "Configuration par défaut"
+msgstr ""
+
+#: scanner/models.py:39
+msgid "Barre latérale"
+msgstr ""
+
+#: scanner/models.py:39
+msgid "Largeur barre latérale (css)"
+msgstr ""
+
+#: scanner/models.py:40
+msgid "Colonnes de la grille par défaut"
+msgstr ""
+
+#: scanner/models.py:40
+msgid "Nombre de colonnes de la grille par défaut"
+msgstr ""
+
+#: scanner/models.py:42
+msgid "Fourcc"
+msgstr ""
+
+#: scanner/models.py:42
+msgid "Opencv fourcc format"
+msgstr ""
+
+#: scanner/models.py:43
+msgid "Video type"
+msgstr ""
+
+#: scanner/models.py:43
+msgid "Opencv video type"
+msgstr ""
+
+#: scanner/models.py:45
+msgid "Grbl Xmax"
+msgstr ""
+
+#: scanner/models.py:45
+msgid "CNC Grbl Xmax en mm"
+msgstr ""
+
+#: scanner/models.py:46
+msgid "Grbl Ymax"
+msgstr ""
+
+#: scanner/models.py:46
+msgid "CNC Grbl Ymax en mm"
+msgstr ""
+
+#: scanner/models.py:47
+msgid "Pixel / mm"
+msgstr ""
+
+#: scanner/models.py:47
+msgid "Rapport pixel / déplacement en pixel/mm"
+msgstr ""
+
+#: scanner/models.py:50
+msgid "Utiliser rpicam"
+msgstr ""
+
+#: scanner/models.py:50
+msgid "Par défaaut. Sinon USB webcam"
+msgstr ""
+
+#: scanner/models.py:51
+msgid "Index de la webcam"
+msgstr ""
+
+#: scanner/models.py:51
+msgid "Index de la webcam (0, 1, ...) si présente"
+msgstr ""
+
+#: scanner/models.py:52
+msgid "Qualité JPEG"
+msgstr ""
+
+#: scanner/models.py:52
+msgid "Qualité JPEG (1-100) pour les images exportées"
+msgstr ""
+
+#: scanner/models.py:53
+msgid "Qualité JPEG pour les vidéos"
+msgstr ""
+
+#: scanner/models.py:53
+msgid "Qualité JPEG (1-100) pour les images extraites des vidéos"
+msgstr ""
+
+#: scanner/models.py:54
+msgid "Fréquence vidéos (fps)"
+msgstr ""
+
+#: scanner/models.py:54
+msgid "Fréquence d'extraction des images des vidéos (images par seconde)"
+msgstr ""
+
+#: scanner/models.py:55
+msgid "Largeur de capture vidéo"
+msgstr ""
+
+#: scanner/models.py:55
+msgid "Largeur de capture vidéo en pixels"
+msgstr ""
+
+#: scanner/models.py:56
+msgid "Hauteur de capture vidéo"
+msgstr ""
+
+#: scanner/models.py:56
+msgid "Hauteur de capture vidéo en pixels"
+msgstr ""
+
+#: scanner/models.py:58
+msgid "Rayon de découpe pour la calibration"
+msgstr ""
+
+#: scanner/models.py:58
+msgid "Rayon en pixels pour découper les images de calibration en px"
+msgstr ""
+
+#: scanner/models.py:59
+msgid "Multi-puits de calibration par défaut"
+msgstr ""
+
+#: scanner/models.py:59
+msgid "Position du multi-puits de calibration par défaut"
+msgstr ""
+
+#: scanner/models.py:60
+msgid "Vitesse de calibration"
+msgstr ""
+
+#: scanner/models.py:60
+msgid "Vitesse de déplacement pour la calibration en mm/mn"
+msgstr ""
+
+#: scanner/models.py:61
+msgid "Pas de calibration"
+msgstr ""
+
+#: scanner/models.py:61
+msgid "Pas de déplacement pour la calibration en mm"
+msgstr ""
+
+#: scanner/models.py:62
+msgid "Duruée calibration"
+msgstr ""
+
+#: scanner/models.py:62
+msgid "Durée de pose entre chaque puits en s"
+msgstr ""
+
+#: scanner/models.py:63
+msgid "Actif"
+msgstr ""
+
+#: scanner/models.py:67
+msgid "Configuration"
+msgstr ""
+
+#: scanner/models.py:75
+msgid "Nom"
+msgstr ""
+
+#: scanner/models.py:75
+msgid "Nom du puit: Ai..Di"
+msgstr ""
+
+#: scanner/models.py:79 scanner/models.py:155
+msgid "Puit"
+msgstr ""
+
+#: scanner/models.py:80
+msgid "Puits"
+msgstr ""
+
+#: scanner/models.py:87
+msgid "Label"
+msgstr ""
+
+#: scanner/models.py:87
+msgid "Label du multi-puit"
+msgstr ""
+
+#: scanner/models.py:89
+msgid "Position"
+msgstr ""
+
+#: scanner/models.py:89
+msgid "Position du multi-puits sur la table"
+msgstr ""
+
+#: scanner/models.py:90
+msgid "Par défaut"
+msgstr ""
+
+#: scanner/models.py:90
+msgid "Multi-puit par défaut"
+msgstr ""
+
+#: scanner/models.py:92
+msgid "Colonnes"
+msgstr ""
+
+#: scanner/models.py:92
+msgid "Nombre de colonnes"
+msgstr ""
+
+#: scanner/models.py:93
+msgid "Lignes"
+msgstr ""
+
+#: scanner/models.py:93
+msgid "Nombre de lignes"
+msgstr ""
+
+#: scanner/models.py:94
+msgid "Diamètre"
+msgstr ""
+
+#: scanner/models.py:94
+msgid "Diamètre des tubes en mm"
+msgstr ""
+
+#: scanner/models.py:96
+msgid "Définition"
+msgstr ""
+
+#: scanner/models.py:96
+msgid "Définition des lignes"
+msgstr ""
+
+#: scanner/models.py:97
+msgid "Ordre ligne"
+msgstr ""
+
+#: scanner/models.py:97
+msgid "Ordre ligne de puit. Lecture en serpentin dans le sens des +- X"
+msgstr ""
+
+#: scanner/models.py:99 scanner/models.py:158
+msgid "Ordre"
+msgstr ""
+
+#: scanner/models.py:99
+msgid "Ordre de lecture du multi-puit"
+msgstr ""
+
+#: scanner/models.py:100 scanner/templates/scanner/calibration.html:54
+msgid "Durée"
+msgstr ""
+
+#: scanner/models.py:100
+msgid "Durée du film en secondes"
+msgstr ""
+
+#: scanner/models.py:101
+msgid "Origine X"
+msgstr ""
+
+#: scanner/models.py:101
+msgid "Base origine X en mm"
+msgstr ""
+
+#: scanner/models.py:102
+msgid "Origine Y"
+msgstr ""
+
+#: scanner/models.py:102
+msgid "Base origine Y en mm"
+msgstr ""
+
+#: scanner/models.py:104
+msgid "Pas X"
+msgstr ""
+
+#: scanner/models.py:104
+msgid "Pas ou interval sur X en mm"
+msgstr ""
+
+#: scanner/models.py:105
+msgid "Pas Y"
+msgstr ""
+
+#: scanner/models.py:105
+msgid "Pas ou interval sur Y en mm"
+msgstr ""
+
+#: scanner/models.py:106 scanner/templates/scanner/calibration.html:23
+msgid "Vitesse"
+msgstr ""
+
+#: scanner/models.py:106
+msgid "Vitesse déplacement en mm/mn "
+msgstr ""
+
+#: scanner/models.py:108
+msgid "Positions"
+msgstr ""
+
+#: scanner/models.py:108
+msgid "Positions des puits générées ?"
+msgstr ""
+
+#: scanner/models.py:109 scanner/models.py:246 scanner/models.py:276
+msgid "Active"
+msgstr ""
+
+#: scanner/models.py:145 scanner/models.py:146 scanner/models.py:156
+#: scanner/models.py:206
+msgid "Multi-puits"
+msgstr ""
+
+#: scanner/models.py:158
+msgid "Ordre de lecture du puit"
+msgstr ""
+
+#: scanner/models.py:159
+msgid "X"
+msgstr ""
+
+#: scanner/models.py:159
+msgid "Axe X en mm"
+msgstr ""
+
+#: scanner/models.py:160
+msgid "Y"
+msgstr ""
+
+#: scanner/models.py:160
+msgid "Axe Y en mm"
+msgstr ""
+
+#: scanner/models.py:166
+msgid "Position d'un puit"
+msgstr ""
+
+#: scanner/models.py:167
+msgid "Position des puits"
+msgstr ""
+
+#: scanner/models.py:203
+msgid "Titre de l'observation"
+msgstr ""
+
+#: scanner/models.py:204
+msgid "Commentaires"
+msgstr ""
+
+#: scanner/models.py:204
+msgid "Descriptions de l'observations"
+msgstr ""
+
+#: scanner/models.py:207 scanner/models.py:250
+msgid "Date de création"
+msgstr ""
+
+#: scanner/models.py:208
+msgid "Date de début"
+msgstr ""
+
+#: scanner/models.py:209 scanner/models.py:251
+msgid "Date de fin"
+msgstr ""
+
+#: scanner/models.py:213 scanner/models.py:341
+msgid "Observation"
+msgstr ""
+
+#: scanner/models.py:214
+msgid "Observations"
+msgstr ""
+
+#: scanner/models.py:229
+msgid "Observation multi-puits détail"
+msgstr ""
+
+#: scanner/models.py:230
+msgid "Observations multi-puits détails"
+msgstr ""
+
+#: scanner/models.py:239
+msgid "En attente"
+msgstr ""
+
+#: scanner/models.py:240
+msgid "En cours"
+msgstr ""
+
+#: scanner/models.py:241
+msgid "Terminé"
+msgstr ""
+
+#: scanner/models.py:242
+msgid "Erreur"
+msgstr ""
+
+#: scanner/models.py:244
+msgid "Nom de la session"
+msgstr ""
+
+#: scanner/models.py:244
+msgid "Session d'observations. 4 Multi-puits maximum"
+msgstr ""
+
+#: scanner/models.py:247
+msgid "Date d'exportation"
+msgstr ""
+
+#: scanner/models.py:247
+msgid "Date d'exportation prévue"
+msgstr ""
+
+#: scanner/models.py:248
+msgid "Date du balayage"
+msgstr ""
+
+#: scanner/models.py:248
+msgid "Date du balayage prévue"
+msgstr ""
+
+#: scanner/models.py:253
+msgid "Status exportation"
+msgstr ""
+
+#: scanner/models.py:256
+msgid "Export médias"
+msgstr ""
+
+#: scanner/models.py:257
+msgid "Programmation de l'exportation des vidéos et images"
+msgstr ""
+
+#: scanner/models.py:259
+msgid "Exportation terminée à"
+msgstr ""
+
+#: scanner/models.py:261
+msgid "Status scanning"
+msgstr ""
+
+#: scanner/models.py:264 scanner/templates/scanner/main.html:35
+msgid "Lancer le balayage"
+msgstr ""
+
+#: scanner/models.py:265
+msgid "Programmation du lancement du balayage"
+msgstr ""
+
+#: scanner/models.py:267
+msgid "Balayage terminé à"
+msgstr ""
+
+#: scanner/models.py:272
+msgid "Session d'observation"
+msgstr ""
+
+#: scanner/models.py:273
+msgid "Sessions d'observation"
+msgstr ""
+
+#: scanner/models.py:276
+msgid "Terminée"
+msgstr ""
+
+#: scanner/models.py:340
+msgid "Session"
+msgstr ""
+
+#: scanner/models.py:362
+msgid "Session observations"
+msgstr ""
+
+#: scanner/models.py:363
+msgid "Sessions observations"
+msgstr ""
+
+#: scanner/process.py:331
+msgid "La session est nulle!..."
+msgstr ""
+
+#: scanner/templates/scanner/base.html:5
+msgid "Barre de côté"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:11
+msgid "Ecran plein"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:25
+msgid "Déconnexion"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:32
+msgid "Mémoire partagée"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:33
+msgid "Disque RAM"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:34
+msgid "Mémoire RAM"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:35
+msgid "Charge CPU"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:36
+msgid "Disque /"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:42
+msgid "Grille"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:70
+msgid "Administration"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:75
+msgid "Administration base de données"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:78
+msgid "Base de données Reductstore"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:81
+msgid "Base de données mariadb"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:84
+msgid "Portainer"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:87
+msgid "Supervisor"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:90
+msgid "Logs des planifications"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:93
+msgid "Logs des services"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:96 scanner/views.py:92
+msgid "Calibration"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:105 scanner/views.py:82
+msgid "Balayage multi-puits"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:108 scanner/views.py:132
+msgid "Gestionnaire d'images"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:111
+msgid "Redifusion vidéos"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:15
+msgid "Position multi-puit"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:36
+msgid "Pas"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:55
+msgid "Durée entre vidéos"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:83
+msgid "Définir la base (x, y) du multi-puit"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:84
+msgid "Définir base"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:99
+msgid "Sauvegarder la position du puit courant"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:120
+msgid "Précéd."
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:124
+msgid "Centrer manuellement"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:125
+msgid "Centrer"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:130
+msgid "Suivant"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:135
+msgid "Centrage auto et sauvegarde des positions"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:136
+msgid "Calibrage auto"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:146
+msgid "Aller à la base"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:151
+msgid "Debug"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:156
+#: scanner/templates/scanner/main.html:31
+msgid "Axes"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:161
+#: scanner/templates/scanner/main.html:32
+msgid "Recadrer"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:165
+msgid "Rayon"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:166
+msgid "Rayon du recadrement"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:167
+msgid "Rayon de cadrage"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:171
+msgid "Tester le cirduit"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:174
+#: scanner/templates/scanner/main.html:37
+msgid "ARRET"
+msgstr ""
+
+#: scanner/templates/scanner/images.html:9
+#: scanner/templates/scanner/replay.html:10
+msgid "Retour accueil"
+msgstr ""
+
+#: scanner/templates/scanner/images.html:13
+#: scanner/templates/scanner/replay.html:14
+msgid "Session d'observations"
+msgstr ""
+
+#: scanner/templates/scanner/images.html:26
+msgid "Exporter l'ensemble des images"
+msgstr ""
+
+#: scanner/templates/scanner/images.html:43
+msgid "Télécharger"
+msgstr ""
+
+#: scanner/templates/scanner/main.html:15
+msgid "Choix de la session"
+msgstr ""
+
+#: scanner/templates/scanner/replay.html:27
+msgid "Exporter l'ensemble des vidéos"
+msgstr ""
+
+#: scanner/views.py:174
+msgid "Gestionnaire de vidéos"
 msgstr ""
 
 #: templates/admin/base_site.html:4

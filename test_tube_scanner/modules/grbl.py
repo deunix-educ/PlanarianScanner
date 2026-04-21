@@ -12,7 +12,7 @@ import logging
 import serial
 import time
 import threading
-from typing import Optional
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -194,7 +194,7 @@ class GRBLController:
         x, y = self.get_mpos()  # Position actuelle
         self.move_to(x + dx, y + dy, feed=feed)
         
-    def move_relative_(self, dx=0, dy=0, feed=1000):
+    def move_relative__(self, dx=0, dy=0, feed=1000):
         self.send("G91")  # Mode relatif
         cmd = f"G0 X{dx} Y{dy} F{feed}"
         self.send(cmd)

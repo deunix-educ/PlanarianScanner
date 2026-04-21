@@ -40,8 +40,8 @@ class VideoFileCapture(VideoCaptureInterface):
         height: Optional[int] = None,
         video_lists = [],
         use_tracking: bool = False,
-        px_per_mm: float = 2.1,
         display = None,
+        parent = None,
     ):
         """
         :param video_file:   fichier video
@@ -50,7 +50,7 @@ class VideoFileCapture(VideoCaptureInterface):
         :param width:         Largeur souhaitée (None = valeur par défaut du pilote)
         :param height:        Hauteur souhaitée (None = valeur par défaut du pilote)
         """
-        super().__init__(fps=fps, use_tracking=use_tracking, px_per_mm=px_per_mm, display=display)
+        super().__init__(fps=fps, use_tracking=use_tracking, display=display, parent=parent)
         self._video_file: str = video_file
         self._jpeg_quality: int = jpeg_quality
         self._width: Optional[int] = width
