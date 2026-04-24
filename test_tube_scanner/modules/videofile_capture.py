@@ -119,7 +119,6 @@ class VideoFileCapture(VideoCaptureInterface):
             self.close()
             self.open()
             self._error_occured = False
-            
 
         if not self._cap or not self._cap.isOpened():
             raise CaptureError("Le fichier n'est pas ouvert")

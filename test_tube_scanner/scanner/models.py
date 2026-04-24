@@ -78,6 +78,7 @@ class Well(models.Model):
         ordering = ['name', ]
         verbose_name = _("Puit")
         verbose_name_plural = _("Puits")
+        
 
     def __str__(self):
         return f'{self.name}'

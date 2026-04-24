@@ -148,7 +148,6 @@ class ScannerProcess(Task):
         self.cam = None
         self.grbl = None
         self.crop = None
-        #self.multiwel = None
         self.conf = None
         self.record_queue = Queue()
         self.data = ProcessData()
@@ -179,27 +178,23 @@ class ScannerProcess(Task):
                     
             self.crop = self.set_crop_radius(self.crop_radius)
             if settings.TEST_VIDEOFILE:
+                video_lists = []
+                wells = models.Well.objects.all()
+                for wl in wells:
+                    video_lists.append(str( settings.MEDIA_ROOT / 'simulation' / f'{wl.name}.mp4') )
+                
                 from modules.videofile_capture import VideoFileCapture
                 self.cam = VideoFileCapture(
-                    video_file=settings.MEDIA_ROOT / 'simulation' / 'part4-5fps.mp4',
+                    video_file=settings.MEDIA_ROOT / 'simulation' / 'A1.mp4',
                     fps=self.video_fps,
                     width=self.video_width,
                     height=self.video_height,
                     jpeg_quality=self.video_quality,
                     use_tracking=self.use_tracking,
                     display=self._display,
-                    video_lists=[],
                     parent=self,
-                )
-                '''
-                    settings.MEDIA_ROOT / 'simulation' / 'part1-5fps.mp4',
-                    settings.MEDIA_ROOT / 'simulation' / 'part2-5fps.mp4',
-                    settings.MEDIA_ROOT / 'simulation' / 'part3-5fps.mp4',
-                    settings.MEDIA_ROOT / 'simulation' / 'part4-5fps.mp4',
-                    settings.MEDIA_ROOT / 'simulation' / 'part5-5fps.mp4',
-                ]
-                )
-                '''               
+                    video_lists=video_lists,
+                )           
             elif not self.conf.use_rpicam:
                 from modules.webcam_capture import WebcamCapture
                 self.cam = WebcamCapture(
@@ -312,6 +307,7 @@ class ScannerProcess(Task):
             pubsub.subscribe(self.group)
             #self._init_grbl()
             self.manager = MultiWellManager(process=self)
+            self.manager.set_calib_debug(False)
             
             for message in pubsub.listen():
                 try:
