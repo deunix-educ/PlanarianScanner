@@ -228,6 +228,12 @@ class ScannerProcess(Task):
             self.cam._active_median = False
             self.cam.set_circular_crop(None)
             
+            self.grbl = grbl.GRBLController(
+                send_callback=self._display, 
+                x_max=self.conf.grbl_xmax, 
+                y_max=self.conf.grbl_ymax
+            )
+
             self.stop_event.clear()
             self.start_services()
         except Exception as e:
@@ -248,6 +254,7 @@ class ScannerProcess(Task):
     def start_services(self):
         Thread(target=self._listen_to_redis, daemon=True).start()
         Thread(target=self._recording, daemon=True).start()
+        Thread(target=self._init_grbl, daemon=True).start()
         self.cam.start()
 
     def _send(self, **payload):
@@ -288,21 +295,22 @@ class ScannerProcess(Task):
             except Exception as e:
                 logger.error(f'recorder: {e}')
 
+
     def _init_grbl(self, feed=1000):
-        self.grbl = grbl.GRBLController(
-            send_callback=self._display, 
-            x_max=self.conf.grbl_xmax, 
-            y_max=self.conf.grbl_ymax
-        )
+        logger.info(f"==== GRBLController try to start connection!")
+        self.grbl.start_connection()
+        self._send(state='serial', msg=f"Connected {self.grbl.port}")        
+        
         self.grbl.go_origin(feed=feed)
         self.grbl.wait_for(2.0)
+
 
     def _listen_to_redis(self):
         try:
             logger.info(f"==== Scanner {self.group}: listen via redisDB")
             pubsub = redisDB.pubsub()
             pubsub.subscribe(self.group)
-            self._init_grbl()
+            #self._init_grbl()
             self.manager = MultiWellManager(process=self)
             
             for message in pubsub.listen():

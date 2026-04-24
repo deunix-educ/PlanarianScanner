@@ -29,7 +29,9 @@ class GRBLController:
     Y_MIN = 0
 
     def __init__(self, port='/dev/ttyUSB0', baudrate=115200, timeout=1, send_callback=None, x_max=None, y_max=None):
-        self.lock = threading.Lock()
+        logger.info(f"GRBLController::init begin {port} device port")
+        
+        #self.lock = threading.Lock()
         self.port = port
         self.baudrate = baudrate
         self.timeout = timeout
@@ -44,9 +46,8 @@ class GRBLController:
             self._state = self._send_msg
 
         self.x, self.y = 0, 0
-        self.start_connection()
-        self._wake_up()
-        self._init_machine()
+        
+        #self.start_connection()
 
     def wait_for(self, delay=1.0):
         threading.Event().wait(delay*1.0)
@@ -57,7 +58,7 @@ class GRBLController:
     def clear_buffer(self):
         while self.ser.in_waiting >0:
             msg = self.ser.readline().decode().strip()
-            print(f"Buffer: {msg}")
+            logger.info(f"Buffer: {msg}")
             self._state(state='serial', msg=msg)
 
     def start_connection(self):
@@ -69,9 +70,14 @@ class GRBLController:
                 self.ser.setDTR(False)
                 self.ser.setRTS(False)
                 self.clear_buffer()
+                
+                self._wake_up()
+                self._init_machine()
+                logger.info(f"GRBLController::start_connexion started {self.port}")
                 break
             except Exception as e:
-                print(f"Erreur de connexion (essai {n}): {e}")
+                logger.error(f"GRBLController::start_connexion (essai {n}): {e}")
+                self._state(state='error', msg=f"{e}")
                 n += 1
                 self.wait_for(1.0)
 
@@ -100,12 +106,6 @@ class GRBLController:
             self._state(state='error', msg=f"Error send {cmd} command: {e}")
             self.close()
             self.start_connection()
-            self._wake_up()
-            self._init_machine()
-            '''
-            self.recover()
-            self.reset_grbl()
-            raise'''
 
     def recover(self):
         #print("Récupération de GRBL...")
