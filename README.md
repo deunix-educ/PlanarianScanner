@@ -97,33 +97,30 @@ ssh rpi4@ip.du.raspi
 git clone https://github.com/votre-repo/planarianscanner.git
 git@github.com:deunix-educ/PlanarianScanner.git
 
-cd PlanarianScanner/etc
-chmod +x *.sh
-
-# compilation reductstore 15 mn sur le raspberry pi4
-./cargo-reductstore-install.sh
-
-# installation des librairies systèmes
-./install-sys.sh
-
-> samba configuration  à venir.
-
-# Configuration des applications Django
-cd ../test-tube-scanner
-
+# modifier les variables d'environnement si besoin
 cp .env.example .env
 # Éditer .env : SECRET_KEY, REDIS_URL, REDUCTSTORE_URL, ... 
 
-./manage.py migrate
-Si besoin:
-./manage.py makemigrations
-./manage.py migrate
+cd PlanarianScanner/etc
+chmod +x *.sh
 
-# créer superadmin et tables 
-./manage.py init_data
-./manage.py loaddata ../etc/scanner_configuration.json
-./manage.py loaddata ../etc/well.json
-./manage.py loaddata ../etc/multiwell.json
+# installation des librairies systèmes
+./1-install-sys.sh
+
+# compilation reductstore 15 mn sur le raspberry pi4
+./2-cargo-reductstore-install.sh
+
+# installation samba cliennt
+./3-install-samba-client.sh
+
+# installation de mariadb
+./4-install_mariadb.sh
+
+# installation de mariadb
+./5-install_adminer.sh
+
+# Configuration des applications Django
+./6-install_django_app.sh
 
 # tester
 sudo supervisorctl stop test_tube:*
