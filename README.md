@@ -138,7 +138,6 @@ sudo supervisorctl restart test_tube:*
 
 ```
 
-
 Démarrage des services :
 
 ```bash
