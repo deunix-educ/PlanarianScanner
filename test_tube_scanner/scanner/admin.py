@@ -7,7 +7,7 @@ class WellAdmin(admin.ModelAdmin):
     list_display = ('name', 'author',)
 
 class ConfigurationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'author', 'use_rpicam', 'video_width_capture', 'video_height_capture', 'video_frame_rate', 'px_per_mm', 'active',)
+    list_display = ('name', 'author', 'use_rpicam', 'video_width_capture', 'video_height_capture', 'video_frame_rate', 'active',)
 
 class MultiWellAdmin(admin.ModelAdmin):
     list_filter = ('author', )

@@ -11,7 +11,7 @@ echo "==== system essential"
 sudo apt -y install build-essential openssl git pkg-config redis supervisor sqlitebrowser samba-client cifs-utils gettext
 
 echo "==== python3 install"
-sudo apt -y install python3-dev python3-pip python3-venv default-libmysqlclient-dev libmariadb-dev libpq-dev python3-picamera2
+sudo apt -y install python3-dev python3-pip python3-venv libpq-dev default-libmysqlclient-dev libmariadb-dev python3-picamera2
 
 echo "==== supervisor http access login:pass => root:toor"
 sudo cp supervisor-inet_http.conf /etc/supervisor/conf.d/

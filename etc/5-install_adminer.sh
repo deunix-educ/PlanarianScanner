@@ -1,0 +1,81 @@
+#!/bin/bash
+
+# Script d'installation d'Adminer avec Nginx (sans Apache) + détection automatique de PHP
+
+# Mise à jour des paquets
+echo "[1/6] Mise à jour des paquets..."
+sudo apt update && sudo apt upgrade -y
+
+# Installation de Nginx et PHP-FPM (avec détection de la version de PHP)
+echo "[2/6] Installation de Nginx et PHP-FPM..."
+sudo apt install -y nginx
+
+# Détection de la version de PHP installée (ou installation si absente)
+PHP_VERSION=$(ls /etc/php/ | grep -E '^[0-9]+\.[0-9]+$' | sort -V | tail -n 1)
+if [ -z "$PHP_VERSION" ]; then
+    echo "Aucune version de PHP détectée. Installation de PHP 8.2 par défaut..."
+    sudo apt install -y php8.2 php8.2-fpm php8.2-mysql
+    PHP_VERSION="8.2"
+else
+    echo "Version de PHP détectée : $PHP_VERSION"
+    sudo apt install -y "php$PHP_VERSION" "php$PHP_VERSION-fpm" "php$PHP_VERSION-mysql"
+fi
+
+# Téléchargement de la dernière version stable d'Adminer
+echo "[3/6] Téléchargement de la dernière version d'Adminer..."
+ADMINER_VERSION=$(curl -s https://api.github.com/repos/vrana/adminer/releases/latest | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+sudo mkdir -p /var/www/adminer
+sudo wget "https://github.com/vrana/adminer/releases/download/v$ADMINER_VERSION/adminer-$ADMINER_VERSION.php" -O /var/www/adminer/index.php
+
+# Configuration de Nginx pour Adminer
+echo "[4/6] Configuration de Nginx..."
+sudo bash -c "
+cat > /etc/nginx/sites-available/adminer <<'END'
+server {
+    listen 81;
+    server_name scanner.local;
+
+    root /var/www/adminer;
+    index index.php;
+
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php${PHP_VERSION}-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+END"
+
+# Activation du site Nginx
+sudo ln -s /etc/nginx/sites-available/adminer /etc/nginx/sites-enabled/
+sudo nginx -t  # Teste la configuration Nginx
+
+# Redémarrage des services
+echo "[5/6] Redémarrage de Nginx et PHP-FPM..."
+sudo systemctl restart nginx "php${PHP_VERSION}-fpm"
+sudo systemctl enable nginx "php${PHP_VERSION}-fpm"
+
+# Ajout de l'entrée dans /etc/hosts (optionnel)
+echo "[6/6] Ajout de 'scanner.local' dans /etc/hosts..."
+echo "$(hostname -I | awk '{print $1}') scanner.local" | sudo tee -a /etc/hosts
+
+# Affichage des informations
+echo ""
+echo "=== Installation terminée ==="
+echo "Adminer est accessible à l'adresse : http://scanner.local:81"
+echo "ou via l'IP locale : http://$(hostname -I | awk '{print $1}'):81"
+echo "Version d'Adminer installée : $ADMINER_VERSION"
+echo "Version de PHP utilisée : $PHP_VERSION"
+echo "Ajouter 'scanner.local' au fichier hosts:"
+echo "    linux  : /etc/hosts"
+echo "    windows: C:\Windows\System32\drivers\etc\hosts"
+echo ""
+echo "Pour accéder à Adminer depuis cette machine:"
+echo "  http://scanner.local:81"
+echo "ou"
+echo "  http://$(hostname -I | awk '{print $1}')"

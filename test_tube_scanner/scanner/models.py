@@ -44,8 +44,7 @@ class Configuration(models.Model):
     # Grbl configuration
     grbl_xmax = models.FloatField(_("Grbl Xmax"), help_text=_("CNC Grbl Xmax en mm"), blank=False, default=350.0)
     grbl_ymax = models.FloatField(_("Grbl Ymax"), help_text=_("CNC Grbl Ymax en mm"), blank=False, default=250.0)
-    px_per_mm = models.FloatField(_("Pixel / mm"), help_text=_('Rapport pixel / déplacement en pixel/mm'), blank=False, default=2.5)
-    
+
     # camera configuration
     use_rpicam = models.BooleanField(_("Utiliser rpicam"), help_text=_("Par défaaut. Sinon USB webcam"), default=True)
     webcam_device_index = models.PositiveSmallIntegerField(_("Index de la webcam"), help_text=_("Index de la webcam (0, 1, ...) si présente"), default=2)
@@ -106,7 +105,7 @@ class MultiWell(models.Model):
     dy = models.FloatField(_("Pas Y"), help_text=_('Pas ou interval sur Y en mm'), blank=False, default=19.5)
     feed = models.PositiveIntegerField(_("Vitesse"), help_text=_('Vitesse déplacement en mm/mn '), blank=False, default=1000)
     
-    well_position = models.BooleanField(_("Positions"), help_text=_('Positions des puits générées ?'), default=False)
+    well_position = models.BooleanField(_("Positions"), help_text=_('Positions des puits générées ?. Non => efface WellPostion et recalcule les positions'), default=False)
     active = models.BooleanField(_("Active"), default=True)
     
 
