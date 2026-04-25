@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Script d'installation d'Adminer avec Nginx (sans Apache) + détection automatique de PHP
-
 # Mise à jour des paquets
 echo "[1/6] Mise à jour des paquets..."
 sudo apt update && sudo apt upgrade -y

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Script d'installation et de configuration d'un serveur Samba sur Debian Trixie
-
 # Mise à jour des paquets
 echo "[1/6] Mise à jour des paquets..."
 apt update && apt upgrade -y

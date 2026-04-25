@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Script d'installation et de configuration d'un client Samba sur Raspberry Pi 4 (Debian Trixie)
-
 # Mise à jour des paquets
 echo "[1/5] Mise à jour des paquets..."
 sudo apt update && sudo apt upgrade -y

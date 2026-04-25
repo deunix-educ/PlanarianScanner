@@ -19,3 +19,4 @@ opencv-python-headless
 mysqlclient
 psycopg2
 pyserial
+

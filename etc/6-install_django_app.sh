@@ -4,7 +4,6 @@
 # Mise à jour des paquets
 echo "installation de l'application django ..."
 echo
-
 ETC="$(pwd)"
 APP_DIR=" ../test_tube_scanner"
 

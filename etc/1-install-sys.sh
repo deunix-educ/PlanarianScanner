@@ -2,7 +2,6 @@
 
 echo "==== System installation for rpi"
 echo
-
 sudo apt update
 sudo apt upgrade
 

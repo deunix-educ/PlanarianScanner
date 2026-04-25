@@ -1,4 +1,3 @@
-#
 # process.py
 import os
 os.environ['OPENCV_LOG_LEVEL']="0"

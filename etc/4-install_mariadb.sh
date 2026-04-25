@@ -3,7 +3,6 @@
 # Script d'installation et de configuration de MariaDB
 # Utilisation : source mariadb_config.sh && ./install_mariadb.sh
 
-
 ENV_FILE="../test_tube_scanner/.env"
 source $ENV_FILE
 
