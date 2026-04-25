@@ -18,7 +18,6 @@ l'acquisition automatisée d'images sur une grille de **6×4 puits × 4 plaques*
 le stockage haute performance des captures, et leur export vers des machines
 d'analyse distantes.
 
-
 ---
 
 ## Matériel
