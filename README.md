@@ -91,6 +91,7 @@ Avec piImager installez PI OS 64-bits Trixie sur le raspberry pi4.<br>
 Personnalisez votre raspberry avec au moins ssh (sshkey ou password)<br>
 Plus tard, par commodité vous installerez VNC server
 
+
 ```bash
 ssh rpi4@ip.du.raspi
 
