@@ -50,7 +50,7 @@ def admin_view(request):
 
 @login_required
 def reductstore_view(request):
-    return render(request, "scanner/iframe.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:8383/'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:8383/'))
 
 @login_required
 def adminer_view(request):
@@ -62,15 +62,15 @@ def portainer_view(request):
 
 @login_required
 def supervisor_view(request):
-    return render(request, "scanner/iframe.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/'))
 
 @login_required
 def supervisor_worker(request):
-    return render(request, "scanner/iframe.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/logtail/test_tube:services'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/logtail/test_tube:services'))
 
 @login_required
 def supervisor_scheduler(request):
-    return render(request, "scanner/iframe.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/logtail/test_tube:planification'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/logtail/test_tube:planification'))
 
 ## Mainboard
 @login_required

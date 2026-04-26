@@ -138,9 +138,8 @@ class CameraRecordManager():
 
 class ScannerProcess(Task):
 
-    def __init__(self, use_tracking=False):
+    def __init__(self):
         super().__init__()
-        self.use_tracking = use_tracking
         self.channel_layer = get_channel_layer()
         self.group = f'scanner_proc'
         self.stop_event = Event()
@@ -162,6 +161,7 @@ class ScannerProcess(Task):
     def start(self, *args, **kwargs):
         try:
             self.conf = models.Configuration.objects.filter(active=True).first()
+            self.use_tracking = self.conf.tracking
             
             self.video_quality = self.conf.video_jpeg_quality
             self.image_quality = self.conf.image_quality
@@ -176,7 +176,9 @@ class ScannerProcess(Task):
             self.grbl_ymax = self.conf.grbl_ymax
                     
             self.crop = self.set_crop_radius(self.crop_radius)
-            if settings.TEST_VIDEOFILE:
+            
+            capture_type = self.conf.capture_type
+            if capture_type == 'file':
                 video_lists = []
                 wells = models.Well.objects.all()
                 for wl in wells:
@@ -194,7 +196,7 @@ class ScannerProcess(Task):
                     parent=self,
                     video_lists=video_lists,
                 )           
-            elif not self.conf.use_rpicam:
+            elif capture_type == 'webcam':
                 from modules.webcam_capture import WebcamCapture
                 self.cam = WebcamCapture(
                     device_index=self.conf.webcam_device_index,
@@ -275,6 +277,7 @@ class ScannerProcess(Task):
             try:
                 (uuid, ts, frame, metrics) = self.record_queue.get()
                 labels = dict(fps=self.video_fps, session=self.data.session, detected="1" if metrics.get("detected") else "0")
+                
                 if metrics.get("detected"):
                     labels.update({
                         "cx"          : str(metrics["cx"]),
@@ -283,7 +286,8 @@ class ScannerProcess(Task):
                         "speed_px_s"  : str(metrics["speed_px_s"]),
                         "axial_pos"   : str(metrics["axial_pos"]),
                         "axial_speed" : str(metrics["axial_speed"]),
-                    })                
+                    })    
+                                
                 self.recordDB.write(uuid, frame, labels, ts=ts)
                 self.record_queue.task_done()
             except Exception as e:

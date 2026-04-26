@@ -14,12 +14,12 @@ from django.contrib.auth.models import User
 
 # Multi-well positions on the table for calibration and observation
 MULTIWELL_POSITION = [
-    ('HG', _("Haut gauche")),
-    ('HD', _("Haut droit")),
-    ('BG', _("Bas gauche")),
-    ('BD', _("Bas droit")),
-    ('BM', _("Bas milieu")),
-    ('HM', _("Haut milieu")),
+    ('HG', _("HG-Haut gauche")),
+    ('HD', _("HD-Haut droit")),
+    ('BG', _("BG-Bas gauche")),
+    ('BD', _("BD-Bas droit")),
+    ('BM', _("BM-Bas milieu")),
+    ('HM', _("HM-Haut milieu")),
 ]
 
 FOURCC_FORMAT = [
@@ -30,6 +30,12 @@ FOURCC_FORMAT = [
 VIDEO_TYPE = [
     ('mp4', _("MP4")),
     ('avi', _("AVI")),
+]
+
+CAPTURE_TYPE = [
+    ('rpi', _("Arducam")),
+    ('webcam', _("Webcam")),
+    ('file', _("mp4")),
 ]
 
 class Configuration(models.Model):
@@ -44,10 +50,10 @@ class Configuration(models.Model):
     # Grbl configuration
     grbl_xmax = models.FloatField(_("Grbl Xmax"), help_text=_("CNC Grbl Xmax en mm"), blank=False, default=350.0)
     grbl_ymax = models.FloatField(_("Grbl Ymax"), help_text=_("CNC Grbl Ymax en mm"), blank=False, default=250.0)
-    
-
     # camera configuration
     use_rpicam = models.BooleanField(_("Utiliser rpicam"), help_text=_("Par défaaut. Sinon USB webcam"), default=True)
+    capture_type = models.CharField(_("Capture"), help_text=_("Type de capture"), default='rpi', max_length=8, choices=CAPTURE_TYPE, null=True, blank=False)
+    
     webcam_device_index = models.PositiveSmallIntegerField(_("Index de la webcam"), help_text=_("Index de la webcam (0, 1, ...) si présente"), default=2)
     image_quality = models.PositiveSmallIntegerField(_("Qualité JPEG"), help_text=_("Qualité JPEG (1-100) pour les images exportées"), default=90)
     video_jpeg_quality = models.PositiveSmallIntegerField(_("Qualité JPEG pour les vidéos"), help_text=_("Qualité JPEG (1-100) pour les images extraites des vidéos"), default=90)
@@ -60,6 +66,10 @@ class Configuration(models.Model):
     calibration_default_feed = models.PositiveIntegerField(_("Vitesse de calibration"), help_text=_("Vitesse de déplacement pour la calibration en mm/mn"), default=1000)
     calibration_default_step = models.FloatField(_("Pas de calibration"), help_text=_("Pas de déplacement pour la calibration en mm"), default=1.0)
     calibration_default_duration = models.FloatField(_("Duruée calibration"), help_text=_("Durée de pose entre chaque puits en s"), default=3.0)
+    # tracking
+    tracking = models.BooleanField(_("Suivi"), help_text=_("Suivi et analyse des planaires"), default=False)
+    
+    #
     active = models.BooleanField(_("Actif"), default=False)
 
     class Meta:

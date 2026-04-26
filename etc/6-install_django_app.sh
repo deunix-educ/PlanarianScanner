@@ -30,6 +30,7 @@ echo "---- Tables ..."
 ./manage.py loaddata $ETC/db/configuration.json 
 ./manage.py loaddata $ETC/db/well.json 
 ./manage.py loaddata $ETC/db/multiwell.json 
+./manage.py reset_all_well_position --all True
 
 echo "---- start test_tube:*"
 echo

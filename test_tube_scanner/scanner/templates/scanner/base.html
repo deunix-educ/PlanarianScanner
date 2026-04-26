@@ -74,7 +74,7 @@
 		        <a href="{% url 'scanner:admin' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left">
 		            <i class="fa-solid fa-gear w3-text-pink"></i> {% trans "Administration base de données" %}
 		        </a>
-		        <a href="{% url 'scanner:reductstore' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left">
+		        <a href="{% url 'scanner:reductstore' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left" target="_blank">
 		            <img class="w3-no-padding" src="/static/img/reductstore.png" style="width: 24px"> {% trans "Base de données Reductstore" %}
 		        </a>
 		        <a href="{% url 'scanner:adminer' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left" target="_blank">
@@ -83,13 +83,13 @@
 		        <!--a href="{% url 'scanner:portainer' %}"  class="w3-bar-item w3-btn w3-hover-opacity" w3-margin-left target="_blank">
 		             <img class="w3-no-padding" src="/static/img/portainer.png" style="width: 28px"> {% trans "Portainer" %}
 		        </a-->
-                <a href="{% url 'scanner:supervisor' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left">
+                <a href="{% url 'scanner:supervisor' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left" target="_blank">
                      <i class="fa-solid fa-gears w3-text-purple"></i> {% trans "Supervisor" %}
                 </a>
-                <a href="{% url 'scanner:logs_scheduler' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left">
+                <a href="{% url 'scanner:logs_scheduler' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left" target="_blank">
                      <i class="fa-regular fa-file-lines w3-text-orange"></i> {% trans "Logs des planifications" %}
                 </a>   
-                <a href="{% url 'scanner:logs_worker' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left">
+                <a href="{% url 'scanner:logs_worker' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left" target="_blank">
                      <i class="fa-regular fa-file-lines w3-text-amber"></i> {% trans "Logs des services" %}
                 </a>                                             
 		    </div>
