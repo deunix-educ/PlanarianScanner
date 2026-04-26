@@ -111,13 +111,13 @@ chmod +x *.sh
 # compilation reductstore 15 mn sur le raspberry pi4
 ./2-cargo-reductstore-install.sh
 
-# installation samba cliennt
+# installation samba client
 ./3-install-samba-client.sh
 
 # installation de mariadb
 ./4-install_mariadb.sh
 
-# installation de mariadb
+# installation de adminer
 ./5-install_adminer.sh
 
 # Configuration des applications Django
@@ -181,17 +181,7 @@ PlanarianScanner/
 ## Procédure de calibration en 4 étapes
 1. Activer "Debug détection" → voir le cercle et les zones sur le stream
 
-2. Positionner la CNC manuellement sur un point stable
-   → cliquer "Calib — Point A"
-   → mpos_A et centre tube A enregistrés
-
-3. Déplacer la CNC manuellement d'une distance connue (ex: 10mm en X)
-   → attendre stabilisation (la pause 2s est déjà là)
-   → cliquer "Calib — Point B"
-
-4. Résultat affiché :
-   "Calibration OK — 38.2000 px/mm  (0.026178 mm/px)  Δ=10.000mm / 382.0px"
-   → px_per_mm sauvegardé dans TubeAligner et persisté en base
+suite à venir
 
 ## Contexte scientifique
 
