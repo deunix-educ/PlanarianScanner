@@ -192,9 +192,6 @@ ip.du.rasp.berry scanner.local
 - windows: C:\Windows\System32\drivers\etc\hosts
 - mac    : /private/etc/hosts"
 
-
-```
-
 ---
 
 ## Organisation du dépôt
