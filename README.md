@@ -219,11 +219,10 @@ PlanarianScanner/
 
 Calibration auto
 
-<video width="640" height="360" controls>
-  <source src="etc/calibration-auto.mp4" type="video/mp4">
-  Votre navigateur ne supporte pas les vidéos HTML5.
-</video>
-
+<iframe src="./calibration-auto.mp4"
+width="640" height="360" frameborder="0" 
+allow="autoplay; fullscreen" allowfullscreen>
+</iframe>
 
 
 
