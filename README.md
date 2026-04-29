@@ -1,5 +1,5 @@
 
-# ![Planaires](./logo.png) PlanarianScanner
+# ![Planaires](etc//logo.png) PlanarianScanner
 
 > Système d'imagerie automatisé pour le suivi comportemental de planaires
 
@@ -217,9 +217,14 @@ PlanarianScanner/
 ## Procédure de calibration en 4 étapes
 1. Activer "Debug détection" → voir le cercle et les zones sur le stream
 
-suite à venir https://www.linuxtarn.org/media/original_videos/calibration-auto.mp4
+Calibration auto
 
-[![Calibration auto ](./calibration-auto.jpg)](https://www.linuxtarn.org/media/original_videos/calibration-auto.mp4)
+<video width="640" height="360" controls>
+  <source src="etc/calibration-auto.mp4" type="video/mp4">
+  Votre navigateur ne supporte pas les vidéos HTML5.
+</video>
+
+
 
 
 ## Contexte scientifique
@@ -236,7 +241,7 @@ pour un grand nombre d'individus en parallèle, sans intervention humaine.
 
 ## Laboratoire
 
-Développé pour le **Laboratoire de Biologie de l'Université Champollion**, Albi.
+Développé par dd@linuxtarn.org pour le **Laboratoire de Biologie de l'Université Champollion**, Albi.
 
 ---
 
