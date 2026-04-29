@@ -222,7 +222,6 @@ PlanarianScanner/
 │   ├── scanner_service.conf
 │   └── supervisor-inet_http.conf
 ├── LICENSE
-├── logo.png
 ├── README.md
 └── test_tube_scanner
     ├── home
