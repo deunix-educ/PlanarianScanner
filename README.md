@@ -1,5 +1,5 @@
 
-# ![Planaires](etc/logo.png) PlanarianScanner
+# ![Planaires](./logo.png) PlanarianScanner
 
 > Système d'imagerie automatisé pour le suivi comportemental de planaires
 
