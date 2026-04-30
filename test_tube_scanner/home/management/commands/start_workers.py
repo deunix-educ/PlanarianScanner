@@ -7,7 +7,6 @@ from django.core.management.base import BaseCommand
 from scanner import tasks as scanner_tasks
 
 
-
 class Command(BaseCommand):
     help = "Démarre les tâches Celery."
 
@@ -18,9 +17,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):  # @UnusedVariable
         #task = options['task']
         try:
-
             scanner_tasks.scanner_start.delay()   # @UndefinedVariable
-            scanner_tasks.replay_start.delay()   # @UndefinedVariable
+            scanner_tasks.replay_start.delay()     # @UndefinedVariable
+       
         except Exception as e:
             print(e)
 

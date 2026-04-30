@@ -139,11 +139,12 @@ class CameraRecordManager():
 
 
 class ScannerProcess(Task):
-
+    name='scanner.scanner_process'
     def __init__(self):
         super().__init__()
+        
         self.channel_layer = get_channel_layer()
-        self.group = f'scanner_proc'
+        self.group = 'scanner_proc'
         self.stop_event = Event()
         self.cam = None
         self.grbl = None
@@ -162,6 +163,8 @@ class ScannerProcess(Task):
 
     def start(self, *args, **kwargs):
         try:
+            logger.warning("ScannerProcess==================", self.name)
+            
             self.conf = ScannerConstants().get()
             self.use_tracking = self.conf.tracking
             
@@ -234,6 +237,8 @@ class ScannerProcess(Task):
 
             self.stop_event.clear()
             self.start_services()
+            
+            return self.name
         except Exception as e:
             logger.error(f"Scanner started error: {e}")
             raise Ignore()
@@ -254,6 +259,7 @@ class ScannerProcess(Task):
         Thread(target=self._recording, daemon=True).start()
         Thread(target=self._init_grbl, daemon=True).start()
         self.cam.start()
+        logger.warning(f"Scanner services started ...")
 
     def _send(self, **payload):
         async_to_sync(self.channel_layer.group_send)(
@@ -335,6 +341,8 @@ class ScannerProcess(Task):
                             self.grbl.go_origin(feed=self.manager.feed)
 
                         elif topic == 'scan':
+                            
+                            logger.info(f"==== Scan {cmd}")
                             sid = cmd.get("session", '0')
                             if sid == "0":
                                 self._send(state='error', msg=str(_('La session est nulle!...')))

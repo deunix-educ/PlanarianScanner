@@ -24,6 +24,7 @@ class ScannerConsumer(AsyncWebsocketConsumer):
         logger.info( f"==== Disconnect from {self.this_group}")
 
     async def scanner_message(self, event):
+        logger.info( f"===={event.get('type')}")
         await self.send(text_data=json.dumps(event["text"]))
 
     ## Receive message from WebSocket
@@ -32,9 +33,6 @@ class ScannerConsumer(AsyncWebsocketConsumer):
         msg_type  = data.get("type")
         if msg_type in ["scanner", "calibrate"]:
             redisDB.publish(self.this_group, json.dumps(data))
-
-    async def replay_message(self, event):
-        await self.send(text_data=json.dumps(event["text"]))
 
 
 class ReplayConsumer(AsyncWebsocketConsumer):

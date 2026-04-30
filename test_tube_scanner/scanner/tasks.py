@@ -1,61 +1,76 @@
 # tasks.py
 import asyncio
+import json
+from asgiref.sync import async_to_sync  #, sync_to_async
+from channels.layers import get_channel_layer
 from celery import shared_task, group, chord, chain
 from celery.utils.log import get_task_logger
 from django.utils import timezone
 
-from .process import ScannerProcess, ReplayProcess
+from .process import ScannerProcess, ReplayProcess, redisDB
 from .export_tasks import shm_download_video, export_images_zip, export_video_mp4
 from .  import models
 
 logger = get_task_logger(__name__)
 
+
+SCANNER = 'scanner'
+REPLAY = 'replay'
+
 class ScannerTaskManager:
 
     def __init__(self):
-        self.scanner = None
-        self.replay = None
+        self.active_task = {}
 
     def start_scanner(self):
-        if self.scanner is None:
-            self.scanner = ScannerProcess()
-            self.scanner.start()
-
+        if SCANNER not in self.active_task:
+            scanner = ScannerProcess()        
+            scanner.start()  
+            self.active_task[SCANNER] = scanner
+            logger.warning(f"scanner {self.active_task[SCANNER]} running!...")        
+            
+        else:
+            logger.warning(f"scanner already running!...")
+            
+        logger.warning(f"scanner {self.active_task} ...")     
+        
     def stop_scanner(self):
-        if self.scanner:
-            self.scanner.stop()
+        if SCANNER in self.active_task:
+            self.active_task[SCANNER].stop()
+            del self.active_task[SCANNER]           
 
     def start_replay(self, latency=5.0):
-        if self.replay is None:
-            self.replay = ReplayProcess(latency=latency)
-            self.replay.start()
+        if REPLAY not in self.active_task:
+            replay = ReplayProcess(latency=latency)
+            replay.start()
+            self.active_task[REPLAY] = replay
+        else:
+            logger.warning(f"replay already running!...")     
+            
+        logger.warning(f"replay {self.active_task} ...")          
 
     def stop_replay(self):
-        if self.replay:
-            self.replay.stop()
+        if REPLAY in self.active_task:
+            self.active_task[REPLAY].stop()
+            del self.active_task[REPLAY]           
 
 
 task_manager = ScannerTaskManager()
 
-@shared_task(bind=True)
-def scanner_start(self):
-    task_manager.start_scanner()
+
+@shared_task()
+def scanner_start():
+    scanner = ScannerProcess()        
+    scanner.start()     
+    #task_manager.start_scanner()
     return f"Scanner démarré."
 
-#@shared_task(bind=True)
-#def scanner_stop(self):
-#    task_manager.stop_scanner()
-#    return f"Scanner arrêté."
-
-@shared_task(bind=True)
-def replay_start(self):
-    task_manager.start_replay()
+@shared_task
+def replay_start():
+    replay = ReplayProcess(latency=5.0)
+    replay.start()    
+    #task_manager.start_replay()
     return f"Replay démarré."
-
-#@shared_task(bind=True)
-#def replay_stop(self):
-#    task_manager.stop_replay()
-#    return f"Replay arrêté."
 
 @shared_task
 def download_video(uuid, start_ts, end_ts, frame_rate=10, opencv_fourcc_format='mp4v', opencv_video_type='mp4'):
@@ -200,11 +215,10 @@ def scanning(session_id: str):
     Scanning différé.
     """    
     try:
-        scanner = task_manager.scanner
-        scanner.cam.set_median(is_median=False)
-        scanner.cam.set_circular_crop(scanner.crop)
-        scanner.grbl.go_origin(feed=scanner.manager.feed)
-        scanner.manager.scan(scanner.grbl, session_id)
+        logger.warning("==== scanning session %s start", session_id)
+        group = 'scanner_proc'
+        data = { "type": "scanner", "topic": "scan", "session": session_id }
+        redisDB.publish(group, json.dumps(data))
     except Exception as e:
         logger.error(f"scanning session: {session_id} error {e}")
         return {"status": "error", "message": str(e)}
@@ -222,7 +236,7 @@ def run_scanning(self, session_id: str):
     session.scanning_status = models.Session.Status.RUNNING
     session.save(update_fields=["scanning_status"])
     chain(
-        scanning.s(session_id),
+        scanning.s(session_id), 
         on_scanning_done.s(session_id=session_id),
     ).apply_async()
 
@@ -243,4 +257,5 @@ def on_scanning_done(result: dict, session_id: str):
     session.scanning_finished_at = timezone.now()
     session.save(update_fields=["scanning_status", "scanning_finished_at"])
     
+    logger.info("==== Scanning done: session %s", session_id)
     

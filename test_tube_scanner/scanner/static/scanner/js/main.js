@@ -43,7 +43,7 @@ class ScannerManager {
             if (payload.xy)     { this.x.textContent=payload.x.toFixed(2); this.y.textContent=payload.y.toFixed(2); }
             if (payload.state)  { this.debug.insertAdjacentHTML('afterbegin', `<li>[ ${++this.debug_count} - ${payload.state} ]: ${payload.msg}</li>`); }
             if (payload.ts)     { this.ts.textContent = timestampToLocalISOString(payload.ts); }
-            if (payload.scan_state)   { this.scan_state.textContent=payload.scan_state;}
+            if (payload.scan_state) { this.scan_state.textContent=payload.scan_state;}
 
             if (payload.detected && use_tracking) { 
                 this.cx.textContent = payload.cx; this.cy.textContent = payload.cy;

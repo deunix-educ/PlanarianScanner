@@ -38,6 +38,12 @@ CAPTURE_TYPE = [
     ('file', _("mp4")),
 ]
 
+
+class TaskID(models.Model):
+    code = models.CharField(unique=True, max_length=64, null=True, blank=False)
+    task_id = models.CharField(max_length=250, null=True, blank=False, default="")   
+
+    
 class Configuration(models.Model):
     name = models.CharField(_("Nom de la Configuration"), help_text=_("Nom de la configuration"), max_length=100, null=True, blank=False, default=_("Configuration par défaut"))
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
@@ -279,8 +285,8 @@ class Session(models.Model):
     
     class Meta:
         ordering = ['-created', ]
-        verbose_name = _("Session d'expérience")
-        verbose_name_plural = _("Sessions d'expériences")
+        verbose_name = _("Session")
+        verbose_name_plural = _("Sessions")
 
     def __str__(self):
         state = _("Terminée") if not self.active else _("Active")
