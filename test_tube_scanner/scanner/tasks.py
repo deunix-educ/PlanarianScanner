@@ -1,8 +1,6 @@
 # tasks.py
 import asyncio
 import json
-from asgiref.sync import async_to_sync  #, sync_to_async
-from channels.layers import get_channel_layer
 from celery import shared_task, group, chord, chain
 from celery.utils.log import get_task_logger
 from django.utils import timezone
@@ -14,62 +12,16 @@ from .  import models
 logger = get_task_logger(__name__)
 
 
-SCANNER = 'scanner'
-REPLAY = 'replay'
-
-class ScannerTaskManager:
-
-    def __init__(self):
-        self.active_task = {}
-
-    def start_scanner(self):
-        if SCANNER not in self.active_task:
-            scanner = ScannerProcess()        
-            scanner.start()  
-            self.active_task[SCANNER] = scanner
-            logger.warning(f"scanner {self.active_task[SCANNER]} running!...")        
-            
-        else:
-            logger.warning(f"scanner already running!...")
-            
-        logger.warning(f"scanner {self.active_task} ...")     
-        
-    def stop_scanner(self):
-        if SCANNER in self.active_task:
-            self.active_task[SCANNER].stop()
-            del self.active_task[SCANNER]           
-
-    def start_replay(self, latency=5.0):
-        if REPLAY not in self.active_task:
-            replay = ReplayProcess(latency=latency)
-            replay.start()
-            self.active_task[REPLAY] = replay
-        else:
-            logger.warning(f"replay already running!...")     
-            
-        logger.warning(f"replay {self.active_task} ...")          
-
-    def stop_replay(self):
-        if REPLAY in self.active_task:
-            self.active_task[REPLAY].stop()
-            del self.active_task[REPLAY]           
-
-
-task_manager = ScannerTaskManager()
-
-
-@shared_task()
+@shared_task
 def scanner_start():
     scanner = ScannerProcess()        
     scanner.start()     
-    #task_manager.start_scanner()
     return f"Scanner démarré."
 
 @shared_task
 def replay_start():
     replay = ReplayProcess(latency=5.0)
     replay.start()    
-    #task_manager.start_replay()
     return f"Replay démarré."
 
 @shared_task
