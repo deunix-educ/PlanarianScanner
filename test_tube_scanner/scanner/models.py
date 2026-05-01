@@ -37,12 +37,6 @@ CAPTURE_TYPE = [
     ('webcam', _("Webcam")),
     ('file', _("mp4")),
 ]
-
-
-class TaskID(models.Model):
-    code = models.CharField(unique=True, max_length=64, null=True, blank=False)
-    task_id = models.CharField(max_length=250, null=True, blank=False, default="")   
-
     
 class Configuration(models.Model):
     name = models.CharField(_("Nom de la Configuration"), help_text=_("Nom de la configuration"), max_length=100, null=True, blank=False, default=_("Configuration par défaut"))

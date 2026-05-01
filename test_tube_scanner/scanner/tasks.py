@@ -7,7 +7,8 @@ from django.utils import timezone
 
 from .process import ScannerProcess, ReplayProcess, redisDB
 from .export_tasks import shm_download_video, export_images_zip, export_video_mp4
-from .  import models
+from .constants import ScannerConstants
+from . import models
 
 logger = get_task_logger(__name__)
 
@@ -48,16 +49,18 @@ def export_images(
 @shared_task
 def export_all_images(session_id=None):
     try:
-        conf = models.Configuration.objects.filter(active=True).first()
+        conf = ScannerConstants().get()
+        
         if session_id is None:
             sessions = [s.id for s in models.Session.objects.filter(active=False)]
         else:
             sessions = [session_id]
             
-        for session_id in sessions:        
-            uuid_list = models.SessionExperiment.uuid_from_session(session_id)          
+        for session_id in sessions:      
+            uuid_list = models.SessionExperiment.uuid_from_session(session_id)
             job_zip = []
             for uuid in uuid_list:
+                
                 job = export_images.delay(  # @UndefinedVariable
                     uuid, 
                     start_ts=None,
@@ -89,7 +92,7 @@ def export_videos(uuid: str,
 @shared_task
 def export_all_videos(session_id=None):
     try:
-        conf = models.Configuration.objects.filter(active=True).first()
+        conf = ScannerConstants().get()
         if session_id is None:
             sessions = [s.id for s in models.Session.objects.filter(active=False)]
         else:
@@ -99,6 +102,7 @@ def export_all_videos(session_id=None):
             uuid_list = models.SessionExperiment.uuid_from_session(session_id)  
             job_mp4 = []
             for uuid in uuid_list:
+                
                 job = export_videos.delay(  # @UndefinedVariable
                     uuid, 
                     start_ts=None,
@@ -129,7 +133,7 @@ def run_session_exports(self, session_id: str):
 
     session.status = models.Session.Status.RUNNING
     session.save(update_fields=["export_status"])
-
+    logger.info(f"run_session_exports [{session_id}]: export démarré")
     chord(
         group(
             export_all_images.s(session_id),
@@ -154,7 +158,7 @@ def on_exports_done(results: list, session_id: str):
         logger.error(f"on_exports_done [{session_id}]: échec avec {len(errors)} erreurs")
     else:
         session.export_status = models.Session.Status.DONE
-        logger.info(f"on_exports_done [{session_id}]: succès export terminé")
+        logger.warning(f"on_exports_done [{session_id}]: succès export terminé")
     
     session.export_exported_at = timezone.now()
     session.save(update_fields=["export_status", "export_exported_at"])
