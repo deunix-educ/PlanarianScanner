@@ -78,6 +78,7 @@ class VideoCaptureInterface(abc.ABC):
                 max_planarians = settings.TRACKER_MAX_PLANARIANS,
             )
         
+        
         self._aligner = TubeAligner(
             grbl_threshold_px = 20,      # au-delà → correction GRBL
             dead_zone_px      = 5,       # en-dessous → rien à faire
