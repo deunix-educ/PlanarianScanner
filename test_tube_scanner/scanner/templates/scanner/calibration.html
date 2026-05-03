@@ -133,12 +133,12 @@
 	    </div>
         <div class="w3-row w3-row-padding">
             <div class="w3-half">
-	            <button id="_calib_debug" class="w3-button w3-dark-xlight w3-round-large w3-padding-1" title="{% trans 'Ce mode permet les réglages graphiques' %}">
+	            <button id="_calib_debug" class="w3-button w3-dark-xlight w3-round-large w3-padding-1 w3-block" title="{% trans 'Ce mode permet les réglages graphiques' %}">
 	                {% trans 'Debug' %}<br><i class="fa-solid fa-triangle-exclamation w3-text-amber w3-xlarge"></i>
 	            </button>                
             </div>   
             <div class="w3-half">
-	            <button id="_median" class="w3-button w3-dark-xlight w3-round-large w3-padding-1">
+	            <button id="_median" class="w3-button w3-dark-xlight w3-round-large w3-padding-1 w3-block">
 	                {% trans 'Axes' %}<br><i class="fa-solid fa-crosshairs w3-text-amber w3-xlarge"></i>
 	            </button>               
             </div>
@@ -148,7 +148,32 @@
 	            </button>               
             </div>
         </div>    
-        <div class="w3-row w3-row-padding "> 
+        {% if conf.tracking %}
+        <div class="w3-row w3-row-padding w3-light-grey w3-margin-1 w3-round w3-round-large"> 
+             <div class="w3-col">{% trans 'Configuration du tracking' %}</div>
+             <div class="w3-half">
+                <input id="_min_area_px" type="number" min="5" max="100" step="1" class="w3-round" value="{{ conf.min_area_px }}"
+                    title="{% trans 'surface minimale de contour pour être considéré valide (px carré)' %}"><br>{% trans 'Min contour' %}            
+            </div>       
+             <div class="w3-half">
+                <input id="_max_area_ratio" type="number" min="0.05" max="1.0" step="0.05" class="w3-round" value="{{ conf.max_area_ratio|stringformat:"s" }}"
+                    title="{% trans 'surface maximale de contour en fraction de la frame (défaut 10%)' %}"><br>{% trans 'Max contour' %}          
+            </div>
+             <div class="w3-half">
+                <input id="_merge_kernel_size" type="number" min="5" max="320" step="1" class="w3-round" value="{{ conf.merge_kernel_size }}"
+                    title="{% trans 'Taille du kernel elliptique de fusion des fragments (px)' %}"><br>{% trans 'Taille kernel' %}          
+            </div>           
+            <div class="w3-half">
+                <input id="_min_contour_dist_px" type="number" min="10" max="320" step="1" class="w3-round" value="{{ conf.min_contour_dist_px }}"
+                    title="{% trans 'Distance min entre deux contours pour les considérer comme individus distincts. Défaut: 40px' %}"><br>{% trans 'Distance min' %}          
+            </div>  
+            <div class="w3-half">
+                <input id="_max_planarians" type="number" min="1" max="10" step="1" class="w3-round" value="{{ conf.max_planarians }}"
+                    title="{% trans 'Nombre maximum de planaires à suivre simultanément (1-10)' %}"><br>{% trans 'Planaires' %}          
+            </div>              
+        </div>    
+        {% endif %}
+        <div class="w3-row w3-row-padding"> 
             <div class="w3-half w3-margin-top">
                 <span>{% trans 'Rayon' %} px</span><br>
                 <input id="_crop_radius" type="number" min="100" max="1200" step="1" class="w3-round w3-input" title="{% trans 'Rayon du recadrement' %}"
@@ -227,7 +252,12 @@
 	        well_btn    : sId("_well_btn"),  
             median      : sId("_median"),
             crop        : sId("_crop"),
-            crop_radius : sId("_crop_radius")
+            crop_radius : sId("_crop_radius"),
+            min_area_px : sId("_min_area_px"),
+            max_area_ratio : sId("_max_area_ratio"),
+            max_planarians : sId("_max_planarians"),
+            merge_kernel_size : sId("_merge_kernel_size"),
+            min_contour_dist_px : sId("_min_contour_dist_px")
         };          
     </script>
     <script src="/static/scanner/js/calibration.js"></script>

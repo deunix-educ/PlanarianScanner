@@ -1,7 +1,7 @@
+from django.utils.translation import gettext_lazy as _
 from django.contrib import admin
 from django.db.models import Q
 from . import models
-
 
 class WellAdmin(admin.ModelAdmin):
     model = models.Well
@@ -9,10 +9,57 @@ class WellAdmin(admin.ModelAdmin):
 
 class ConfigurationAdmin(admin.ModelAdmin):
     list_display = ('name', 'author', 'capture_type', 'video_width_capture', 'video_height_capture', 'video_frame_rate', 'active',)
+    
+    
+    fieldsets = (
+        (_("Identification"), {
+            "fields": ("name", "author", "active"),
+        }),
+        (_("Dashboard"), {
+            "fields": ("sidebar_width", "default_grid_columns",),"classes": ("collapse",),
+        }),
+        (_("opencv"), {
+            "fields": ("opencv_fourcc_format", "opencv_video_type"),"classes": ("collapse",),
+        }),
+        (_("Grbl"), {
+            "fields": ("grbl_xmax", "grbl_ymax"),            
+            "classes": ("collapse",),
+        }),
+        (_("Camera"), {
+            "fields": ("capture_type", "webcam_device_index", "image_quality", "video_jpeg_quality", "video_frame_rate", "video_width_capture", "video_height_capture"),
+            "classes": ("collapse",),
+        }),
+        (_("Calibration"), {
+            "fields": ("calibration_crop_radius", "calibration_default_multiwell", "calibration_default_feed", "calibration_default_step", "calibration_default_duration"),
+            "classes": ("collapse",),
+        }),
+        (_("Tracking"), {
+            "fields": ("tracking", "min_area_px", "max_area_ratio", "max_planarians", "merge_kernel_size", "min_contour_dist_px"),
+            "classes": ("collapse",),
+        }),
+
+    
+    )
 
 class MultiWellAdmin(admin.ModelAdmin):
     list_filter = ('author', )
     list_display = ('label', 'position', 'author', 'order', 'xbase', 'ybase', 'duration', 'feed', 'default', 'well_position', 'active',)
+    
+    fieldsets = (
+        (_("Identification"), {
+            "fields": ("label", "author", "position", "default", "active"),
+        }),
+        (_("Géométrie"), {
+            "fields": ("cols", "rows", "diameter", "row_def", "row_order"),"classes": ("collapse",),
+        }),
+        (_("Déplacement"), {
+            "fields": ("order", "duration", "xbase", "ybase", "dx", "dy", "feed"),"classes": ("collapse",),
+        }),
+        (_("Positions générées"), {
+            "fields": ("well_position",),
+        }),
+
+    )
 
 class WellPositionAdmin(admin.ModelAdmin):
     list_filter = ('author', 'multiwell')
@@ -28,6 +75,7 @@ class ExperimentAdmin(admin.ModelAdmin):
     list_filter = ('session_experiments__session', 'author', )
     list_display = ('title', 'author',  'multiwell', 'created', 'started', 'finished')
     readonly_fields = ('created',  'started',  'finished', )
+    
 
 class SessionExperimentInlineAdmin(admin.TabularInline):
     model = models.SessionExperiment

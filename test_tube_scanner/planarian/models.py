@@ -65,8 +65,9 @@ class ExperimentConfig(models.Model):
     )
     
     max_area_ratio = models.FloatField(
-        default=0.05,
-        verbose_name=_("Filtre surface max acceptable"),
+        default=0.10,
+        verbose_name=_("Surface max contour (fraction de la frame)"),
+        help_text=_("Ratio de la surface du puits, ex: 0.10 pour 10%"),
     )
         
     planarian_count = models.IntegerField(
@@ -131,6 +132,7 @@ class ExperimentConfig(models.Model):
             "thresh_mobile":         self.thresh_mobile,
             "tube_axis":             self.tube_axis,
             "min_area_px":           self.min_area_px,
+            "max_area_ratio":        self.max_area_ratio,
             "planarian_count":       self.planarian_count,
             "thigmotaxis_wall_dist_mm": self.thigmotaxis_wall_dist_mm,
             "photo_mode":            self.photo_mode,

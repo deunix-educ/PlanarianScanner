@@ -51,6 +51,16 @@ class VideoCaptureInterface(abc.ABC):
     # Cadence par défaut en images par seconde
     DEFAULT_FPS: float = 5.0
 
+    DEFAULT_TRACKER_CONFIG = dict(
+        tube_axis = settings.TRACKER_TUBE_AXIS,
+        min_area_px = settings.TRACKER_MIN_AREA,
+        max_area_ratio = settings.TRACKER_MAX_AREA_RATIO,
+        max_planarians = settings.TRACKER_MAX_PLANARIANS,
+        merge_kernel_size = settings.TRACKER_MERGE_KERNEL_SIZE,
+        min_contour_dist_px = settings.TRACKER_MIN_CONTOUR_DIST_PX,       
+    )
+    
+
     def __init__(self, fps: float = DEFAULT_FPS, use_tracking: bool = False, display=None, parent=None, jpeg_quality=85):
         """
         Initialise l'interface de capture.
@@ -75,13 +85,9 @@ class VideoCaptureInterface(abc.ABC):
         self._tracker = None
         self._metrics = None
         self._paramss = None
-        if use_tracking:
-            self._tracker = PlanarianTracker(
-                tube_axis = settings.TRACKER_TUBE_AXIS,
-                min_area_px = settings.TRACKER_MIN_AREA,
-                max_area_ratio = settings.TRACKER_MAX_AREA_RATIO,
-                max_planarians = settings.TRACKER_MAX_PLANARIANS,
-            )
+
+        # Tracker générique, pour simulation
+        self.on_test_well_change(**self.DEFAULT_TRACKER_CONFIG)
 
         self._aligner = TubeAligner(
             grbl_threshold_px = 20,      # au-delà → correction GRBL
@@ -91,22 +97,31 @@ class VideoCaptureInterface(abc.ABC):
         self.align_detection   = None     # résultat du test
 
 
+    def on_test_well_change(self, **cfg):
+        if self.use_tracking and cfg:
+            logger.warning(f"tracking conf: {cfg}")
+            self._tracker = PlanarianTracker(**cfg)
+    
+
     def on_well_change(self, cfg):
         """
         Appelé par le CNC lors du changement de puits.
         Réinitialise le fond appris et l'état inter-frame du tracker.
         Construit les métriques aussi
         """
-        if  self.use_tracking and self._tracker:
-            self._tracker.reset()
-            self._params = ExperimentParams(cfg.to_params_dict())
-            self._metrics = self._params.build_metrics()
-            self._tracker = PlanarianTracker(
-                tube_axis      = self._params.tube_axis,
-                min_area_px    = self._params.min_area_px,
-                max_area_ratio = self._params.max_area_ratio,
-                max_planarians = self._params.planarian_count,
-            )
+        if not self.use_tracking:
+            return
+
+        self._params = ExperimentParams(cfg.to_params_dict())
+        self._metrics = self._params.build_metrics()
+        self._tracker = PlanarianTracker(
+            tube_axis      = self._params.tube_axis,
+            min_area_px    = self._params.min_area_px,
+            max_area_ratio = self._params.max_area_ratio,
+            max_planarians = self._params.planarian_count,
+            merge_kernel_size = settings.TRACKER_MERGE_KERNEL_SIZE,
+            min_contour_dist_px = settings.TRACKER_MIN_CONTOUR_DIST_PX,
+        )
 
 
     # ------------------------------------------------------------------
@@ -262,7 +277,7 @@ class VideoCaptureInterface(abc.ABC):
                     frame = annotated if annotated is not None else frame
                 ##
                 # mode racking
-                if self._tracker is not None:    
+                if self.use_tracking:
                     ts = datetime.now(timezone.utc).timestamp()
                     frame, metrics = self._tracker.process(frame, ts)
                 ##

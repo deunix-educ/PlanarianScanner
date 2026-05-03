@@ -78,6 +78,7 @@ class MultiWellManager:
     def __init__(self, process):
         self.process = process
         self.cnc_controller = process.grbl
+        
         self.stop_playing = Event()
         self.well_iterator = None       
         self.multiwel = None
@@ -85,6 +86,15 @@ class MultiWellManager:
         self.set_multiwell()
         self.scan_thread = None
         self.test_thread = None
+        self.tracker_config = dict(
+            tube_axis = settings.TRACKER_TUBE_AXIS,
+            min_area_px = self.process.conf.min_area_px,
+            max_area_ratio = self.process.conf.max_area_ratio,
+            max_planarians = self.process.conf.max_planarians,
+            merge_kernel_size = self.process.conf.merge_kernel_size,
+            min_contour_dist_px = self.process.conf.min_contour_dist_px,
+        )      
+        
 
     def set_default_values(self, feed=None, step=None, duration=None):
         self._feed = feed or self.process.conf.calibration_default_feed

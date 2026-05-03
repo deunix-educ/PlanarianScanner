@@ -396,9 +396,11 @@ EXPORT_DESTINATIONS = ["local", "remote"]
 
 
 TRACKER_TUBE_AXIS = "vertical"
-TRACKER_MIN_AREA = 8           # surface min planaire px x px
-TRACKER_MAX_AREA_RATIO = 0.1   # 5% de la frame = surface max acceptable
-TRACKER_MAX_PLANARIANS = 3
+TRACKER_MIN_AREA = 20                # surface min planaire px x px
+TRACKER_MAX_AREA_RATIO = 0.1        # 5% de la frame = surface max acceptable
+TRACKER_MAX_PLANARIANS = 1          
+TRACKER_MERGE_KERNEL_SIZE = 15      # augmenter si fragments résiduels
+TRACKER_MIN_CONTOUR_DIST_PX = 40    # augmenter si IDs multiples persistent
 
 
 CALIBRATION_AUTO_DURATION = 45.0

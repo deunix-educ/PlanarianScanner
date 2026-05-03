@@ -467,7 +467,13 @@ class ScannerProcess(Task):
                         elif topic == 'set_well':
                             msg = self.manager.set_well_position()
                             self._send(**msg)
-                 
+                            
+                        elif topic in ['min_area_px', 'max_area_ratio', 'max_planarians', 'merge_kernel_size', 'min_contour_dist_px']:
+                            value = int(value) if topic in ['min_area_px', 'max_planarians', 'merge_kernel_size', 'min_contour_dist_px'] else float(value)
+                            self.manager.tracker_config[topic] = value
+                            self.cam.on_test_well_change(**self.manager.tracker_config)
+                            self._send(state=topic, msg=f"Value changed {value}")                            
+                            
                         self._send(
                             xbase=self.manager.xbase, 
                             ybase=self.manager.ybase, 

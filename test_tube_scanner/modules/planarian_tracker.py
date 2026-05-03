@@ -4,22 +4,13 @@ modules/planarian_tracker.py
 Détection et suivi multi-individus de planaires dans un tube.
 Supporte de 1 à MAX_PLANARIANS planaires par tube.
 
-Etat inter-frame indépendant par individu : position, timestamp, compteur de perte (lost), flag active. 
-Quand un individu n'est pas détecté pendant MAX_LOST_FRAMES (5) frames consécutives, il est marqué perdu et son slot se libère.
-
-Algorithme hongrois (scipy.optimize.linear_sum_assignment) dans _hungarian_assign() 
-  — construit une matrice de coût distance euclidienne entre les slots actifs et les nouvelles détections, puis trouve l'association de coût minimal. 
-Une association est rejetée si la distance dépasse MAX_ASSOC_DIST_PX (80px) 
-  — évite les sauts aberrants entre planaires proches.
-
-
 Stratégie :
     - Soustraction de fond MOG2 (léger sur Raspberry Pi 4)
     - Détection de tous les contours valides (surface >= min_area_px)
     - Association frame-à-frame par distance euclidienne minimale
       via algorithme hongrois (scipy.optimize.linear_sum_assignment)
     - Un état inter-frame indépendant par individu (PlanarianState)
-    - Retourne une liste de résultats, un par individu suivi: champ planarian_id (index 0-based).
+    - Retourne une liste de résultats, un par individu suivi
 
 Created on 25 avr. 2026
 @author: denis
@@ -171,10 +162,12 @@ class PlanarianTracker:
 
     def __init__(
         self,
-        tube_axis:      str = "vertical",
-        min_area_px:    int = 20,
-        max_area_ratio: float = 0.10,
-        max_planarians: int = 1,
+        tube_axis:          str   = "vertical",
+        min_area_px:        int   = 20,
+        max_area_ratio:     float = 0.10,
+        max_planarians:     int   = 1,
+        merge_kernel_size:  int   = 15,
+        min_contour_dist_px:int   = 40,
     ):
         """
         Args:
@@ -182,7 +175,11 @@ class PlanarianTracker:
             min_area_px    : surface minimale d'un contour pour être considéré valide (px²)
             max_area_ratio : surface maximale d'un contour en fraction de la frame (défaut 10%)
                              filtre les faux positifs du fond non encore appris par MOG2
-            max_planarians : nombre maximum de planaires à suivre simultanément (1-10)
+            max_planarians      : nombre maximum de planaires à suivre simultanément (1-10)
+            merge_kernel_size   : taille du kernel elliptique de fusion des fragments (px).
+                                  Régler ≈ largeur du planaire en pixels. Défaut : 15.
+            min_contour_dist_px : distance min entre deux contours pour les considérer
+                                  comme individus distincts. Défaut : 40px.
         """
         self.tube_axis      = tube_axis
         self.min_area_px    = min_area_px
@@ -191,6 +188,16 @@ class PlanarianTracker:
 
         # Un état inter-frame par slot individu
         self._states = [PlanarianState(i) for i in range(self.max_planarians)]
+
+        # Taille du kernel de fusion morphologique (pixels) —
+        # doit être proche de la largeur du planaire en pixels.
+        # Trop petit : fragments non fusionnés → IDs multiples.
+        # Trop grand : deux planaires proches fusionnés en un seul.
+        self.merge_kernel_size    = merge_kernel_size
+
+        # Distance minimale en pixels entre deux contours distincts.
+        # En-dessous : le plus petit est considéré comme fragment du plus grand.
+        self.min_contour_dist_px  = min_contour_dist_px
 
         # Soustracteur de fond adaptatif MOG2
         self._bg_sub = self._make_bg_sub()
@@ -217,6 +224,8 @@ class PlanarianTracker:
             s.reset()
         self._bg_sub       = self._make_bg_sub()
         self._warmup_count = 0
+        # Les paramètres morphologiques (merge_kernel_size, min_contour_dist_px)
+        # sont conservés — ils ne dépendent pas du puits
 
     # ------------------------------------------------------------------ #
     # Interface principale
@@ -253,9 +262,19 @@ class PlanarianTracker:
         gray    = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         fg_mask = self._bg_sub.apply(gray)
 
-        kernel  = np.ones((3, 3), np.uint8)
-        fg_mask = cv2.morphologyEx(fg_mask, cv2.MORPH_OPEN,  kernel)
-        fg_mask = cv2.morphologyEx(fg_mask, cv2.MORPH_CLOSE, kernel)
+        # --- Morphologie : fusion des fragments du corps ---
+        # Un planaire ondulant est souvent segmenté en plusieurs contours
+        # (tête, milieu, queue). La dilatation fusionne les fragments proches
+        # avant la détection des contours.
+        # Kernel 3×3 : supprime le bruit fin (OPEN)
+        # Kernel merge_kernel : fusionne les fragments du corps (CLOSE + DILATE)
+        noise_kernel = np.ones((3, 3), np.uint8)
+        merge_kernel  = cv2.getStructuringElement(
+            cv2.MORPH_ELLIPSE, (self.merge_kernel_size, self.merge_kernel_size)
+        )
+        fg_mask = cv2.morphologyEx(fg_mask, cv2.MORPH_OPEN,   noise_kernel)
+        fg_mask = cv2.morphologyEx(fg_mask, cv2.MORPH_CLOSE,  merge_kernel)
+        fg_mask = cv2.dilate(fg_mask, merge_kernel, iterations=1)
 
         # Warmup MOG2 : les premières WARMUP_FRAMES frames retournent du bruit
         # (fond non encore appris) — on les alimente mais on ne détecte rien
@@ -279,8 +298,33 @@ class PlanarianTracker:
             reverse=True,
         )
 
+        # --- Suppression des fragments résiduels trop proches ---
+        # Si plusieurs contours valides ont leur centre à moins de
+        # min_contour_dist_px les uns des autres, seul le plus grand est conservé.
+        # Évite les cas où la fusion morphologique est incomplète.
+        filtered = []
+        for c in valid:
+            M = cv2.moments(c)
+            if M["m00"] == 0:
+                continue
+            cx_c = int(M["m10"] / M["m00"])
+            cy_c = int(M["m01"] / M["m00"])
+            too_close = False
+            for kept in filtered:
+                Mk = cv2.moments(kept)
+                if Mk["m00"] == 0:
+                    continue
+                cx_k = int(Mk["m10"] / Mk["m00"])
+                cy_k = int(Mk["m01"] / Mk["m00"])
+                dist = np.sqrt((cx_c - cx_k)**2 + (cy_c - cy_k)**2)
+                if dist < self.min_contour_dist_px:
+                    too_close = True
+                    break
+            if not too_close:
+                filtered.append(c)
+
         # Limiter au nombre maximum de planaires attendus
-        valid = valid[:self.max_planarians]
+        valid = filtered[:self.max_planarians]
 
         # --- Calcul des centres de masse des contours détectés ---
         detections = []   # liste de (cx, cy, area, contour)
@@ -489,4 +533,3 @@ class PlanarianTracker:
             "axial_pos":    0.0,
             "timestamp":    ts,
         }
-        

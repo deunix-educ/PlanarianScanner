@@ -28,8 +28,13 @@ class DefaultConfig:
     calibration_default_step: float = 1.0
     calibration_default_duration: float = 3.0
     tracking: bool = False 
+    min_area_px: int = 20
+    max_area_ratio: float = 0.10
+    max_planarians: int = 1
+    merge_kernel_size: int = 15
+    min_contour_dist_px: int = 40
+   
     
-
 class ScannerConstants:
     
     def __init__(self):

@@ -42,6 +42,13 @@ class ScannerManager {
         this.crop        = options.crop; 
         this.crop_radius = options.crop_radius;
         this.calib_auto  = options.calib_auto;
+        
+        this.min_area_px = options.min_area_px;
+        this.max_area_ratio = options.max_area_ratio;
+        this.max_planarians = options.max_planarians;
+        this.merge_kernel_size = options.merge_kernel_size;
+        this.min_contour_dist_px = options.min_contour_dist_px;
+        
     }
     
     init_controls() {       
@@ -71,6 +78,13 @@ class ScannerManager {
         this.calib_center.addEventListener('click', (e) => { this._send({ type: 'calibrate', topic: "center" }); });
         this.calib_auto.addEventListener('click',   (e) => { this._send({ type: 'calibrate', topic: "auto" }); });
         this.halt.addEventListener('click',         (e) => { this._send({ type: 'calibrate', topic: "halt" }); });
+        
+        this.min_area_px.addEventListener('change',         (e) => { this._send({ type: 'calibrate', topic: "min_area_px", value: e.target.value }); });
+        this.max_area_ratio.addEventListener('change',      (e) => { this._send({ type: 'calibrate', topic: "max_area_ratio", value: e.target.value }); });
+        this.max_planarians.addEventListener('change',      (e) => { this._send({ type: 'calibrate', topic: "max_planarians",  value: e.target.value}); });
+        this.merge_kernel_size.addEventListener('change',   (e) => { this._send({ type: 'calibrate', topic: "merge_kernel_size",  value: e.target.value}); });
+        this.min_contour_dist_px.addEventListener('change', (e) => { this._send({ type: 'calibrate', topic: "min_contour_dist_px", value: e.target.value }); });
+        
     }
 
     registerSocket(socket)  {
