@@ -48,6 +48,7 @@ class ScannerManager {
         this.max_planarians = options.max_planarians;
         this.merge_kernel_size = options.merge_kernel_size;
         this.min_contour_dist_px = options.min_contour_dist_px;
+        this.track = options.track;
         
     }
     
@@ -84,7 +85,7 @@ class ScannerManager {
         this.max_planarians.addEventListener('change',      (e) => { this._send({ type: 'calibrate', topic: "max_planarians",  value: e.target.value}); });
         this.merge_kernel_size.addEventListener('change',   (e) => { this._send({ type: 'calibrate', topic: "merge_kernel_size",  value: e.target.value}); });
         this.min_contour_dist_px.addEventListener('change', (e) => { this._send({ type: 'calibrate', topic: "min_contour_dist_px", value: e.target.value }); });
-        
+        this.track.addEventListener('click',                (e) => { this._send({ type: 'calibrate', topic: "track", value: e.target.value }); });
     }
 
     registerSocket(socket)  {

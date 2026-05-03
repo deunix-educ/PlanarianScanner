@@ -468,6 +468,10 @@ class ScannerProcess(Task):
                             msg = self.manager.set_well_position()
                             self._send(**msg)
                             
+                        elif topic == 'track':
+                            self.cam.use_tracking = value=="1"      
+                            self._send(state=topic, msg=f"Tracking: {self.cam.use_tracking}")                                
+                                                    
                         elif topic in ['min_area_px', 'max_area_ratio', 'max_planarians', 'merge_kernel_size', 'min_contour_dist_px']:
                             value = int(value) if topic in ['min_area_px', 'max_planarians', 'merge_kernel_size', 'min_contour_dist_px'] else float(value)
                             self.manager.tracker_config[topic] = value

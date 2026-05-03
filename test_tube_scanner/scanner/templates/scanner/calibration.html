@@ -150,7 +150,9 @@
         </div>    
         {% if conf.tracking %}
         <div class="w3-row w3-row-padding w3-light-grey w3-margin-1 w3-round w3-round-large"> 
-             <div class="w3-col">{% trans 'Configuration du tracking' %}</div>
+             <div class="w3-col"><input id="_track" type="checkbox" value="0" onclick="if (this.checked){this.value='1';}else{ this.value='0';}"> 
+                {% trans 'Configuration du tracking' %}
+             </div>
              <div class="w3-half">
                 <input id="_min_area_px" type="number" min="5" max="100" step="1" class="w3-round" value="{{ conf.min_area_px }}"
                     title="{% trans 'surface minimale de contour pour être considéré valide (px carré)' %}"><br>{% trans 'Min contour' %}            
@@ -257,7 +259,8 @@
             max_area_ratio : sId("_max_area_ratio"),
             max_planarians : sId("_max_planarians"),
             merge_kernel_size : sId("_merge_kernel_size"),
-            min_contour_dist_px : sId("_min_contour_dist_px")
+            min_contour_dist_px : sId("_min_contour_dist_px"),
+            track : sId("_track")
         };          
     </script>
     <script src="/static/scanner/js/calibration.js"></script>
