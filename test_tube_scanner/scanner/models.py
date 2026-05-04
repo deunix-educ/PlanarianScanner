@@ -66,13 +66,11 @@ class Configuration(models.Model):
     calibration_default_duration = models.FloatField(_("Duruée calibration"), help_text=_("Durée de pose entre chaque puits en s"), default=3.0)
     # tracking
     tracking = models.BooleanField(_("Suivi"), help_text=_("Suivi et analyse des planaires"), default=False)
-    
     min_area_px = models.PositiveIntegerField(_("Surface minimale"), help_text=_("surface minimale d'un contour pour être considéré valide (px²)"), default=20)
     max_area_ratio = models.FloatField(_("surface maximale "), help_text=_("surface maximale d'un contour en fraction de la frame (défaut 10%)"), default=0.10)
     max_planarians = models.PositiveIntegerField(_("Max planaire"), help_text=_("nombre maximum de planaires à suivre simultanément (1-10)"), default=1)
     merge_kernel_size = models.PositiveIntegerField(_("Taille du kernel"), help_text=_("taille du kernel elliptique de fusion des fragments (px)"), default=15)
     min_contour_dist_px = models.PositiveIntegerField(_("Distance <contour>"), help_text=_("Distance min entre deux contours pour les considérer comme individus distincts. Défaut : 40px."), default=40)
-   
     #
     active = models.BooleanField(_("Actif"), default=False)
     

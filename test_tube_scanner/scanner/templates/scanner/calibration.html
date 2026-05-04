@@ -150,7 +150,7 @@
         </div>    
         {% if conf.tracking %}
         <div class="w3-row w3-row-padding w3-light-grey w3-margin-1 w3-round w3-round-large"> 
-             <div class="w3-col"><input id="_track" type="checkbox" value="0" onclick="if (this.checked){this.value='1';}else{ this.value='0';}"> 
+             <div class="w3-col"><input id="_track_it" type="checkbox" value="0" onclick="if (this.checked){this.value='1';}else{ this.value='0';}"> 
                 {% trans 'Configuration du tracking' %}
              </div>
              <div class="w3-half">
@@ -260,7 +260,7 @@
             max_planarians : sId("_max_planarians"),
             merge_kernel_size : sId("_merge_kernel_size"),
             min_contour_dist_px : sId("_min_contour_dist_px"),
-            track : sId("_track")
+            track : sId("_track_it")
         };          
     </script>
     <script src="/static/scanner/js/calibration.js"></script>

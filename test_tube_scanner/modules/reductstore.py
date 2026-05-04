@@ -27,8 +27,8 @@ class ReductStoreBase(ABC):
         self.bucket: Bucket = asyncio.run(self.create_bucket())
         logger.info(f"====  {url} token:{api_token}")
 
-
     async def create_bucket(self):
+        
         settings = BucketSettings(
             quota_type=self.quota_type,
             quota_size=self.quota_size,

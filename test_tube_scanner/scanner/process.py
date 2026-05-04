@@ -21,7 +21,7 @@ from celery.exceptions import Ignore
 from celery.utils.log import get_task_logger
 from redis import Redis
 from dataclasses import dataclass
-from modules import reductstore, grbl, utils
+from modules import reductstore, grbl, utils, planarian_metrics
 
 ## camera devices
 from modules.circular_crop import CircularCrop, CropStrategy
@@ -42,6 +42,7 @@ class ProcessData:
 logger = get_task_logger(__name__)
 redisDB = Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0, decode_responses=True)
 cameraDB = reductstore.ReductStore(name='camera')
+planarianDB = planarian_metrics.ReductStoreClient(url=settings.REDUCTSTORE_URL, token=settings.REDUCTSTORE_TOKEN)
 
 
 class CameraRecordManager():
@@ -183,14 +184,16 @@ class ScannerProcess(Task):
             capture_type = self.conf.capture_type
             if capture_type == 'file':
                 video_lists = []
+
                 wells = models.Well.objects.all()
                 for wl in wells:
-                    video_lists.append(str( settings.MEDIA_ROOT / 'simulation' / f'{wl.name}.mp4') )
-                    
+                    if exists := (settings.MEDIA_ROOT / 'simulation' / f'{wl.name}.mp4').exists():
+                        video_lists.append(str( settings.MEDIA_ROOT / 'simulation' / f'{wl.name}.mp4') )
+
                 
                 from modules.videofile_capture import VideoFileCapture
                 self.cam = VideoFileCapture(
-                    video_file=settings.MEDIA_ROOT / 'simulation' / 'D6.mp4',
+                    video_file=settings.MEDIA_ROOT / 'simulation' / 'A1.mp4',
                     fps=self.video_fps,
                     width=self.video_width,
                     height=self.video_height,
@@ -271,39 +274,51 @@ class ScannerProcess(Task):
     def _display(self, **msg):
         if self.grbl:
             self._send(**msg)
-
+    
+    
+    def _store_metrics(self, uuid, metrics, ts):
+        for r in metrics:
+            pid = r["planarian_id"]
+            record = self.cam._metrics[pid].update(r, well_radius_mm=self.cam._params.well_radius_mm)
+            logger.warning(f"{record}")
+            
+            async_to_sync(planarianDB.store_metrics)(
+                record,
+                self.cam._params.experiment,
+                self.cam._params.well_name,
+                entry_name=uuid,
+                planarian=pid,
+                record_type='metrics',
+                ts_us=ts,
+            )
+                  
+    def _store_frame(self, uuid, frame, ts, frame_count):
+        labels = {
+            "fps":  self.video_fps,
+            "record_type": 'frame',
+            "frame_count": frame_count,
+        }
+        self.recordDB.write(uuid, frame, ts=ts, labels=labels)
+                 
     def _on_frame(self, jpeg_bytes: bytes, ts: datetime, metrics: dict, frame_count: int = 0) -> None:
+        
         if self.data.record:
             self.record_queue.put((self.data.uuid, ts, jpeg_bytes, metrics, frame_count))
         if self.data.play:
             try:
                 jpeg=base64.b64encode(jpeg_bytes).decode()
-                #logger.warning(f"{jpeg[:100]}")
                 self._send(ts=ts.timestamp(), jpeg=jpeg, frame_count=frame_count)
             except Exception as e:
                 logger.error(f"----_on_frame: {e}")
-                
+
                 
     def _recording(self):
         logger.info(f"Scanner {self.group}: start recorder")
         while not self.stop_event.is_set():
             try:
                 (uuid, ts, frame, metrics, frame_count) = self.record_queue.get()
-                
-                
-                labels = dict(fps=self.video_fps, session=self.data.session, detected="1" if metrics.get("detected") else "0")
-                
-                if metrics.get("detected"):
-                    labels.update({
-                        "cx"          : str(metrics["cx"]),
-                        "cy"          : str(metrics["cy"]),
-                        "area_px"     : str(metrics["area_px"]),
-                        "speed_px_s"  : str(metrics["speed_px_s"]),
-                        "axial_pos"   : str(metrics["axial_pos"]),
-                        "axial_speed" : str(metrics["axial_speed"]),
-                    })    
-                                
-                self.recordDB.write(uuid, frame, labels, ts=ts)
+                self._store_metrics(uuid, metrics, ts)                               
+                self._frame_store(uuid, frame, ts, frame_count)
                 self.record_queue.task_done()
             except Exception as e:
                 logger.error(f'recorder: {e}')

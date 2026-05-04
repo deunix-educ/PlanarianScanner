@@ -49,7 +49,6 @@ class ScannerManager {
         this.merge_kernel_size = options.merge_kernel_size;
         this.min_contour_dist_px = options.min_contour_dist_px;
         this.track = options.track;
-        
     }
     
     init_controls() {       

@@ -188,7 +188,22 @@
                         <span class="w3-text-red w3-small">{{ form.planarian_count.errors|join:", " }}</span>
                         {% endif %}
                     </div>
-
+                    
+                    <div class="w3-col m4 s12 w3-margin-bottom">
+                        <label class="w3-text-grey"><b>{{ form.min_contour_dist_px.label }}</b></label>
+                        {{ form.min_contour_dist_px }}
+                        {% if form.min_contour_dist_px.errors %}
+                        <span class="w3-text-red w3-small">{{ form.min_contour_dist_px.errors|join:", " }}</span>
+                        {% endif %}
+                    </div>
+                      
+                    <div class="w3-col m4 s12 w3-margin-bottom">
+                        <label class="w3-text-grey"><b>{{ form.merge_kernel_size.label }}</b></label>
+                        {{ form.merge_kernel_size }}
+                        {% if form.merge_kernel_size.errors %}
+                        <span class="w3-text-red w3-small">{{ form.merge_kernel_size.errors|join:", " }}</span>
+                        {% endif %}
+                    </div>                  
                 </div>
             </div>
         </div>

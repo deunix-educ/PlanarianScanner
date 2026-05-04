@@ -99,13 +99,13 @@ class VideoCaptureInterface(abc.ABC):
 
     def on_test_well_change(self, **cfg):
         if self.use_tracking and cfg:
-            logger.warning(f"tracking conf: {cfg}")
             self._tracker = PlanarianTracker(**cfg)
+            logger.warning(f"New tracker conf: {cfg}")
     
 
     def on_well_change(self, cfg):
         """
-        Appelé par le CNC lors du changement de puits.
+        Appelé par la CNC lors du changement de puits.
         Réinitialise le fond appris et l'état inter-frame du tracker.
         Construit les métriques aussi
         """
@@ -119,8 +119,8 @@ class VideoCaptureInterface(abc.ABC):
             min_area_px    = self._params.min_area_px,
             max_area_ratio = self._params.max_area_ratio,
             max_planarians = self._params.planarian_count,
-            merge_kernel_size = settings.TRACKER_MERGE_KERNEL_SIZE,
-            min_contour_dist_px = settings.TRACKER_MIN_CONTOUR_DIST_PX,
+            merge_kernel_size = self._params.merge_kernel_size,
+            min_contour_dist_px = self._params.min_contour_dist_px,
         )
 
 

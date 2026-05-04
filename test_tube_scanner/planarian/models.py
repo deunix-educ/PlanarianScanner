@@ -75,6 +75,18 @@ class ExperimentConfig(models.Model):
         verbose_name=_("Nombre de planaires"),
     )
 
+    merge_kernel_size = models.PositiveIntegerField(
+        _("Taille du kernel"), 
+        help_text=_("taille du kernel elliptique de fusion des fragments (px)"), 
+        default=15
+    )
+    
+    min_contour_dist_px = models.PositiveIntegerField(
+        _("Distance <contour>"), 
+        help_text=_("Distance min entre deux contours pour les considérer comme individus distincts. Défaut : 40px."), 
+        default=40
+    )
+
     # --- Thigmotactisme ---
     thigmotaxis_wall_dist_mm = models.FloatField(
         default=1.0,
@@ -133,6 +145,8 @@ class ExperimentConfig(models.Model):
             "tube_axis":             self.tube_axis,
             "min_area_px":           self.min_area_px,
             "max_area_ratio":        self.max_area_ratio,
+            "merge_kernel_size":     self.merge_kernel_size,
+            "min_contour_dist_px":   self.min_contour_dist_px,
             "planarian_count":       self.planarian_count,
             "thigmotaxis_wall_dist_mm": self.thigmotaxis_wall_dist_mm,
             "photo_mode":            self.photo_mode,

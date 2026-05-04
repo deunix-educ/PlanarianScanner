@@ -34,7 +34,7 @@ Métriques résumé (summary) :
 Created on 25 avr. 2026
 @author: denis
 """
-
+import asyncio
 import csv
 import io
 import json
@@ -659,13 +659,30 @@ class ReductStoreClient:
         url:    str = "http://localhost:8383",
         token:  str = "",
         bucket: str = "planarian_metrics",
+        quota_type=None, 
+        quota_size=1000_000_000
     ):
         self.url          = url
         self.token        = token
         self.bucket_name  = bucket
+        self.quota_type = quota_type
+        self.quota_size = quota_size
         self._client      = None
-        self._bucket      = None
+        self._bucket = asyncio.run(self.create_bucket())
+        
 
+    async def create_bucket(self):
+        from reduct import Client, BucketSettings
+        self._client = Client(self.url, api_token=self.token)
+        
+        settings = BucketSettings(
+            quota_type=self.quota_type,
+            quota_size=self.quota_size,
+            exist_ok=True,
+        )
+        return await self._client.create_bucket(self.bucket_name, settings, exist_ok=True)
+
+    '''
     async def connect(self):
         """Initialise la connexion et crée le bucket si nécessaire."""
         from reduct import Client, BucketSettings, QuotaType
@@ -676,14 +693,17 @@ class ReductStoreClient:
             exist_ok=True,
         )
         logger.info(f"ReductStore connecté : {self.url} / {self.bucket_name}")
+        
+    '''    
 
     async def store_metric(
         self,
         record:      dict,
         experiment:  str,
         well:        str,
+        entry_name:  str = "metrics",
         planarian:   int = 0,
-        record_type: str = "frame",
+        record_type: str = "metrics",
         ts_us:       Optional[int] = None,
     ):
         """Stocke un enregistrement dans ReductStore."""
@@ -691,7 +711,7 @@ class ReductStoreClient:
             await self.connect()
         ts_us = ts_us or int(time.time() * 1_000_000)
         await self._bucket.write(
-            entry_name   = "metrics",
+            entry_name   = entry_name,
             data         = json.dumps(record).encode("utf-8"),
             timestamp    = ts_us,
             labels       = {

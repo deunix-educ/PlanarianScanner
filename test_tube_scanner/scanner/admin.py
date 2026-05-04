@@ -33,7 +33,7 @@ class ConfigurationAdmin(admin.ModelAdmin):
             "fields": ("calibration_crop_radius", "calibration_default_multiwell", "calibration_default_feed", "calibration_default_step", "calibration_default_duration"),
             "classes": ("collapse",),
         }),
-        (_("Tracking"), {
+        (_("Tracking: valeurs par défaut"), {
             "fields": ("tracking", "min_area_px", "max_area_ratio", "max_planarians", "merge_kernel_size", "min_contour_dist_px"),
             "classes": ("collapse",),
         }),

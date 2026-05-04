@@ -135,11 +135,11 @@ class MultiWellManager:
     def _grid_scanning_capture(self, experiment, well_position, simulate=False):
         well = well_position.well
         multiwell = experiment.multiwell
-        
-        # Paramètres d'une expérience PlanarianScanner
-        cfg = ExperimentConfig.objects.get(experiment_id=experiment.id, well_id=well.id)
-        # reset PlanarianTracker => on_well_change
-        self.process.cam.on_well_change(cfg)
+        if self.process.use_tracking:
+            # Paramètres d'une expérience PlanarianScanner
+            cfg = ExperimentConfig.objects.get(experiment_id=experiment.id, well_id=well.id)
+            # reset PlanarianTracker => on_well_change
+            self.process.cam.on_well_change(cfg)
         
         uuid = f'{self.process.data.session}-{multiwell.position}-{well.name}'
         ## start recording   
