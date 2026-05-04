@@ -68,9 +68,17 @@ class ExperimentConfigListView(ListView):
     context_object_name = "configs"
     ordering            = ["-created_at"]
     
+    '''
+    def get_queryset(self):
+        # Récupérer le queryset de base
+        queryset = ExperimentConfig.objects.filter(experiment__session_experiments__isnull=False).select_related()
+        return queryset'''
+    
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return global_context(self.request, **context)
+    
     
 
 # ---------------------------------------------------------------------------

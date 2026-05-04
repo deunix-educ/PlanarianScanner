@@ -3,7 +3,8 @@
 
 {% block columns %}{% endblock %}
 
-{% block sidebar_list %}
+{#% block sidebar_list %#}
+<!--
     <a href="/"  class="w3-bar-item w3-btn w3-hover-opacity"><i class="fa-solid fa-house w3-text-orange w3-xlarge"></i> {% trans "Retour accueil" %}</a>
     <form method="post" class="w3-bar-item" action="">
         {% csrf_token %}
@@ -28,7 +29,8 @@
         <i class="fa-solid fa-film w3-text-green w3-xlarge""></i> {% trans "Balayage multi-puits" %}
     </a>
     {% endif %}
-{% endblock %}
+-->
+{#% endblock %#}
 
 {% block js_footer %}
     {{ block.super }}
@@ -46,7 +48,7 @@
 	                setTimeout(function() {
 	                    message.remove();
 	                }, 500);
-	            }, 5000); // 5 seconds
+	            }, 15000); // 15 seconds
 	        });
 	    });
 	</script>

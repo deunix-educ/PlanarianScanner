@@ -18,9 +18,9 @@ class ExperimentConfig(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
     
     # --- Identification ---
-    identifier = models.CharField( max_length=100, verbose_name=_("Identifiant d'expérience"), help_text=_("session_1-HD-2026-04-27"),  )
-    experiment = models.ForeignKey(Experiment, verbose_name="Expérience", on_delete=models.CASCADE, related_name="experiment_well" , null=True, blank=True)
-    well = models.ForeignKey(Well, verbose_name="Puit", on_delete=models.CASCADE, related_name="well_experiment", null=True, blank=True )
+    identifier = models.CharField( max_length=100, verbose_name=_("Identifiant d'expérience"), help_text=_("session_1-HD-2026-04-27"), null=True, blank=True )
+    experiment = models.ForeignKey(Experiment, verbose_name="Expérience", on_delete=models.CASCADE, related_name="experiment_well", null=True, blank=False)
+    well = models.ForeignKey(Well, verbose_name="Puit", on_delete=models.CASCADE, related_name="well_experiment", null=True, blank=False )
     description = models.TextField( blank=True, verbose_name=_("Description"), )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Créé le"))
 
@@ -162,10 +162,7 @@ class ExperimentConfig(models.Model):
     def save(self, *args, **kwargs):
         session = self.get_session()
         dte = self.experiment.created.isoformat()[:19]
-        self.identifier = f'{dte}-{session.id}-{self.experiment.id}-{self.experiment.multiwell.position}-{self.well.name}'
-        
-        print(self.identifier)
-        
+        self.identifier = f'{dte}-{session.id}-{self.experiment.id}-{self.experiment.multiwell.position}-{self.well.name}'      
         super().save(*args, **kwargs)
         
         
@@ -179,7 +176,4 @@ def create_well_position(sender, instance, created, **kwargs):
         conf = ScannerConstants().get()
         instance.fps = conf.video_frame_rate
         instance.save()        
-            
-        
-        
-        
+

@@ -111,8 +111,10 @@ class VideoCaptureInterface(abc.ABC):
         """
         if not self.use_tracking:
             return
-
-        self._params = ExperimentParams(cfg.to_params_dict())
+        
+        params = self.DEFAULT_TRACKER_CONFIG if not cfg else cfg.to_params_dict()
+        
+        self._params = ExperimentParams(params)
         self._metrics = self._params.build_metrics()
         self._tracker = PlanarianTracker(
             tube_axis      = self._params.tube_axis,

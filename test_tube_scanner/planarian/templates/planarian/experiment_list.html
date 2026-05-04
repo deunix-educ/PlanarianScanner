@@ -2,7 +2,7 @@
 {% load i18n home_tags scanner_tags %}
 
 {% block content %}
-<div class="w3-container w3-padding-32" style="max-width:1200px; margin:auto;">
+<div class="w3-container w3-padding" style="max-width:1200px; margin:auto;">
 
     <!-- En-tête -->
     <div class="w3-panel w3-teal w3-round-large w3-padding-16 w3-margin-bottom">
@@ -24,11 +24,12 @@
 
     <!-- Messages Django -->
     {% for message in messages %}
-    <div class="w3-panel w3-round
+    <div class="w3-panel w3-round alert
         {% if message.tags == 'success' %}w3-green
         {% elif message.tags == 'error'   %}w3-red
         {% elif message.tags == 'warning' %}w3-orange
         {% else %}w3-blue{% endif %}">
+        <button class="w3-btn w3-right w3-bold w3-black w3-round w3-margin" onclick="s('.alert').remove()">X</button>
         <p>{{ message }}</p>
     </div>
     {% endfor %}
