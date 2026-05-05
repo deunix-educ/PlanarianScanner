@@ -48,6 +48,8 @@ d'analyse distantes.
 ---
 ## Fonctionnalités
 
+Application 1: Scanner de tube à essais
+
 - Pilotage du bras CNC en GRBL — déplacement automatique puits par puits
 - Calibration des multi-puits avec synchro base de données
 - Acquisition image haute définition via ArduCam (OpenCV + Picamera2)
@@ -62,43 +64,60 @@ d'analyse distantes.
 - Interface administration Django (sqlite3 ou mariadb ou postgresql)
 - Suivi de progression des tâches longues par polling
 
-Supporte plusieurs planaires avec paramètres configurables via django ou csv.
+Application 2: planarian Détection et suivi multi-individus de planaires dans un tube.
 
-Export CSV par planaire compatible EthoVision XT.
+- Supporte plusieurs planaires avec paramètres configurables via django ou csv.
 
+    - Stratégie :
+    
+        - Soustraction de fond MOG2 (léger sur Raspberry Pi 4)
+        - Détection de tous les contours valides (surface >= min_area_px)
+        - Association frame-à-frame par distance euclidienne minimale
+          via algorithme hongrois (scipy.optimize.linear_sum_assignment)
+        - Un état inter-frame indépendant par individu (PlanarianState)
+        - Retourne une liste de résultats, un par individu suivi
 
-### Seuils EthoVision par défaut (configurables via django ou csv)
+- Export CSV par planaire compatible EthoVision XT.
+- Métriques par frame :
 
-- **Immobile** : déplacement < 0.2 mm/s
-- **Mobile** : 0.2 à 1.5 mm/s
-- **Très mobile** : > 1.5 mm/s
+    - Mobilité    : velocity, distance, moving, mobility_state
+    - Thigmo      : dist_to_wall_mm, near_wall
+    - Photo       : dist_to_light_mm, heading_to_light_deg, fleeing_light
+    - Chemo       : dist_to_food_mm, heading_to_food_deg, approaching_food, in_food_zone
+    - Social      : nearest_neighbour_mm, in_avoid_zone, in_aggreg_zone, chem_repulsion_level
 
-| EthoVision | CSV frames | CSV summary |
-|---|---|---|
-| movedCenter-pointTotalmm | total_distance_mm | movedCenter_pointTotal_mm |
-| VelocityCenter-pointMeanmm/s | velocity_mm_s | velocity_mean_mm_s |
-| MovementMoving | moving, duration_moving_s | movement_moving_duration_s |
-| MovementNot Moving | duration_stopped_s | movement_not_moving_duration_s |
-| ImmobileFrequency / Duration | mobility_state | mobility_immobile_frequency/duration_s |
-| MobileFrequency / Duration | mobility_state | mobility_mobile_frequency/duration_s |
-| Highly mobileFrequency / Duration | mobility_state | mobility_highly_mobile_frequency/duration_s |
+- Métriques résumé (summary) :
 
-### Métriques calculées
+    - Mobilité    : movedCenter_pointTotal_mm, velocity_mean_mm_s, durations par état
+    - Thigmo      : thigmotaxis_pct_time_near_wall
+    - Photo       : photo_pct_time_fleeing, photo_mean_dist_mm, photo_latency_s
+    - Chemo       : chemo_pct_time_approaching, chemo_pct_time_in_zone,
+                  chemo_latency_s, chemo_mean_dist_mm
+    - Social      : social_pct_time_avoiding, social_pct_time_aggregating,
+                  social_mean_nn_mm, social_contact_events
 
-- Distance totale parcourue (mm) → movedCenter-pointTotalmm
-- Vitesse instantanée (mm/s) → VelocityCenter-pointMeanmm/s
-- Durée cumulée en mouvement (s) → MovementMoving
-- Durée cumulée à l'arrêt (s) → MovementNot Moving
-- Fréquence et durée par état de mobilité → Mobility state (EthoVision)
-- Distance à la paroi (mm) → thigmotactisme
+- Seuils EthoVision par défaut (configurables via django ou csv)
 
-### Comportements
+    - **Immobile** : déplacement < 0.2 mm/s
+    - **Mobile** : 0.2 à 1.5 mm/s
+    - **Très mobile** : > 1.5 mm/s
 
-- **Thigmotactisme** : attraction vers la paroi (--thigmotaxis)
-- **Phototactisme** : fuite de la lumière (--photo-mode, --photo-strength)
-- **Chimiotactisme** : attraction vers une source de nourriture (--chemo-strength)
-- **Inter-individus** : évitement de contact, agrégation, répulsion chimique
+    | EthoVision | CSV frames | CSV summary |
+    |---|---|---|
+    | movedCenter-pointTotalmm | total_distance_mm | movedCenter_pointTotal_mm |
+    | VelocityCenter-pointMeanmm/s | velocity_mm_s | velocity_mean_mm_s |
+    | MovementMoving | moving, duration_moving_s | movement_moving_duration_s |
+    | MovementNot Moving | duration_stopped_s | movement_not_moving_duration_s |
+    | ImmobileFrequency / Duration | mobility_state | mobility_immobile_frequency/duration_s |
+    | MobileFrequency / Duration | mobility_state | mobility_mobile_frequency/duration_s |
+    | Highly mobileFrequency / Duration | mobility_state | mobility_highly_mobile_frequency/duration_s |
 
+- Comportements
+    
+    - **Thigmotactisme** : attraction vers la paroi (--thigmotaxis)
+    - **Phototactisme** : fuite de la lumière (--photo-mode, --photo-strength)
+    - **Chimiotactisme** : attraction vers une source de nourriture (--chemo-strength)
+    - **Inter-individus** : évitement de contact, agrégation, répulsion chimique
 
 ---
 
