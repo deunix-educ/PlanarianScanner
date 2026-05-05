@@ -64,7 +64,7 @@ d'analyse distantes.
 - Interface administration Django (sqlite3 ou mariadb ou postgresql)
 - Suivi de progression des tâches longues par polling
 
-### Application 2: planarian Détection et suivi multi-individus de planaires dans un tube.
+### Application 2: Détection de planaires et suivi multi-individus dans un tube.
 
 
 [🎬 Vidéo Simulation planaires](https://youtu.be/pkzClmBp_KM)
