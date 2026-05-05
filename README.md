@@ -119,6 +119,36 @@ Application 2: planarian Détection et suivi multi-individus de planaires dans u
     - **Chimiotactisme** : attraction vers une source de nourriture (--chemo-strength)
     - **Inter-individus** : évitement de contact, agrégation, répulsion chimique
 
+Application 4: Simulation de planaires
+
+- planarian_sim.py 
+
+    Espace circulaire de 16mm de diamètre, 500x500px
+    Supporte plusieurs planaires avec paramètres configurables via arguments CLI.
+    Export CSV par planaire compatible EthoVision XT.
+
+        Comportements simulés :
+            - Thigmotactisme  : attraction vers la paroi (--thigmotaxis)
+            - Phototactisme   : fuite de la lumière (--photo-mode, --photo-strength)
+            - Chimiotactisme  : attraction vers une source de nourriture (--chemo-strength)
+            - Inter-individus : évitement de contact, agrégation, répulsion chimique
+    
+        Usage:
+            python3 planarian_sim.py [options]
+        
+        Exemples:
+            python3 planarian_sim.py --count 5 --thigmotaxis 0.4
+            python3 planaire_sim.py --count 5 --photo-mode fixed --photo-x 0.2 --photo-y 0.2 --photo-strength 0.6
+            python3 planarian_sim.py --count 5 --chemo-x 0.7 --chemo-y 0.5 --chemo-strength 0.5
+            python3 planarian_sim.py --count 5 --avoid-strength 0.6 --aggreg-strength 0.2
+        
+- make_videos.sh 
+    
+    - Générateur de vidéos paramétrables
+    
+        Usage:
+             - ./make_video.sh  (génère le fichier par défaut)
+             - ./make_video.sh  all (génère 24 vidéos pour 24 tubes à essais)             
 ---
 
 ## Architecture

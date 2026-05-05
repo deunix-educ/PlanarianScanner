@@ -12,13 +12,13 @@ Comportements simulés :
     - Inter-individus : évitement de contact, agrégation, répulsion chimique
 
 Usage:
-    python3 planaire_sim.py [options]
+    python3 planarian_sim.py [options]
 
 Exemples:
-    python3 planaire_sim.py --count 5 --thigmotaxis 0.4
-    python3 planaire_sim.py --count 5 --photo-mode fixed --photo-x 0.2 --photo-y 0.2 --photo-strength 0.6
-    python3 planaire_sim.py --count 5 --chemo-x 0.7 --chemo-y 0.5 --chemo-strength 0.5
-    python3 planaire_sim.py --count 5 --avoid-strength 0.6 --aggreg-strength 0.2
+    python3 planarian_sim.py --count 5 --thigmotaxis 0.4
+    python3 planarian_sim.py --count 5 --photo-mode fixed --photo-x 0.2 --photo-y 0.2 --photo-strength 0.6
+    python3 planarian_sim.py --count 5 --chemo-x 0.7 --chemo-y 0.5 --chemo-strength 0.5
+    python3 planarian_sim.py --count 5 --avoid-strength 0.6 --aggreg-strength 0.2
 """
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'home.settings')
