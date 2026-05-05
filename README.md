@@ -66,6 +66,10 @@ d'analyse distantes.
 
 ### Application 2: planarian Détection et suivi multi-individus de planaires dans un tube.
 
+
+[🎬 Vidéo Simulation planaires](https://youtu.be/pkzClmBp_KM)
+
+
 - Supporte plusieurs planaires avec paramètres configurables via django ou csv.
 
     - Stratégie :
