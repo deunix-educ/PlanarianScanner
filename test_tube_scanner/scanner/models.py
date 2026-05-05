@@ -7,7 +7,7 @@ import json
 from django_celery_beat.models import PeriodicTask, ClockedSchedule
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
-
+from django.utils.text import slugify
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
@@ -227,12 +227,23 @@ def create_well_position(sender, instance, created, **kwargs):
 class Experiment(models.Model):
     title = models.CharField(_("Titre de l'expérience"), max_length=100, null=True, blank=False)
     comment =  models.TextField(_("Commentaires"), help_text=_("Descriptions de l'expérience"), null=True, blank=True)
+    identifier = models.CharField(_("Identifiant d'expérience"), unique=True, max_length=100, null=True, blank=False )
+
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
     multiwell = models.ForeignKey(MultiWell, verbose_name=_("Multi-puits"), on_delete=models.SET_NULL, null=True, blank=True)
     created = models.DateTimeField(_("Date de création"), default=timezone.now)
     started = models.DateTimeField (_("Date de début"), null=True, blank=True)
     finished = models.DateTimeField (_("Date de fin"), null=True, blank=True)
     
+    def save(self, *args, **kwargs):
+        self.identifier = slugify(f'{self.title}')
+        super().save(*args, **kwargs)
+
+
+    @classmethod
+    def by_identifier(cls, identifier):
+        return Experiment.objects.filter(identifier__exact=identifier).first()
+
 
     class Meta:
         ordering = ['-created', ]

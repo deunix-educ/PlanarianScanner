@@ -21,8 +21,6 @@ print("Django BASE_DIR:", BASE_DIR)
 PACKAGE_DIR = BASE_DIR.parent
 APP_DATAS = PACKAGE_DIR / config('APP_DATAS')
 
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -394,17 +392,15 @@ EXPORT_REMOTE_PATH = config("EXPORT_REMOTE_PATH")
 EXPORT_DESTINATIONS = ["local", "remote"]
 #EXPORT_DESTINATIONS = ["remote"] # only remote
 
-
+## tracker default parameters
+#
 TRACKER_TUBE_AXIS = "vertical"
-TRACKER_MIN_AREA = 20                # surface min planaire px x px
+TRACKER_MIN_AREA = 20               # surface min planaire px x px
 TRACKER_MAX_AREA_RATIO = 0.1        # 5% de la frame = surface max acceptable
-TRACKER_MAX_PLANARIANS = 1          
+TRACKER_MAX_PLANARIANS = 4         
 TRACKER_MERGE_KERNEL_SIZE = 15      # augmenter si fragments résiduels
 TRACKER_MIN_CONTOUR_DIST_PX = 40    # augmenter si IDs multiples persistent
 
-
 CALIBRATION_AUTO_DURATION = 45.0
 CALIBRATION_AUTO_TIMEOUT = 2.5
-
-
 

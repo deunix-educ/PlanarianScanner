@@ -185,7 +185,7 @@ class ScannerProcess(Task):
             if capture_type == 'file':
                 from modules.videofile_capture import VideoFileCapture
                 self.cam = VideoFileCapture(
-                    video_file=settings.MEDIA_ROOT / 'simulation' / 'default-simulation.mp4',
+                    video_file=settings.MEDIA_ROOT / 'simulation' / 'default_simulation.mp4',
                     fps=self.video_fps,
                     width=self.video_width,
                     height=self.video_height,

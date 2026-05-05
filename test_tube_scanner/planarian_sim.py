@@ -174,6 +174,7 @@ def parse_args():
                     help="Position Y de la nourriture (fraction 0-1)")
     cg.add_argument("--chemo-radius",   type=float, default=2.0,
                     help="Rayon d'influence du chimiotactisme en mm")
+    
 
     # --- Interactions inter-individus ---
     ig = parser.add_argument_group(
@@ -186,6 +187,7 @@ def parse_args():
                     help="Rayon d'évitement en mm")
     ig.add_argument("--aggreg-strength", type=float, default=0.0,
                     help="Force d'agrégation — attraction vers les congénères (0=désactivé)")
+    
     ig.add_argument("--aggreg-radius",   type=float, default=6.0,
                     help="Rayon d'agrégation en mm (doit être > --avoid-radius)")
     ig.add_argument("--chem-repulsion",  type=float, default=0.0,
