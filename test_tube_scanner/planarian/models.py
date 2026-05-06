@@ -135,7 +135,7 @@ class ExperimentConfig(models.Model):
     def to_params_dict(self) -> dict:
         """Retourne un dict compatible avec ExperimentParams."""
         return {
-            "experiment":            self.idendifier,
+            "experiment":            self.identifier,
             "well":                  self.well.name,
             "px_per_mm":             self.px_per_mm,
             "fps":                   self.fps,

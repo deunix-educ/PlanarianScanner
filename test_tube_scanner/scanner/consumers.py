@@ -24,7 +24,6 @@ class ScannerConsumer(AsyncWebsocketConsumer):
         logger.info( f"==== Disconnect from {self.this_group}")
 
     async def scanner_message(self, event):
-        logger.info( f"===={event.get('type')}")
         await self.send(text_data=json.dumps(event["text"]))
 
     ## Receive message from WebSocket

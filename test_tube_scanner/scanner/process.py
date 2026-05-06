@@ -27,7 +27,7 @@ from modules import reductstore, grbl, utils, planarian_metrics
 from modules.circular_crop import CircularCrop, CropStrategy
 from .multiwell import MultiWellManager
 from .constants import ScannerConstants
-#from . import models
+from . import models
 
 
 @dataclass
@@ -248,10 +248,12 @@ class ScannerProcess(Task):
             self.stop_event.set()
 
     def start_services(self):
-        Thread(target=self._listen_to_redis, daemon=True).start()
+        Thread(target=self._init_manager, daemon=True).start()
         Thread(target=self._recording, daemon=True).start()
         Thread(target=self._init_grbl, daemon=True).start()
+        Thread(target=self._listen_to_redis, daemon=True).start()
         self.cam.start()
+
         logger.warning(f"Scanner services started ...")
 
     def _send(self, **payload):
@@ -267,20 +269,21 @@ class ScannerProcess(Task):
             self._send(**msg)
     
     
-    def _store_metrics(self, uuid, metrics, ts):
+    def _store_metric(self, uuid, metrics, ts):
+        
+        if not isinstance(metrics, list):
+            return
         for r in metrics:
-            pid = r["planarian_id"]
+            pid = r["planarian_id"]            
             record = self.cam._metrics[pid].update(r, well_radius_mm=self.cam._params.well_radius_mm)
-            logger.warning(f"{record}")
-            
-            async_to_sync(planarianDB.store_metrics)(
+
+            async_to_sync(planarianDB.store_metric)(
                 record,
                 self.cam._params.experiment,
-                self.cam._params.well_name,
+                self.cam._params.well,
                 entry_name=uuid,
                 planarian=pid,
                 record_type='metrics',
-                ts_us=ts,
             )
                   
     def _store_frame(self, uuid, frame, ts, frame_count):
@@ -292,15 +295,14 @@ class ScannerProcess(Task):
         self.recordDB.write(uuid, frame, ts=ts, labels=labels)
                  
     def _on_frame(self, jpeg_bytes: bytes, ts: datetime, metrics: dict, frame_count: int = 0) -> None:
-        
-        if self.data.record:
-            self.record_queue.put((self.data.uuid, ts, jpeg_bytes, metrics, frame_count))
-        if self.data.play:
-            try:
-                jpeg=base64.b64encode(jpeg_bytes).decode()
-                self._send(ts=ts.timestamp(), jpeg=jpeg, frame_count=frame_count)
-            except Exception as e:
-                logger.error(f"----_on_frame: {e}")
+        try:
+            if self.data.record:
+                self.record_queue.put((self.data.uuid, ts, jpeg_bytes, metrics, frame_count))
+            if self.data.play:
+                    jpeg=base64.b64encode(jpeg_bytes).decode()
+                    self._send(ts=ts.timestamp(), jpeg=jpeg, frame_count=frame_count)
+        except Exception as e:
+            logger.error(e)
 
                 
     def _recording(self):
@@ -308,8 +310,11 @@ class ScannerProcess(Task):
         while not self.stop_event.is_set():
             try:
                 (uuid, ts, frame, metrics, frame_count) = self.record_queue.get()
-                self._store_metrics(uuid, metrics, ts)                               
-                self._frame_store(uuid, frame, ts, frame_count)
+                if self.cam.use_tracking:
+                    self._store_metric(uuid, metrics, ts)
+                                              
+                self._store_frame(uuid, frame, ts, frame_count)
+                
                 self.record_queue.task_done()
             except Exception as e:
                 logger.error(f'recorder: {e}')
@@ -324,15 +329,19 @@ class ScannerProcess(Task):
         self.grbl.wait_for(2.0)
 
 
+    def _init_manager(self):
+        logger.info(f"==== Start MultiWellManager!")
+        self.manager = MultiWellManager(process=self)
+        self.manager.set_calib_debug(False)
+        Event().wait(2.0)
+
+
     def _listen_to_redis(self):
         try:
             logger.info(f"==== Scanner {self.group}: listen via redisDB")
             pubsub = redisDB.pubsub()
             pubsub.subscribe(self.group)
-            #self._init_grbl()
-            self.manager = MultiWellManager(process=self)
-            self.manager.set_calib_debug(False)
-            
+
             for message in pubsub.listen():
                 try:
                     #logger.info(f"{message}")
@@ -356,12 +365,22 @@ class ScannerProcess(Task):
                         elif topic == 'scan' or topic == 'simulate':                           
                             logger.info(f"==== Scan {cmd}")
                             sid = cmd.get("session", '0')
+                            
                             if sid == "0":
                                 self._send(state='error', msg=str(_('La session est nulle!...')))
                             else:
-                                self.cam._active_median = False
-                                self.manager.scanning(sid, simulate=(topic=='simulate'))
-                                self._send(state=topic, msg=str(_('Balayage démarré...')))
+
+                                try:
+                                    self.cam._active_median = False
+                                    simulate = (topic=='simulate')   
+                                    self.manager.scan_process(sid, simulate)
+
+                                    self._send(state=topic, msg=str(_('Balayage démarré...')))
+                                except Exception as e:
+                                    logger.error(f"Scan error: {e}")
+                                    self._send(state='error', msg=str(_('Erreur lors du démarrage du balayage...')))
+                                    
+                            continue
                                 
                     elif cmd["type"]=="calibrate":
                         topic = cmd.get("topic")

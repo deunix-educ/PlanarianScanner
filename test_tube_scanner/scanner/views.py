@@ -1,7 +1,7 @@
 #
 from asgiref.sync import async_to_sync
 import base64, json
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
@@ -12,7 +12,7 @@ from reduct.time import unix_timestamp_to_iso
 from modules.system_stats import get_cached_stats, start_background_updater
 from modules import reductstore
 
-from .tasks import download_video, export_all_images, export_all_videos
+from .tasks import download_video, export_all_images, export_all_videos, supervisor_restart_service
 from .process import CameraRecordManager, cameraDB
 from . import models
 from .constants import ScannerConstants
@@ -157,6 +157,17 @@ def images_view(request):
 
 
 ## replay
+@require_GET
+@csrf_exempt
+def restart_all(request):
+    #http://scanner.local:9001/index.html?processname=test_tube%3Aservices&action=restart
+    #http://scanner.local:9001/index.html?processname=test_tube%3AwebUI&action=start
+    #http://scanner.local:9001/index.html?action=restartall
+    #supervisor_restart_service('index.html?action=restartall')
+    supervisor_restart_service('index.html?processname=test_tube%3Aservices&action=restart')
+    return JsonResponse({"state":  True})
+
+
 @require_POST
 @csrf_exempt
 def download_api(request):
@@ -167,8 +178,8 @@ def download_api(request):
         return download_video.delay(uuid, dt_start, dt_stop, frame_rate=frame_rate)  # @UndefinedVariable
     else:
         return JsonResponse({"state":  False})
-
-
+    
+    
 def get_video(uuid):
     oldest, latest = async_to_sync(reductstore.old_last_dates)(cameraDB, entry_name=uuid)
     filters = record_manager.set_filters(test=False)

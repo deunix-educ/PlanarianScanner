@@ -84,7 +84,7 @@ class VideoCaptureInterface(abc.ABC):
         
         self._tracker = None
         self._metrics = None
-        self._paramss = None
+        self._params = None
 
         # Tracker générique, pour simulation
         self.on_test_well_change(**self.DEFAULT_TRACKER_CONFIG)
@@ -94,14 +94,17 @@ class VideoCaptureInterface(abc.ABC):
             dead_zone_px      = 5,       # en-dessous → rien à faire
             display           = display,
         )
-        self.align_detection   = None     # résultat du test
+        self.align_detection  = None     # résultat du test
 
 
     def on_test_well_change(self, **cfg):
-        if self.use_tracking and cfg:
-            self._tracker = PlanarianTracker(**cfg)
-            logger.warning(f"New tracker conf: {cfg}")
-    
+        try:
+            if self.use_tracking and cfg:
+                self._tracker = PlanarianTracker(**cfg)
+                logger.info("Tracker de test créé avec conf : %s", cfg)
+        except Exception as e:
+            logger.error(f"Error creating tracker with conf {cfg}: {e}")
+            self._tracker = None
 
     def on_well_change(self, cfg):
         """
@@ -112,10 +115,12 @@ class VideoCaptureInterface(abc.ABC):
         if not self.use_tracking:
             return
         
-        params = self.DEFAULT_TRACKER_CONFIG if not cfg else cfg.to_params_dict()
-        
+        params = self.DEFAULT_TRACKER_CONFIG if not cfg else cfg.to_params_dict()        
         self._params = ExperimentParams(params)
-        self._metrics = self._params.build_metrics()
+        #self._metrics = self._params.build_metrics()
+        
+        self._metrics = [self._params.build_metrics() for _ in range(self._params.planarian_count)]
+        
         self._tracker = PlanarianTracker(
             tube_axis      = self._params.tube_axis,
             min_area_px    = self._params.min_area_px,
@@ -265,12 +270,13 @@ class VideoCaptureInterface(abc.ABC):
         :return:           Image traitée (JPEG ou PNG selon la stratégie)
         """
         metrics = {"detected": False}
+        
         if self._circular_crop is not None:
             jpeg  = self._circular_crop.process(jpeg_bytes)
             nparr = np.frombuffer(jpeg, np.uint8)
             frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
             if frame is None:
-                return jpeg, metrics
+                return jpeg, metrics        
             try:            
                 # Mode debug
                 if self._aligner.debug:
@@ -278,7 +284,7 @@ class VideoCaptureInterface(abc.ABC):
                     annotated = self.align_detection.get('frame_annotated')
                     frame = annotated if annotated is not None else frame
                 ##
-                # mode racking
+                # mode tracking
                 if self.use_tracking:
                     ts = datetime.now(timezone.utc).timestamp()
                     frame, metrics = self._tracker.process(frame, ts)

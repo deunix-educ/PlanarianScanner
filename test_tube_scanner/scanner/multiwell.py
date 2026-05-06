@@ -7,6 +7,8 @@ Created on 20 avr. 2026
 
 @author: denis
 '''
+
+
 import logging
 import time
 from threading import Thread, Event
@@ -18,9 +20,7 @@ from planarian.models import ExperimentConfig
 from . import models
 
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 class WellIterator:
     """Itérateur personnalisé pour naviguer dans les Wells"""
@@ -76,8 +76,11 @@ class WellIterator:
 class MultiWellManager:
 
     def __init__(self, process):
+        
         self.process = process
         self.cnc_controller = process.grbl
+        
+        logger.info(f"MultiWellManager initialized with CNC controller: {self.cnc_controller}")
         
         self.stop_playing = Event()
         self.well_iterator = None       
@@ -86,6 +89,19 @@ class MultiWellManager:
         self.set_multiwell()
         self.scan_thread = None
         self.test_thread = None
+        
+        self.tracker_config =  dict(
+            tube_axis = settings.TRACKER_TUBE_AXIS,
+            min_area_px = self.process.conf.min_area_px,
+            max_area_ratio = self.process.conf.max_area_ratio,
+            max_planarians = self.process.conf.max_planarians,
+            merge_kernel_size = self.process.conf.merge_kernel_size,
+            min_contour_dist_px = self.process.conf.min_contour_dist_px,
+        )
+        
+
+        
+    def set_tracker_config(self):
         self.tracker_config = dict(
             tube_axis = settings.TRACKER_TUBE_AXIS,
             min_area_px = self.process.conf.min_area_px,
@@ -93,8 +109,8 @@ class MultiWellManager:
             max_planarians = self.process.conf.max_planarians,
             merge_kernel_size = self.process.conf.merge_kernel_size,
             min_contour_dist_px = self.process.conf.min_contour_dist_px,
-        )      
-        
+        )
+        logger.info(f"Tracker config: {self.tracker_config}")
 
     def set_default_values(self, feed=None, step=None, duration=None):
         self._feed = feed or self.process.conf.calibration_default_feed
@@ -136,7 +152,8 @@ class MultiWellManager:
         well = well_position.well
         multiwell = experiment.multiwell
         if self.process.use_tracking:
-            # Paramètres d'une expérience PlanarianScanner
+            logger.info("# Paramètres d'une expérience PlanarianScanner")
+            
             cfg = ExperimentConfig.objects.get(experiment_id=experiment.id, well_id=well.id)
             # reset PlanarianTracker => on_well_change
             self.process.cam.on_well_change(cfg)
@@ -151,7 +168,7 @@ class MultiWellManager:
         while not self.stop_playing.is_set():
             if time.monotonic() - start > multiwell.duration:
                 break
-            self.cnc_controller.wait_for(1.0)
+            self.cnc_controller.wait_for(0.1)
             
         self.process.data.record = False
         self.process.data.uuid = None
@@ -175,10 +192,12 @@ class MultiWellManager:
             
             ## change file 
             if self.process.conf.capture_type == 'file':
-                vf = settings.MEDIA_ROOT / 'simulation' / f'{wl.name}.mp4'
+                vf = settings.MEDIA_ROOT / 'simulation' / f'{wl.well.name}.mp4'
                 if vf.exists():
                     self.process.cam._video_file = str(vf)
-                self.process.cam._error_occured = True             
+                self.process.cam._error_occured = True  
+                     
+                logger.info(f"Simulating capture with file {vf}")      
             
             self._grid_scanning_capture(experiment, wl, simulate=simulate)
          
@@ -188,58 +207,60 @@ class MultiWellManager:
              
 
     def _start_scanning(self, session, experiments, simulate=False):
-        self.process.cam._aligner.debug = False
-        xynext = []
-        for obs in experiments:
-            xynext.append((obs.multiwell.xbase, obs.multiwell.ybase))
-        xynext.append((0, 0))
-
-        pos = 1
-        self.process.data.session = session.id
-        started = timezone.now()
-        for obs in experiments:
+        try:
+            self.process.cam._aligner.debug = False
+            xynext = []
+            for obs in experiments:
+                xynext.append((obs.multiwell.xbase, obs.multiwell.ybase))
+            xynext.append((0, 0))
+    
+            pos = 1
+            self.process.data.session = session.id
+            started = timezone.now()
+            for obs in experiments:
+                if self.stop_playing.is_set():
+                    break
+                obs.started = timezone.now()
+                obs.save()
+                xnext, ynext = xynext[pos]
+                pos +=1
+                self._grid_scanning(obs, xnext=xnext, ynext=ynext, simulate=simulate)
+                obs.finished = timezone.now()
+                obs.save()
+                
+            session.finished = timezone.now()
             if self.stop_playing.is_set():
-                break
-            obs.started = timezone.now()
-            obs.save()
-            xnext, ynext = xynext[pos]
-            pos +=1
-            self._grid_scanning(obs, xnext=xnext, ynext=ynext, simulate=simulate)
-            obs.finished = timezone.now()
-            obs.save()
-            
-        session.finished = timezone.now()
-        if self.stop_playing.is_set():
-            msg = f"Session {session.name} abandonnée à {session.finished} après {session.finished - started} secondes."
-        else:
-            if not simulate:
-                session.active = False
-                if session.scanning_task:
-                    session.scanning_task.enabled = False
-                session.save()
-            
-            msg = f"Session {session.name} terminée à {session.finished} après {session.finished - started} secondes."
-        logger.info(msg)
-        self.process._send(scan_state=msg)
-        self.scan_thread = None
+                msg = f"Session {session.name} abandonnée à {session.finished} après {session.finished - started} secondes."
+            else:
+                if not simulate:
+                    session.active = False
+                    if session.scanning_task:
+                        session.scanning_task.enabled = False
+                    session.save()
+                msg = f"Session {session.name} terminée à {session.finished} après {session.finished - started} secondes."
+            logger.info(msg)
+            self.process._send(scan_state=msg)
+        finally:
+            self.scan_thread = None
 
 
     def halt_scanning(self):
         self.process.data.record = False
         self.stop_playing.set()
         self.well_iterator.reset()
-        self.process.cam._aligner.debug = False   
+        self.process.cam._aligner.debug = False
+        self.scan_thread = None
+        self.test_thread = None
 
          
-    def scanning(self, sid, simulate=False):
-        try:
-            if self.scan_thread:
-                return
-            session = models.Session.objects.get(pk=sid)
-            experiments = models.SessionExperiment.experiment_by_session(sid)
-            self.scan_thread = Thread(target=self._start_scanning, args=(session, experiments, simulate, ), daemon=True).start()
-        except Exception as e:
-            print("MultiWellManager::scan error", e)       
+    def scan_process(self, sid, simulate=False):
+        if self.scan_thread:
+            return
+        session = models.Session.objects.get(pk=sid)
+        experiments = models.SessionExperiment.experiment_by_session(sid)      
+
+        self.scan_thread = Thread(target=self._start_scanning, args=(session, experiments, simulate, ), daemon=True)
+        self.scan_thread.start()
 
 
     def previous_well(self):
@@ -316,22 +337,24 @@ class MultiWellManager:
                             self.process._send(state='center', msg=msg)
 
                     self.cnc_controller.wait_for(0.1)
-            logger.info("Fin du centrage")        
+            logger.info("Fin du test")        
         except Exception as e:
-            print(e)
-              
+            logger.error("Error during scanning test", e)
+        finally:
+            self.test_thread = None
+            
         self.well_iterator.reset()
         self.process.cam._aligner.debug = False
 
         logger.info(f"Scan terminé — retour à l'origine (X=0, Y=0) en {int(time.monotonic()-start_test)} s")
         self.cnc_controller.move_to(0, 0, feed=self.multiwell.feed*2)
-        self.test_thread = None
         
         
     def scan_test(self, auto=False):
         if self.test_thread:
             return
-        self.test_thread = Thread(target=self._scanning_test, args=(auto, ), daemon=True).start()
+        self.test_thread = Thread(target=self._scanning_test, args=(auto, ), daemon=True)
+        self.test_thread.start()
 
 
     @property

@@ -20,6 +20,10 @@ import cv2
 import numpy as np
 
 from scipy.optimize import linear_sum_assignment
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 # Nombre maximum de planaires suivis simultanément par tube
 MAX_PLANARIANS = 10
@@ -386,7 +390,6 @@ class PlanarianTracker:
         for state in self._states:
             if state.idx not in assigned_slots:
                 state.mark_lost()
-
         return frame_out, results
 
     # ------------------------------------------------------------------ #

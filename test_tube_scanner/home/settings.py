@@ -239,6 +239,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGGING_FILE = config('LOGGING_FILE')
 IS_LOGGING = config('IS_LOGGING', cast=bool)
+IS_LOGGING = False
 
 LOGGING = None if not IS_LOGGING else {
     'version': 1,

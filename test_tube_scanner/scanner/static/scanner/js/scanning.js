@@ -23,6 +23,7 @@ class ScannerManager {
         this.area_px      = options.area_px; 
         this.frame_count  = options.frame_count; 
         this.scan_state   = options.scan_state;
+        this.sim_bt       = options.simulate;
     }
 
     init_controls() {
@@ -30,6 +31,7 @@ class ScannerManager {
         this.crop.addEventListener('click',  (e) => { this._send({ type: 'calibrate', topic: "crop" }); });
         this.scan_bt.addEventListener('click',  (e) => { this.scan(); });
         this.halt_bt.addEventListener('click',  (e) => { this.halt(); });
+        this.sim_bt.addEventListener('click',  (e) => { this.simulate(); });
     }
 
     registerSocket(socket)  {
@@ -58,6 +60,7 @@ class ScannerManager {
 
     init()          { this.axes = 0;  this.cropping = 1; this._send({ type: 'scanner', topic: "init", });  }
     scan()          { this._send({ type: 'scanner', topic: "scan", session: this.session.value ? this.session.value: "0" }); }
+    simulate()      { this._send({ type: 'scanner', topic: "simulate", session: this.session.value ? this.session.value: "0" }); }
     halt()          { this._send({ type: 'calibrate', topic: "halt" }); }
 
     _send(message)  { this.socket.send(message); }

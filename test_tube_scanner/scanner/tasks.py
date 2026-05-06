@@ -1,6 +1,7 @@
 # tasks.py
 import asyncio
 import json
+import requests
 from celery import shared_task, group, chord, chain
 from celery.utils.log import get_task_logger
 from django.utils import timezone
@@ -214,4 +215,64 @@ def on_scanning_done(result: dict, session_id: str):
     session.save(update_fields=["scanning_status", "scanning_finished_at"])
     
     logger.info("==== Scanning done: session %s", session_id)
+    
+    
+@shared_task
+def http_request(req_type='json_post', url=None, user=None, passwd=None, headers={}, **kwargs):
+
+    def json_post():
+        return requests.post(url, json=kwargs, headers=headers, auth=(user, passwd), timeout=3)
+
+    def post():
+        return requests.post(url, params=kwargs, headers=headers, auth=(user, passwd), timeout=3)
+
+    def get():
+        return requests.get(url, params=kwargs, headers=headers, auth=(user, passwd), timeout=3)
+
+    request = {
+        'json_post': json_post,
+        'post': post,
+        'get':get
+    }
+    retries = 3
+    for attempt in range(retries):
+        try:
+            response = request[req_type]()
+            response.raise_for_status()
+            try:
+                data = response.json()
+            except ValueError:
+                data = response.text
+
+            resp = {"success": True, "data": data}
+            logger.info(data)
+            return resp
+
+        except requests.exceptions.Timeout:
+            logger.error(f"{attempt + 1}/{retries}: Délai d'attente dépassé")
+        except requests.exceptions.ConnectionError:
+            logger.error(f"{attempt + 1}/{retries}: Erreur de connexion")
+        except requests.exceptions.HTTPError as e:
+            raise
+        except Exception as e:
+            logger.error(f"Erreur inattendue: {str(e)}")  
+            
+@shared_task
+def supervisor_restart_service(params):
+    """
+    Redémarre un service.
+    
+    """
+    try:
+        logger.warning("==== Supervisor scanner restart all services")
+        http_request(
+            req_type='get',
+            url=f'http://localhost:9001/{params}',
+            user='root',
+            passwd='toor',
+            headers={}
+        )
+    except Exception as e:
+        logger.error(f"supervisor_restart_all_services error {e}")
+
     
