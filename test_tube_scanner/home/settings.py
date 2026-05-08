@@ -370,6 +370,8 @@ GROUP = config('GROUP')
 SERVER_HOST_PORT = config('SERVER_HOST_PORT', cast=int)
 SERVER_HOST_IP = config('SERVER_HOST_IP')
 
+LOCAL_IP_SERVER = config('LOCAL_IP_SERVER')
+
 # ws
 SCANNER_WEBSOCKET_ROUTE = 'ws/scanner'
 REPLAY_WEBSOCKET_ROUTE = 'ws/replay'
@@ -386,6 +388,8 @@ DATETIME_FORMAT = '%d-%m-%Y-%m %H:%M:%S'
 #
 # rpicam 4056x3040 2028x1080 2028x1520
 #===========================
+
+GRBL_SIMULATION = True
 
 EXPORTS_LOCAL_PATH = config("EXPORTS_LOCAL_PATH")
 EXPORT_REMOTE_PATH = config("EXPORT_REMOTE_PATH")

@@ -149,10 +149,7 @@
             </div>
         </div>    
         {% if conf.tracking %}
-        <div class="w3-row w3-row-padding w3-light-grey w3-margin-1 w3-round w3-round-large w3-margin-top"> 
-             <div class="w3-col"><input id="_track_it" type="checkbox" value="0" onclick="if (this.checked){this.value='1';}else{ this.value='0';}"> 
-                {% trans 'Configuration du tracking' %}
-             </div>
+        <div class="w3-row w3-row-padding w3-light-grey w3-padding-small w3-margin-1 w3-round w3-round-large w3-margin-top w3-left-align w3-paddin-top"> 
              <div class="w3-half">
                 <input id="_min_area_px" type="number" min="5" max="100" step="1" class="w3-round" value="{{ conf.min_area_px }}"
                     title="{% trans 'surface minimale de contour pour être considéré valide (px carré)' %}"><br>{% trans 'Min contour' %}            
@@ -172,7 +169,11 @@
             <div class="w3-half">
                 <input id="_max_planarians" type="number" min="1" max="10" step="1" class="w3-round" value="{{ conf.max_planarians }}"
                     title="{% trans 'Nombre maximum de planaires à suivre simultanément (1-10)' %}"><br>{% trans 'Planaires' %}          
-            </div>              
+            </div>
+             <div class="w3-half">
+                <input id="_draw" type="checkbox" value="0" onclick="if (this.checked){this.value='1';}else{ this.value='0';}" title="{% trans 'Dessiner le contour' %}">
+                <span class="w3-nbsp">{% trans 'Contour' %}</span>
+            </div>                    
         </div>    
         {% endif %}
         <div class="w3-row w3-row-padding"> 
@@ -260,7 +261,7 @@
             max_planarians : sId("_max_planarians"),
             merge_kernel_size : sId("_merge_kernel_size"),
             min_contour_dist_px : sId("_min_contour_dist_px"),
-            track : sId("_track_it")
+            draw : sId("_draw")
         };          
     </script>
     <script src="/static/scanner/js/calibration.js"></script>

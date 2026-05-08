@@ -43,12 +43,14 @@ class ScannerManager {
         this.crop_radius = options.crop_radius;
         this.calib_auto  = options.calib_auto;
         
-        this.min_area_px = options.min_area_px;
-        this.max_area_ratio = options.max_area_ratio;
-        this.max_planarians = options.max_planarians;
-        this.merge_kernel_size = options.merge_kernel_size;
-        this.min_contour_dist_px = options.min_contour_dist_px;
-        this.track = options.track;
+        try {
+            this.min_area_px = options.min_area_px;
+            this.max_area_ratio = options.max_area_ratio;
+            this.max_planarians = options.max_planarians;
+            this.merge_kernel_size = options.merge_kernel_size;
+            this.min_contour_dist_px = options.min_contour_dist_px;
+            this.draw = options.draw;
+        } catch(e) {}    
     }
     
     init_controls() {       
@@ -79,12 +81,14 @@ class ScannerManager {
         this.calib_auto.addEventListener('click',   (e) => { this._send({ type: 'calibrate', topic: "auto" }); });
         this.halt.addEventListener('click',         (e) => { this._send({ type: 'calibrate', topic: "halt" }); });
         
-        this.min_area_px.addEventListener('change',         (e) => { this._send({ type: 'calibrate', topic: "min_area_px", value: e.target.value }); });
-        this.max_area_ratio.addEventListener('change',      (e) => { this._send({ type: 'calibrate', topic: "max_area_ratio", value: e.target.value }); });
-        this.max_planarians.addEventListener('change',      (e) => { this._send({ type: 'calibrate', topic: "max_planarians",  value: e.target.value}); });
-        this.merge_kernel_size.addEventListener('change',   (e) => { this._send({ type: 'calibrate', topic: "merge_kernel_size",  value: e.target.value}); });
-        this.min_contour_dist_px.addEventListener('change', (e) => { this._send({ type: 'calibrate', topic: "min_contour_dist_px", value: e.target.value }); });
-        this.track.addEventListener('click',                (e) => { this._send({ type: 'calibrate', topic: "track", value: e.target.value }); });
+        try { 
+            this.min_area_px.addEventListener('change',         (e) => { this._send({ type: 'calibrate', topic: "min_area_px", value: e.target.value }); });
+            this.max_area_ratio.addEventListener('change',      (e) => { this._send({ type: 'calibrate', topic: "max_area_ratio", value: e.target.value }); });
+            this.max_planarians.addEventListener('change',      (e) => { this._send({ type: 'calibrate', topic: "max_planarians",  value: e.target.value}); });
+            this.merge_kernel_size.addEventListener('change',   (e) => { this._send({ type: 'calibrate', topic: "merge_kernel_size",  value: e.target.value}); });
+            this.min_contour_dist_px.addEventListener('change', (e) => { this._send({ type: 'calibrate', topic: "min_contour_dist_px", value: e.target.value }); });
+            this.draw.addEventListener('click',                (e) => { this._send({ type: 'calibrate', topic: "draw", value: e.target.value }); });
+        } catch(e) {}    
     }
 
     registerSocket(socket)  {
@@ -99,16 +103,6 @@ class ScannerManager {
             if (payload.xy)     { this.x.textContent=payload.x.toFixed(2); this.y.textContent=payload.y.toFixed(2); }
             if (payload.state)  { this.debug.insertAdjacentHTML('afterbegin', `<li>[ ${++this.debug_count} - ${payload.state} ]: ${payload.msg}</li>`); }
             if (payload.ts)     { this.ts.textContent = timestampToLocalISOString(payload.ts); }
-
-            /*
-            if (payload.detected && use_tracking) { 
-                this.cx.textContent = payload.cx; this.cy.textContent = payload.cy;
-                this.speed_px_s.textContent = payload.speed_px_s; 
-                this.axial_speed.textContent = payload.axial_speed; 
-                this.axial_pos.textContent = payload.axial_pos;
-                this.area_px.textContent = payload.area_px; 
-                this.frame_count.textContent = payload.count;           
-            }*/
             
             if (payload.buttons) { this.well_btn.innerHTML = payload.buttons; }
             if (payload.current >= 0) {                 
@@ -117,7 +111,6 @@ class ScannerManager {
                     btn.classList.remove('w3-green'); 
                 });
              }
-
         } catch(e) { console.log(e); }
     }
     

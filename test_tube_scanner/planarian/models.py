@@ -77,13 +77,13 @@ class ExperimentConfig(models.Model):
 
     merge_kernel_size = models.PositiveIntegerField(
         _("Taille du kernel"), 
-        help_text=_("taille du kernel elliptique de fusion des fragments (px)"), 
+        help_text=_("taille du kernel elliptique de fusion des fragments (px). Augmenter si fragments résiduels"), 
         default=15
     )
     
     min_contour_dist_px = models.PositiveIntegerField(
         _("Distance <contour>"), 
-        help_text=_("Distance min entre deux contours pour les considérer comme individus distincts. Défaut : 40px."), 
+        help_text=_("Distance min entre deux contours pour les considérer comme individus distincts. Défaut : 40px. Augmenter si IDs multiples persistent"), 
         default=40
     )
 

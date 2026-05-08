@@ -172,6 +172,7 @@ class PlanarianTracker:
         max_planarians:     int   = 1,
         merge_kernel_size:  int   = 15,
         min_contour_dist_px:int   = 40,
+        draw_contours:       bool = True,
     ):
         """
         Args:
@@ -189,6 +190,7 @@ class PlanarianTracker:
         self.min_area_px    = min_area_px
         self.max_area_ratio = max_area_ratio
         self.max_planarians = max(1, min(max_planarians, MAX_PLANARIANS))
+        self.draw_contours  = draw_contours
 
         # Un état inter-frame par slot individu
         self._states = [PlanarianState(i) for i in range(self.max_planarians)]
@@ -368,10 +370,13 @@ class PlanarianTracker:
             # Mise à jour de l'état
             state.update(cx, cy, ts)
 
-            # Annotation visuelle
-            color = INDIVIDUAL_COLORS[slot_idx % len(INDIVIDUAL_COLORS)]
-            cv2.drawContours(frame_out, [contour], -1, color, 2)
-            self._draw_center(frame_out, cx, cy, slot_idx, speed_px_s, axial_pos, color)
+            
+            if self.draw_contours:
+                
+                # Annotation visuelle
+                color = INDIVIDUAL_COLORS[slot_idx % len(INDIVIDUAL_COLORS)]
+                cv2.drawContours(frame_out, [contour], -1, color, 2)        
+                self._draw_center(frame_out, cx, cy, slot_idx, speed_px_s, axial_pos, color)
 
             results.append({
                 "planarian_id": slot_idx,

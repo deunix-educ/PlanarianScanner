@@ -101,21 +101,21 @@ class VideoCaptureInterface(abc.ABC):
         try:
             if self.use_tracking and cfg:
                 self._tracker = PlanarianTracker(**cfg)
-                logger.info("Tracker de test créé avec conf : %s", cfg)
+                logger.info(f"Tracker de test créé avec conf: {cfg}")
         except Exception as e:
             logger.error(f"Error creating tracker with conf {cfg}: {e}")
             self._tracker = None
 
-    def on_well_change(self, cfg):
+    def on_well_change(self, cfg, draw_contours=False):
         """
         Appelé par la CNC lors du changement de puits.
         Réinitialise le fond appris et l'état inter-frame du tracker.
         Construit les métriques aussi
         """
-        if not self.use_tracking:
+        if not self.use_tracking or not cfg:
             return
         
-        params = self.DEFAULT_TRACKER_CONFIG if not cfg else cfg.to_params_dict()        
+        params = cfg.to_params_dict()        
         self._params = ExperimentParams(params)
         #self._metrics = self._params.build_metrics()
         
@@ -128,9 +128,13 @@ class VideoCaptureInterface(abc.ABC):
             max_planarians = self._params.planarian_count,
             merge_kernel_size = self._params.merge_kernel_size,
             min_contour_dist_px = self._params.min_contour_dist_px,
+            draw_contours = draw_contours,
         )
 
-
+    def set_draw_contours(self, draw: bool = True):
+        if self._tracker:
+            self._tracker.draw_contours = draw
+            
     # ------------------------------------------------------------------
     # Méthodes abstraites — obligatoires dans les sous-classes
     # ------------------------------------------------------------------

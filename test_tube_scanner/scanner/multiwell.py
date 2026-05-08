@@ -149,66 +149,83 @@ class MultiWellManager:
         
     #def _grid_scanning_capture(self, uuid, duration):
     def _grid_scanning_capture(self, experiment, well_position, simulate=False):
-        well = well_position.well
-        multiwell = experiment.multiwell
-        if self.process.use_tracking:
-            logger.info("# Paramètres d'une expérience PlanarianScanner")
+        try:
+            well = well_position.well
+            multiwell = experiment.multiwell
+            if self.process.use_tracking:               
+                cfg = ExperimentConfig.objects.filter(experiment_id=experiment.id, well_id=well.id).first()
+                if not cfg:
+                    raise Exception(f"Configuration d'expérience introuvable pour {experiment} / {well}")
+                # reset PlanarianTracker => on_well_change
+                self.process.cam.on_well_change(cfg, draw_contours=False)
             
-            cfg = ExperimentConfig.objects.get(experiment_id=experiment.id, well_id=well.id)
-            # reset PlanarianTracker => on_well_change
-            self.process.cam.on_well_change(cfg)
-        
-        uuid = f'{self.process.data.session}-{multiwell.position}-{well.name}'
-        ## start recording   
-        self.process.data.uuid = uuid
-        if not simulate:
-            self.process.data.record = True
-        
-        start = time.monotonic()
-        while not self.stop_playing.is_set():
-            if time.monotonic() - start > multiwell.duration:
-                break
-            self.cnc_controller.wait_for(0.1)
+            uuid = f'{self.process.data.session}-{multiwell.position}-{well.name}'
+            ## start recording   
+            self.process.data.uuid = uuid
+            if not simulate:
+                self.process.data.record = True
             
-        self.process.data.record = False
-        self.process.data.uuid = None
-        
-        msg = f"{uuid}: capture done"
+            start = time.monotonic()
+            while not self.stop_playing.is_set():
+                if time.monotonic() - start > multiwell.duration:
+                    break
+                self.cnc_controller.wait_for(0.1)
+                
+            self.process.data.record = False
+            self.process.data.uuid = None
+            
+            msg = f"{uuid}: capture done..."
+        except Exception as e:
+            msg = f"error during capture - {e}"
+            logger.error(msg)
+
         logger.info(msg)
-        self.process._send(scan_state=msg)      
-               
+        self.process._send(scan_state=msg)               
+    
+    
+    def _capture_file_simulation(self, name):
+        vf = settings.MEDIA_ROOT / 'simulation' / f'{name}.mp4'
+        if vf.exists():
+            self.process.cam._video_file = str(vf)
+        self.process.cam._error_occured = True  
+        logger.info(f"Simulating capture with file {vf}")           
+
         
     def _grid_scanning(self, experiment, xnext=0, ynext=0, simulate=False):
-        multiwell = experiment.multiwell
-        wells = models.WellPosition.objects.filter(multiwell_id=multiwell.id).order_by('order').all()
-        cam = self.process.cam
-        cam._aligner.set_tube_diameter(multiwell.diameter)    
+        try:
+            multiwell = experiment.multiwell
+            wells = models.WellPosition.objects.filter(multiwell_id=multiwell.id).order_by('order').all()
+            cam = self.process.cam
+            cam._aligner.set_tube_diameter(multiwell.diameter)    
+    
+            for wl in wells:
+                if self.stop_playing.is_set():
+                    break
+                self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)  
+                
+                ## change file 
+                if self.process.conf.capture_type == 'file':
+                    self._capture_file_simulation(wl.well.name)   
+                
+                self._grid_scanning_capture(experiment, wl, simulate=simulate)
+            msg =f"Scan terminé — retour à l'origine (X={xnext:.1f}  Y={ynext:.1f})"
+            logger.info(msg)
+            self.process._send(state='scan_finished', msg=msg)
+                  
+        except Exception as e: 
+            msg = f"Error during grid scanning - {e}"
+            logger.error(msg)
+            self.process._send(state='error', msg=msg)
             
-        self.stop_playing = Event()
-        for wl in wells:
-            if self.stop_playing.is_set():
-                break
-            self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)  
-            
-            ## change file 
-            if self.process.conf.capture_type == 'file':
-                vf = settings.MEDIA_ROOT / 'simulation' / f'{wl.well.name}.mp4'
-                if vf.exists():
-                    self.process.cam._video_file = str(vf)
-                self.process.cam._error_occured = True  
-                     
-                logger.info(f"Simulating capture with file {vf}")      
-            
-            self._grid_scanning_capture(experiment, wl, simulate=simulate)
-         
-            
-        logger.info(f"Scan terminé — retour à l'origine (X={xnext:.1f}  Y={ynext:.1f})")
-        self.cnc_controller.move_to(xnext, ynext, feed=multiwell.feed*2)
+        finally: 
+            self.cnc_controller.move_to(xnext, ynext, feed=multiwell.feed*2)
              
 
     def _start_scanning(self, session, experiments, simulate=False):
         try:
             self.process.cam._aligner.debug = False
+            self.stop_playing.clear()
+            
             xynext = []
             for obs in experiments:
                 xynext.append((obs.multiwell.xbase, obs.multiwell.ybase))
@@ -240,6 +257,8 @@ class MultiWellManager:
                 msg = f"Session {session.name} terminée à {session.finished} après {session.finished - started} secondes."
             logger.info(msg)
             self.process._send(scan_state=msg)
+        except Exception as e:
+            logger.error("Error during scanning process", e)
         finally:
             self.scan_thread = None
 
@@ -265,20 +284,28 @@ class MultiWellManager:
 
     def previous_well(self):
         wl = self.well_iterator.previous()
+        if self.process.conf.capture_type == 'file':
+            self._capture_file_simulation(wl.well.name)
         self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)
-        return {"state": "previous", "msg": f">>> ({wl.x}, {wl.y})"} 
+        return {"state": "previous", "msg": f">>> {wl.well.name}: ({wl.x}, {wl.y})"} 
      
      
     def next_well(self):
         wl = self.well_iterator.next()
+        if self.process.conf.capture_type == 'file':
+            self._capture_file_simulation(wl.well.name)
+                    
         self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)
-        return {"state": "next", "msg": f">>> ({wl.x}, {wl.y})"} 
+        return {"state": "next", "msg": f">>> {wl.well.name}: ({wl.x}, {wl.y})"} 
     
     
     def goto_well(self, numwell):
         wl = self.well_iterator.seek(numwell)
+        if self.process.conf.capture_type == 'file':
+            self._capture_file_simulation(wl.well.name)     
+                 
         self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)
-        return {"state": "goto", "msg": f">>> ({wl.x}, {wl.y})"}    
+        return {"state": "goto", "msg": f">>> {wl.well.name}: ({wl.x}, {wl.y})"}    
     
     
     def set_well_position(self):
@@ -293,7 +320,7 @@ class MultiWellManager:
                                    
 
     def _scanning_test(self, auto=False):       
-        self.stop_playing = Event()
+        self.stop_playing.clear()
         cam = self.process.cam
         cam._aligner.set_tube_diameter(self.multiwell.diameter)
         duration = self.duration if not auto else settings.CALIBRATION_AUTO_DURATION        
@@ -355,7 +382,6 @@ class MultiWellManager:
             return
         self.test_thread = Thread(target=self._scanning_test, args=(auto, ), daemon=True)
         self.test_thread.start()
-
 
     @property
     def position(self):
@@ -421,13 +447,11 @@ class MultiWellManager:
     def dy(self, value):
         self._dy = value
 
-
     def get_well_order(self):
         wl = self.well_iterator.get_current() 
         if wl:
             return wl.order
         return None
-
 
     def set_position(self):
         x, y = self.cnc_controller.get_mpos()
@@ -438,7 +462,6 @@ class MultiWellManager:
         wl.x, wl.y = x, y
         wl.px_per_mm = self.px_per_mm
         wl.save()
-
         
     def calib_toggle_debug(self):
         """    Active / désactive le mode debug sur le stream."""

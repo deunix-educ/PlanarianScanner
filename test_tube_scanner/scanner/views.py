@@ -1,7 +1,7 @@
 #
 from asgiref.sync import async_to_sync
 import base64, json
-from django.shortcuts import render, redirect
+from django.shortcuts import render #, redirect
 from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
@@ -12,7 +12,7 @@ from reduct.time import unix_timestamp_to_iso
 from modules.system_stats import get_cached_stats, start_background_updater
 from modules import reductstore
 
-from .tasks import download_video, export_all_images, export_all_videos, supervisor_restart_service
+from .tasks import download_video, export_all_images, export_all_videos
 from .process import CameraRecordManager, cameraDB
 from . import models
 from .constants import ScannerConstants
@@ -39,6 +39,8 @@ def global_context(request, **ctx):
         app_title=settings.APP_TITLE,
         app_sub_title=settings.APP_SUB_TITLE,
         domain_server=settings.DOMAIN_SERVER,
+        local_ip_server=settings.LOCAL_IP_SERVER,
+        host_port=settings.SERVER_HOST_PORT,
         conf=conf,
         default_position = default_multiwell.position or 'HD',
         export_destination=settings.EXPORT_DESTINATIONS,
@@ -50,28 +52,44 @@ def admin_view(request):
     return render(request, "scanner/iframe.html", context=global_context(request, link='/admin/'))
 
 @login_required
+def admin_session_view(request):
+    return render(request, "scanner/iframe.html", context=global_context(request, link='/admin/scanner/session/'))
+
+@login_required
+def admin_experiment_view(request):
+    return render(request, "scanner/iframe.html", context=global_context(request, link='/admin/scanner/experiment/'))
+
+@login_required
+def admin_experimentconfig_view(request):
+    return render(request, "scanner/iframe.html", context=global_context(request, link='/admin/planarian/experimentconfig/'))
+
+@login_required
+def admin_periodictask_view(request):
+    return render(request, "scanner/iframe.html", context=global_context(request, link='/admin/django_celery_beat/periodictask/'))
+
+@login_required
 def reductstore_view(request):
-    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:8383/'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:8383/'))
 
 @login_required
 def adminer_view(request):
-    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}/adminer/'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}/adminer/'))
 
 @login_required
 def portainer_view(request):
-    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9000/'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9000/'))
 
 @login_required
 def supervisor_view(request):
-    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9001/'))
 
 @login_required
 def supervisor_worker(request):
-    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/logtail/test_tube:services'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9001/logtail/test_tube:services'))
 
 @login_required
 def supervisor_scheduler(request):
-    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/logtail/test_tube:planification'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9001/logtail/test_tube:planification'))
 
 ## Mainboard
 @login_required

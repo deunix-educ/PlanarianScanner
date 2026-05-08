@@ -37,6 +37,11 @@ CAPTURE_TYPE = [
     ('webcam', _("Webcam")),
     ('file', _("mp4")),
 ]
+
+TUBE_AXIS_TYPE = [
+    ('vertical', _("Vertical")),
+    ('horizontal', _("Horizontal")),
+]
     
 class Configuration(models.Model):
     name = models.CharField(_("Nom de la Configuration"), help_text=_("Nom de la configuration"), max_length=100, null=True, blank=False, default=_("Configuration par défaut"))
@@ -66,14 +71,15 @@ class Configuration(models.Model):
     calibration_default_duration = models.FloatField(_("Duruée calibration"), help_text=_("Durée de pose entre chaque puits en s"), default=3.0)
     # tracking
     tracking = models.BooleanField(_("Suivi"), help_text=_("Suivi et analyse des planaires"), default=False)
+    tube_axis = models.CharField(_("Axe du puit"), help_text=_("Axe du tube"), default='vertical', max_length=16, choices=TUBE_AXIS_TYPE, null=True, blank=False)
     min_area_px = models.PositiveIntegerField(_("Surface minimale"), help_text=_("surface minimale d'un contour pour être considéré valide (px²)"), default=20)
     max_area_ratio = models.FloatField(_("surface maximale "), help_text=_("surface maximale d'un contour en fraction de la frame (défaut 10%)"), default=0.10)
     max_planarians = models.PositiveIntegerField(_("Max planaire"), help_text=_("nombre maximum de planaires à suivre simultanément (1-10)"), default=1)
-    merge_kernel_size = models.PositiveIntegerField(_("Taille du kernel"), help_text=_("taille du kernel elliptique de fusion des fragments (px)"), default=15)
-    min_contour_dist_px = models.PositiveIntegerField(_("Distance <contour>"), help_text=_("Distance min entre deux contours pour les considérer comme individus distincts. Défaut : 40px."), default=40)
+    merge_kernel_size = models.PositiveIntegerField(_("Taille du kernel"), help_text=_("taille du kernel elliptique de fusion des fragments (px). Augmenter si fragments résiduels"), default=15)
+    min_contour_dist_px = models.PositiveIntegerField(_("Distance <contour>"), help_text=_("Distance min entre deux contours pour les considérer comme individus distincts. Défaut : 40px. Augmenter si IDs multiples persistent"), default=40)
     #
     active = models.BooleanField(_("Actif"), default=False)
-    
+
     
     @classmethod
     def active_config(cls):
@@ -115,7 +121,7 @@ class MultiWell(models.Model):
     row_order = models.CharField(_("Ordre ligne"), help_text=_('Ordre ligne de puit. Lecture en serpentin dans le sens des +- X'), max_length=16, null=True, blank=False, default="D,C,B,A")
     # Balayage
     order = models.PositiveSmallIntegerField(_("Ordre"), help_text=_('Ordre de lecture du multi-puit'), blank=False, default=0)
-    duration = models.PositiveIntegerField(_("Durée"), help_text=_('Durée du film en secondes'), blank=False, default=120)
+    duration = models.PositiveIntegerField(_("Durée"), help_text=_('Durée du film en secondes por la calibration'), blank=False, default=10)
     xbase = models.FloatField(_("Origine X"), help_text=_('Base origine X en mm'), blank=False, default=50.0)
     ybase = models.FloatField(_("Origine Y"), help_text=_('Base origine Y en mm'), blank=False, default=50.0)
 
@@ -231,6 +237,7 @@ class Experiment(models.Model):
 
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
     multiwell = models.ForeignKey(MultiWell, verbose_name=_("Multi-puits"), on_delete=models.SET_NULL, null=True, blank=True)
+    duration = models.PositiveIntegerField(_("Durée"), help_text=_('Durée de la prise de vue en secondes'), blank=False, default=120)
     created = models.DateTimeField(_("Date de création"), default=timezone.now)
     started = models.DateTimeField (_("Date de début"), null=True, blank=True)
     finished = models.DateTimeField (_("Date de fin"), null=True, blank=True)

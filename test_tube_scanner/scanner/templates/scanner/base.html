@@ -11,6 +11,43 @@
         <a href="#" class="w3-bar-item w3-mobile w3-btn w3-hover-opacity w3-right w3-xlarge w3-text-green" onclick="goFullscreen()" title="{% trans 'Ecran plein' %}">
             <i class="fa-solid fa-maximize"></i>
         </a>
+        {% if request.user.is_superuser %}
+		<div class="w3-dropdown-hover w3-right">	    
+		    <button class="w3-button w3-dark-plus">&#9776;&nbsp;<span>{% trans "Administrations" %}</span></button>
+		    <div class="w3-dropdown-content w3-bar-block w3-border w3-dark-low"  style="right:.25em;">
+			        <hr class="w3-bar-item divider w3-grey">
+
+	                <a href="{% url 'scanner:admin' %}"  class="w3-bar-item w3-btn w3-hover-opacity" title="{% trans "Accès django" %}">
+	                    <i class="fa-solid fa-gear w3-text-pink"></i> {% trans "Base de données" %}
+	                </a>
+                    <a href="{% url 'scanner:supervisor' %}"  class="w3-bar-item w3-btn w3-hover-opacity" target="_blank" title="{% trans "Accès système" %}">
+                         <i class="fa-solid fa-gears w3-text-purple"></i> {% trans "Supervision des services" %}
+                    </a>
+                    	          
+	                <a href="{% url 'scanner:reductstore' %}"  class="w3-bar-item w3-btn w3-hover-opacity" target="_blank" title="{% trans "Accès système" %}">
+	                    <img class="w3-no-padding" src="/static/img/reductstore.png" style="width: 24px"> {% trans "Base de données Reductstore" %}
+	                </a>
+	                <a href="{% url 'scanner:adminer' %}"  class="w3-bar-item w3-btn w3-hover-opacity" target="_blank" title="{% trans "Accès système" %}">
+	                    <img class="w3-no-padding" src="/static/img/adminer.png" style="width: 28px"> {% trans "Base de données mariadb" %}
+	                </a>
+
+	                <a href="{% url 'scanner:logs_scheduler' %}"  class="w3-bar-item w3-btn w3-hover-opacity" target="_blank">
+	                     <i class="fa-regular fa-file-lines w3-text-orange"></i> {% trans "Logs des planifications" %}
+	                </a>   
+	                <a href="{% url 'scanner:logs_worker' %}"  class="w3-bar-item w3-btn w3-hover-opacity" target="_blank">
+	                     <i class="fa-regular fa-file-lines w3-text-amber"></i> {% trans "Logs des services" %}
+	                </a>    		        
+
+		        <hr class="w3-bar-item divider w3-grey">
+		        <form method="post" action="{% url 'logout' %}">
+		            {% csrf_token %}
+		            <button class="w3-bar-item w3-btn w3-hover-opacity" type="submit">
+		               <i class="fa-solid fa-right-from-bracket w3-text-red"></i> {% trans 'Déconnexion' %}
+		            </button>
+		        </form>
+		    </div>
+         </div>
+         {% endif %}        
     </div>
 {% endblock  %}
 {% block sidebar %}
@@ -63,51 +100,28 @@
 	{% block sidebar_list %}
 	<div class="w3-dark-light w3-padding-small">
         {% block sidebar_command %}{% endblock  %}
-
-        {% if request.user.is_superuser  %}
-        <div>
-            <div class="w3-dark-light w3-margin-top-6">
-                <a href="#" class="w3-btn w3-padding-small" onclick="toggleDisplay(sId('_admin'))"><span class="w3-text-orange w3-xlarge">&#x26F6;</span>
-                 {% trans "Administration" %}
-                </a>
-            </div>
-	        <div id="_admin" style="display:none">
-		        <a href="{% url 'scanner:admin' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left">
-		            <i class="fa-solid fa-gear w3-text-pink"></i> {% trans "Administration base de données" %}
-		        </a>
-		        <a href="{% url 'scanner:reductstore' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left" target="_blank">
-		            <img class="w3-no-padding" src="/static/img/reductstore.png" style="width: 24px"> {% trans "Base de données Reductstore" %}
-		        </a>
-		        <a href="{% url 'scanner:adminer' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left" target="_blank">
-		            <img class="w3-no-padding" src="/static/img/adminer.png" style="width: 28px"> {% trans "Base de données mariadb" %}
-		        </a>
-		        <!--a href="{% url 'scanner:portainer' %}"  class="w3-bar-item w3-btn w3-hover-opacity" w3-margin-left target="_blank">
-		             <img class="w3-no-padding" src="/static/img/portainer.png" style="width: 28px"> {% trans "Portainer" %}
-		        </a-->
-                <a href="{% url 'scanner:supervisor' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left" target="_blank">
-                     <i class="fa-solid fa-gears w3-text-purple"></i> {% trans "Supervisor" %}
-                </a>
-                <a href="{% url 'scanner:logs_scheduler' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left" target="_blank">
-                     <i class="fa-regular fa-file-lines w3-text-orange"></i> {% trans "Logs des planifications" %}
-                </a>   
-                <a href="{% url 'scanner:logs_worker' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-left" target="_blank">
-                     <i class="fa-regular fa-file-lines w3-text-amber"></i> {% trans "Logs des services" %}
-                </a>                                 
-		    </div>
-		</div>
-        {% endif %}
-
         {% block sidebar_smenu %}
-            {% if request.user.is_superuser and request.user.is_staff %}
-                <a href="{% url 'scanner:calibration' %}"  class="w3-bar-item w3-btn w3-hover-opacity w3-margin-bottom">
+            {% if request.user.is_superuser or request.user.is_staff %}
+                <a href="{% url 'scanner:session_view' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
+                    <i class="fa-solid fa-gear w3-text-purple w3-xlarge"></i> {% trans "Création de sessions d'expériences" %}
+                </a>
+                <hr class="w3-bar-item divider w3-grey"> 
+                <a href="{% url 'scanner:experimentconfig_view' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
+                    <i class="fa-solid fa-gears w3-text-pink w3-xlarge"></i> {% trans "Configuration des expériences" %}
+                </a>           
+                <a href="{% url 'scanner:experiment_view' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
+                    <i class="fa-solid fa-gear w3-text-pink w3-xlarge"></i> {% trans "Gestions des expériences" %}
+                </a>
+                <a href="{% url 'scanner:calibration' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                     <i class="fa-solid fa-wrench w3-text-red w3-xlarge"></i> {% trans "Calibration" %}
-                </a>         
+                </a>
+                <hr class="w3-bar-item divider w3-grey w3-margin-bottom"> 
             {% endif %}
             {% if conf.tracking %}
             <a href="{% url 'planarian:experiment-list' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                 <i class="fa-solid fa-vials w3-text-lime w3-xlarge"></i> {% trans "Préparation des expériences" %}
             </a>    
-            {% endif %}
+            {% endif %}   
             <a href="{% url 'scanner:scanning' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                 <i class="fa-solid fa-film w3-text-green w3-xlarge""></i> {% trans "Balayage multi-puits" %}
             </a>             

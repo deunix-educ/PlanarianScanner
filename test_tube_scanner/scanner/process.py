@@ -21,12 +21,19 @@ from celery.exceptions import Ignore
 from celery.utils.log import get_task_logger
 from redis import Redis
 from dataclasses import dataclass
-from modules import reductstore, grbl, utils, planarian_metrics
+from modules import reductstore, utils, planarian_metrics
 
 ## camera devices
 from modules.circular_crop import CircularCrop, CropStrategy
 from .multiwell import MultiWellManager
 from .constants import ScannerConstants
+
+# CNC
+if not settings.GRBL_SIMULATION:
+    from modules.grbl import GRBLController  # @UnusedImport
+else:
+    from modules.grbl_simulator import GRBLController  # @Reimport
+
 from . import models
 
 
@@ -223,7 +230,7 @@ class ScannerProcess(Task):
             self.cam._active_median = False
             self.cam.set_circular_crop(None)
             
-            self.grbl = grbl.GRBLController(
+            self.grbl = GRBLController(
                 send_callback=self._display, 
                 x_max=self.conf.grbl_xmax, 
                 y_max=self.conf.grbl_ymax
@@ -328,6 +335,8 @@ class ScannerProcess(Task):
         self._send(state='serial', msg=f"Connected {self.grbl.port}")        
         
         self.grbl.go_origin(feed=feed)
+        if self.conf.capture_type == 'file':
+            self.manager._capture_file_simulation('zero')  
         self.grbl.wait_for(2.0)
 
 
@@ -363,6 +372,7 @@ class ScannerProcess(Task):
                             self.cam.set_circular_crop(self.crop)
                             self.cam._active_median = False
                             self.grbl.go_origin(feed=self.manager.feed)
+                            self.cam.set_draw_contours(False)
 
                         elif topic == 'scan' or topic == 'simulate':                           
                             logger.info(f"==== Scan {cmd}")
@@ -371,7 +381,6 @@ class ScannerProcess(Task):
                             if sid == "0":
                                 self._send(state='error', msg=str(_('La session est nulle!...')))
                             else:
-
                                 try:
                                     self.cam._active_median = False
                                     simulate = (topic=='simulate')   
@@ -397,7 +406,8 @@ class ScannerProcess(Task):
                             position = cmd.get("position")
                             self.manager.set_multiwell(position)
                             self.cam.set_circular_crop(None)
-                            self.cam._active_median = False                          
+                            self.cam._active_median = False            
+                            self.cam.set_draw_contours(False)          
                             buttons = self.manager.multiwell_buttons()
 
                         elif topic == 'up':
@@ -444,10 +454,15 @@ class ScannerProcess(Task):
                         elif topic == 'goto_0':
                             self.grbl.go_origin(feed=self.manager.feed)
                             self.manager.well_iterator.reset()
+                            self.manager.well_iterator.seek(0)
+                            if self.conf.capture_type == 'file':
+                                self.manager._capture_file_simulation('zero')                            
                             
                         elif topic == 'goto_xy':
                             self.grbl.move_to(self.manager.xbase, self.manager.ybase, feed=self.manager.feed)
-                            self.manager.well_iterator.seek(0)
+                            wl = self.manager.well_iterator.seek(0)
+                            if self.conf.capture_type == 'file':
+                                self.manager._capture_file_simulation(wl.well.name)
                             
                         elif topic == 'xy_base':
                             self.manager.set_position()
@@ -495,9 +510,10 @@ class ScannerProcess(Task):
                             msg = self.manager.set_well_position()
                             self._send(**msg)
                             
-                        elif topic == 'track':
-                            self.cam.use_tracking = value=="1"      
-                            self._send(state=topic, msg=f"Tracking: {self.cam.use_tracking}")                                
+                        elif topic == 'draw':
+                            draw = (value=="1")
+                            self.cam.set_draw_contours(draw)
+                            self._send(state=topic, msg=f"Tracking contour: {draw}")                                
                                                     
                         elif topic in ['min_area_px', 'max_area_ratio', 'max_planarians', 'merge_kernel_size', 'min_contour_dist_px']:
                             value = int(value) if topic in ['min_area_px', 'max_planarians', 'merge_kernel_size', 'min_contour_dist_px'] else float(value)

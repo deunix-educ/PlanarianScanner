@@ -21,7 +21,7 @@ class ExperimentConfigAdmin(admin.ModelAdmin):
         (_("Identification"), {
             "fields": ("identifier", "experiment", "well", "description"),
         }),        
-        (_("Calibration optique"), {
+        (_("Calibration optique:  générée lors de la calibration"), {
             "fields": ("px_per_mm", "fps", "well_radius_mm"),
             "classes": ("collapse",),
         }),
