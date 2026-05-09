@@ -66,14 +66,15 @@ class WellPositionAdmin(admin.ModelAdmin):
     list_display = ('multiwell__position', 'well__name', 'order', 'x', 'y', 'px_per_mm', 'author',)
     
 
-#class ExperimentConfigInline(admin.TabularInline):
-#    model = models.ExperimentConfig
-#    extra = 0
+class ExperimentWellInline(admin.TabularInline):
+    model = models.ExperimentWell
+    extra = 0
+
 
 class ExperimentAdmin(admin.ModelAdmin):
-    #inlines = (ExperimenConfigInline,)
+    inlines = (ExperimentWellInline, )
     list_filter = ('session_experiments__session', 'author', )
-    list_display = ('title', 'author', 'identifier',  'multiwell', 'created', 'started', 'finished')
+    list_display = ('title', 'author', 'identifier', 'duration',  'multiwell', 'created', 'started', 'finished')
     readonly_fields = ('created', 'identifier',  'started',  'finished', )
     
 

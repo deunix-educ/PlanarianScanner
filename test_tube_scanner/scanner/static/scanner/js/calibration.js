@@ -101,16 +101,25 @@ class ScannerManager {
             if (payload.jpeg)   { this.container.src = `data:image/jpeg;base64,${payload.jpeg}`; }
             if (payload.xbase)  { this.xbase.textContent = payload.xbase;  this.ybase.textContent = payload.ybase; }
             if (payload.xy)     { this.x.textContent=payload.x.toFixed(2); this.y.textContent=payload.y.toFixed(2); }
-            if (payload.state)  { this.debug.insertAdjacentHTML('afterbegin', `<li>[ ${++this.debug_count} - ${payload.state} ]: ${payload.msg}</li>`); }
+            if (payload.state)  { 
+                if (payload.state == 'debug') {
+                    const span = this.calib_debug.querySelector("span.debug"); span.style.color = payload.value ? '#f0f': '#fff';
+                } else if (payload.state == 'median') {
+                    const span = this.median.querySelector("span.median"); span.style.color = payload.value ? '#f0f' : '#fff';
+                } else if (payload.state == 'crop') {
+                    const span = this.crop.querySelector("span.crop"); span.style.color = payload.value ? '#f0f' : '#fff';
+                }
+                this.debug.insertAdjacentHTML('afterbegin', `<li>[ ${++this.debug_count} - ${payload.state} ]: ${payload.msg}</li>`); 
+            }
             if (payload.ts)     { this.ts.textContent = timestampToLocalISOString(payload.ts); }
-            
+                        
             if (payload.buttons) { this.well_btn.innerHTML = payload.buttons; }
             if (payload.current >= 0) {                 
                 document.querySelectorAll('button.w3-button.well').forEach(btn => {
                     if (btn.value==payload.current) { btn.classList.add('w3-green'); return; }
                     btn.classList.remove('w3-green'); 
                 });
-             }
+            }
         } catch(e) { console.log(e); }
     }
     

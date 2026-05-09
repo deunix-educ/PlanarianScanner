@@ -373,7 +373,9 @@ class ScannerProcess(Task):
                             self.cam._active_median = False
                             self.grbl.go_origin(feed=self.manager.feed)
                             self.cam.set_draw_contours(False)
-
+                            buttons = self.manager.multiwell_buttons(btn_class="w3-btn", onclick="")
+                            self._send(buttons=buttons) 
+                            
                         elif topic == 'scan' or topic == 'simulate':                           
                             logger.info(f"==== Scan {cmd}")
                             sid = cmd.get("session", '0')
@@ -389,10 +391,13 @@ class ScannerProcess(Task):
                                     self._send(state=topic, msg=str(_('Balayage démarré...')))
                                 except Exception as e:
                                     logger.error(f"Scan error: {e}")
-                                    self._send(state='error', msg=str(_('Erreur lors du démarrage du balayage...')))
-                                    
+                                    self._send(state='error', msg=str(_('Erreur lors du démarrage du balayage...')))  
                             continue
-                                
+                        
+                        self._send(
+                            buttons=buttons,
+                            current=self.manager.get_well_order(),
+                        )                                
                     elif cmd["type"]=="calibrate":
                         topic = cmd.get("topic")
                         value = cmd.get("value")
@@ -424,11 +429,13 @@ class ScannerProcess(Task):
                             
                         elif topic == 'median':
                             self.cam._active_median = not self.cam._active_median
+                            self._send(state="median", value=self.cam._active_median, msg=f"Median: {self.cam._active_median}")
                             continue
                         
                         elif topic == 'crop':
                             self.cam._active_crop = not self.cam._active_crop
                             self.cam.set_circular_crop(self.crop) if self.cam._active_crop else self.cam.set_circular_crop(None)
+                            self._send(state="crop", value=self.cam._active_crop, msg=f"Crop: {self.cam._active_crop}")
                             continue
                         
                         elif topic == 'crop_radius':
@@ -452,18 +459,11 @@ class ScannerProcess(Task):
                             self.manager.duration = float(value)   
                                  
                         elif topic == 'goto_0':
-                            self.grbl.go_origin(feed=self.manager.feed)
-                            self.manager.well_iterator.reset()
-                            self.manager.well_iterator.seek(0)
-                            if self.conf.capture_type == 'file':
-                                self.manager._capture_file_simulation('zero')                            
-                            
+                            self.manager.goto_0()
+
                         elif topic == 'goto_xy':
-                            self.grbl.move_to(self.manager.xbase, self.manager.ybase, feed=self.manager.feed)
-                            wl = self.manager.well_iterator.seek(0)
-                            if self.conf.capture_type == 'file':
-                                self.manager._capture_file_simulation(wl.well.name)
-                            
+                            self.manager.goto_xy()  
+
                         elif topic == 'xy_base':
                             self.manager.set_position()
                             
@@ -488,7 +488,6 @@ class ScannerProcess(Task):
                         elif topic == 'halt':
                             self.manager.halt_scanning()
                             
-                        
                         elif topic == 'calib_debug':
                             msg = self.manager.calib_toggle_debug()
                             self._send(**msg)    

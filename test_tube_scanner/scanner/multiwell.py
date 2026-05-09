@@ -137,11 +137,11 @@ class MultiWellManager:
         return self.multiwell.config()
     
     
-    def multiwell_buttons(self):
+    def multiwell_buttons(self, btn_class="w3-button", onclick=''' onclick="goto_well(this)"'''):
         multiwells = []
         multiwells.append('''<div class="w3-border well-btn">''')
         for wl in self.well_iterator:
-            multiwells.append(f"""<button class="w3-button well" value="{wl.order}" onclick="goto_well(this)">{wl.well.name}</button>""")
+            multiwells.append(f"""<button class="{btn_class} well" value="{wl.order}"{onclick}>{wl.well.name}</button>""")
         multiwells.append('''</div>''')
         self.well_iterator.reset()
         return mark_safe("\n".join(multiwells))         
@@ -152,22 +152,27 @@ class MultiWellManager:
         try:
             well = well_position.well
             multiwell = experiment.multiwell
+            
             if self.process.use_tracking:               
                 cfg = ExperimentConfig.objects.filter(experiment_id=experiment.id, well_id=well.id).first()
                 if not cfg:
                     raise Exception(f"Configuration d'expérience introuvable pour {experiment} / {well}")
                 # reset PlanarianTracker => on_well_change
                 self.process.cam.on_well_change(cfg, draw_contours=False)
-            
+
+            ## create uuid for this capture
             uuid = f'{self.process.data.session}-{multiwell.position}-{well.name}'
+            
             ## start recording   
             self.process.data.uuid = uuid
             if not simulate:
                 self.process.data.record = True
+            self.process._send(current=well_position.order)
             
             start = time.monotonic()
             while not self.stop_playing.is_set():
-                if time.monotonic() - start > multiwell.duration:
+                ## stop after duration in experiemnt now
+                if time.monotonic() - start > experiment.duration:
                     break
                 self.cnc_controller.wait_for(0.1)
                 
@@ -190,20 +195,27 @@ class MultiWellManager:
         self.process.cam._error_occured = True  
         logger.info(f"Simulating capture with file {vf}")           
 
+
+    def _is_well_valid(self, welposition):
+        names = models.ExperimentWell.wellname_by_experiment(welposition.experiment.id)       
+        if welposition.well.name not in names:
+            return False
+        return True
         
     def _grid_scanning(self, experiment, xnext=0, ynext=0, simulate=False):
         try:
             multiwell = experiment.multiwell
-            wells = models.WellPosition.objects.filter(multiwell_id=multiwell.id).order_by('order').all()
+            wellpositions = models.WellPosition.objects.filter(multiwell_id=multiwell.id).order_by('order').all()
             cam = self.process.cam
             cam._aligner.set_tube_diameter(multiwell.diameter)    
     
-            for wl in wells:
+            for wl in wellpositions:
                 if self.stop_playing.is_set():
                     break
-                self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)  
+                if not self._is_well_valid(wl):
+                    continue
                 
-                ## change file 
+                self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)  
                 if self.process.conf.capture_type == 'file':
                     self._capture_file_simulation(wl.well.name)   
                 
@@ -305,9 +317,21 @@ class MultiWellManager:
             self._capture_file_simulation(wl.well.name)     
                  
         self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)
-        return {"state": "goto", "msg": f">>> {wl.well.name}: ({wl.x}, {wl.y})"}    
-    
-    
+        return {"state": "goto", "msg": f">>> {wl.well.name}: ({wl.x}, {wl.y})"}
+  
+  
+    def goto_xy(self):
+        wl = self.well_iterator.seek(0)
+        if self.process.conf.capture_type == 'file':
+            self._capture_file_simulation(wl.well.name) 
+        self.cnc_controller.move_to(self.xbase, self.ybase, feed=self.feed)
+  
+    def goto_0(self):
+        self.well_iterator.reset()
+        if self.process.conf.capture_type == 'file':
+            self._capture_file_simulation('zero')  
+        self.cnc_controller.move_to(0, 0, feed=self.feed*2)
+        
     def set_well_position(self):
         wl = self.well_iterator.get_current()
         if wl:
@@ -329,8 +353,12 @@ class MultiWellManager:
             for wl in self.well_iterator:
                 if self.stop_playing.is_set():
                     break
+                
                 self.cnc_controller.wait_for(2.0)
                 self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)
+                ## change file 
+                if self.process.conf.capture_type == 'file':
+                    self._capture_file_simulation(wl.well.name)                  
                 self.process._send(current=wl.order)
     
                 start = time.monotonic()
@@ -374,9 +402,9 @@ class MultiWellManager:
         self.process.cam._aligner.debug = False
 
         logger.info(f"Scan terminé — retour à l'origine (X=0, Y=0) en {int(time.monotonic()-start_test)} s")
-        self.cnc_controller.move_to(0, 0, feed=self.multiwell.feed*2)
-        
-        
+        self.goto_0()
+        self.process._send(current=self.get_well_order())
+
     def scan_test(self, auto=False):
         if self.test_thread:
             return
@@ -467,12 +495,12 @@ class MultiWellManager:
         """    Active / désactive le mode debug sur le stream."""
         aligner = self.process.cam._aligner
         aligner.debug = not aligner.debug       
-        return {"state": "debug", "msg": f"Debug: {aligner.debug}"}
+        return {"state": "debug", "value": aligner.debug, "msg": f"Debug: {aligner.debug}"}
     
     def set_calib_debug(self, value=True):
         """    Active / désactive le mode debug sur le stream."""
         aligner = self.process.cam._aligner
         aligner.debug = value      
-        return {"state": "debug", "msg": f"Debug: {aligner.debug}"}    
+        return {"state": "debug", "value": aligner.debug, "msg": f"Debug: {aligner.debug}"}    
     
     

@@ -238,6 +238,7 @@ class Experiment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
     multiwell = models.ForeignKey(MultiWell, verbose_name=_("Multi-puits"), on_delete=models.SET_NULL, null=True, blank=True)
     duration = models.PositiveIntegerField(_("Durée"), help_text=_('Durée de la prise de vue en secondes'), blank=False, default=120)
+    
     created = models.DateTimeField(_("Date de création"), default=timezone.now)
     started = models.DateTimeField (_("Date de début"), null=True, blank=True)
     finished = models.DateTimeField (_("Date de fin"), null=True, blank=True)
@@ -400,3 +401,29 @@ class SessionExperiment(models.Model):
         return f'{self.session.name}'
 
 
+class ExperimentWell(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
+    experiment = models.ForeignKey(Experiment, verbose_name=_("Expérience"), on_delete=models.SET_NULL, null=True, blank=True, related_name="experimentwell")
+    well = models.ForeignKey(Well, verbose_name=_("Puit"), on_delete=models.SET_NULL, null=True, blank=True, related_name="wellexperiment")
+    active = models.BooleanField(_("Active"), default=True)
+ 
+    @classmethod
+    def wellname_by_experiment(cls, experiment_id):
+        return [ ew.well.name for ew in ExperimentWell.objects.filter(experiment__id=experiment_id, active=True).order_by('well__order') ]
+
+    class Meta:
+        ordering = ['experiment',]
+        unique_together = ["experiment", "well", ]
+        verbose_name = _("Expérience puit")
+        verbose_name_plural = _("Expériences puitd")
+
+    def __str__(self):
+        return f'{self.experiment.title}'
+    
+
+@receiver(post_save, sender=Experiment)
+def create_experiment_well(sender, instance, created, **kwargs):
+    wells = Well.objects.all()
+    for well in wells:
+        ExperimentWell.objects.get_or_create(experiment=instance, well=well, author=instance.author, defaults={'active':True})
+     

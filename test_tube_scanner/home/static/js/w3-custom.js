@@ -1,6 +1,6 @@
 /*
 ** custom.js
-** GNU GENERAL PUBLIC LICENSE: (c) DD miraceti.net return document.querySelectorAll(id);
+** GNU GENERAL PUBLIC LICENSE: (c) DD miraceti.net 
 */
 let s   = function(sel) 			{ return document.querySelector(sel);  };
 let ss  = function(sel)             { return document.querySelectorAll(sel);  };

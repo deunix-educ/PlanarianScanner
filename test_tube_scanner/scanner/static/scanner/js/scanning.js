@@ -24,6 +24,7 @@ class ScannerManager {
         this.frame_count  = options.frame_count; 
         this.scan_state   = options.scan_state;
         this.sim_bt       = options.simulate;
+        this.well_btn     = options.well_btn;  
     }
 
     init_controls() {
@@ -46,15 +47,15 @@ class ScannerManager {
             if (payload.state)  { this.debug.insertAdjacentHTML('afterbegin', `<li>[ ${++this.debug_count} - ${payload.state} ]: ${payload.msg}</li>`); }
             if (payload.ts)     { this.ts.textContent = timestampToLocalISOString(payload.ts); }
             if (payload.scan_state) { this.scan_state.textContent=payload.scan_state;}
-
-            if (payload.detected && use_tracking) { 
-                this.cx.textContent = payload.cx; this.cy.textContent = payload.cy;
-                this.speed_px_s.textContent = payload.speed_px_s; 
-                this.axial_speed.textContent = payload.axial_speed; 
-                this.axial_pos.textContent = payload.axial_pos;
-                this.area_px.textContent = payload.area_px; 
-                this.frame_count.textContent = payload.count;           
-            }              
+            
+            if (payload.buttons) { this.well_btn.innerHTML = payload.buttons; }
+            if (payload.current >= 0) {                 
+                document.querySelectorAll('button.w3-button.well').forEach(btn => {
+                    if (btn.value==payload.current) { btn.classList.add('w3-green'); return; }
+                    btn.classList.remove('w3-green'); 
+                });
+            }
+                      
         } catch(e) { console.log(e); }
     }
 
