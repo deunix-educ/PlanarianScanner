@@ -188,12 +188,16 @@ class WellPosition(models.Model):
 
     @classmethod
     def active_well(cls, multiwell, well):
-        return WellPosition.objects.filter(multiwell_id=multiwell.id, well_id=well.id).first()    
+        return WellPosition.objects.filter(multiwell_id=multiwell.id, well_id=well.id).first()
+    
+    @classmethod
+    def well_by_multiwell(cls, multiwell):
+        return WellPosition.objects.filter(multiwell_id=multiwell.id).all()   
 
     class Meta:
         ordering = ['order']
         unique_together = ["multiwell", "well"]
-        verbose_name = _("Position d'un puit")
+        verbose_name = _("Position du puit")
         verbose_name_plural = _("Position des puits")
 
     def __str__(self):
@@ -237,15 +241,16 @@ class Experiment(models.Model):
     identifier = models.CharField(_("Identifiant d'expérience"), unique=True, max_length=100, null=True, blank=False )
 
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
-    multiwell = models.ForeignKey(MultiWell, verbose_name=_("Multi-puits"), on_delete=models.SET_NULL, null=True, blank=True)
+    multiwell = models.ForeignKey(MultiWell, verbose_name=_("Multi-puits"), on_delete=models.SET_NULL, null=True, blank=True)   
     duration = models.PositiveIntegerField(_("Durée"), help_text=_('Durée de la prise de vue en secondes'), blank=False, default=120)
     
     created = models.DateTimeField(_("Date de création"), default=timezone.now)
     started = models.DateTimeField (_("Date de début"), null=True, blank=True)
     finished = models.DateTimeField (_("Date de fin"), null=True, blank=True)
     
+    
     def save(self, *args, **kwargs):
-        self.identifier = slugify(f'{self.title}')
+        self.identifier = slugify(f'{self.created.isoformat()[:19]}-{self.id}-{self.multiwell.position}')
         super().save(*args, **kwargs)
 
 
@@ -399,7 +404,7 @@ class SessionExperiment(models.Model):
         verbose_name_plural = _("Sessions expériences")
 
     def __str__(self):
-        return f'{self.session.name}'
+        return f'{self.session.id}: {self.experiment.title}'
 
 
 class ExperimentWell(models.Model):
@@ -409,22 +414,38 @@ class ExperimentWell(models.Model):
     active = models.BooleanField(_("Active"), default=True)
  
     @classmethod
+    def well_by_experiment(cls, experiment_id):
+        return ExperimentWell.objects.filter(experiment__id=experiment_id, active=True).order_by('well__name')
+    
+    @classmethod
     def wellname_by_experiment(cls, experiment_id):
-        return [ ew.well.name for ew in ExperimentWell.objects.filter(experiment__id=experiment_id, active=True).order_by('well__name') ]
+        return [ ew.well.name for ew in ExperimentWell.objects.filter(experiment__id=experiment_id, active=True).order_by('well__name') ]    
 
     class Meta:
         ordering = ['experiment', 'well']
         unique_together = ["experiment", "well", ]
         verbose_name = _("Expérience puit")
-        verbose_name_plural = _("Expériences puitd")
+        verbose_name_plural = _("Expériences puits")
 
     def __str__(self):
         return f'{self.experiment.title}'
     
-
 @receiver(post_save, sender=Experiment)
 def create_experiment_well(sender, instance, created, **kwargs):
-    wells = Well.objects.all()
-    for well in wells:
-        ExperimentWell.objects.get_or_create(experiment=instance, well=well, author=instance.author, defaults={'active':True})
-     
+    from planarian.models import ExperimentConfig
+    from .constants import ScannerConstants
+    
+    wellposition = WellPosition.well_by_multiwell(instance.multiwell)
+    for wp in wellposition:
+        ExperimentWell.objects.get_or_create(experiment=instance, well=wp.well, author=instance.author, defaults={'active':True})
+        
+        ExperimentConfig.objects.get_or_create(
+            experiment=instance, 
+            well=wp.well, 
+            author=instance.author, 
+            defaults={
+                'px_per_mm': wp.px_per_mm,
+                'fps': ScannerConstants().get().video_frame_rate,
+                'well_radius_mm': instance.multiwell.diameter / 2, 
+            }
+        )

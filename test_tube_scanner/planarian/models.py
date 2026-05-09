@@ -1,27 +1,22 @@
 # planarian/models.py
 
 from django.db import models
-from django.dispatch import receiver
-from django.db.models.signals import post_save
 #from django.conf import settings
-
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
-from scanner.models import Experiment, Well, WellPosition
-from scanner.constants import ScannerConstants
+from scanner.models import Experiment, Well
+
 
 class ExperimentConfig(models.Model):
     """
     Paramètres d'une expérience PlanarianScanner.
     Peut être créé depuis Django admin, une vue formulaire ou un import CSV.
     """
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
-    
-    # --- Identification ---
-    identifier = models.CharField( max_length=100, verbose_name=_("Identifiant d'expérience"), help_text=_("session_1-HD-2026-04-27"), null=True, blank=True )
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)   
     experiment = models.ForeignKey(Experiment, verbose_name="Expérience", on_delete=models.CASCADE, related_name="experiment_well", null=True, blank=False)
     well = models.ForeignKey(Well, verbose_name="Puit", on_delete=models.CASCADE, related_name="well_experiment", null=True, blank=False )
-    description = models.TextField( blank=True, verbose_name=_("Description"), )
+    
+    description = models.TextField( blank=True, verbose_name=_("Description"), default="-")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Créé le"))
 
     # --- Calibration optique ---
@@ -121,8 +116,8 @@ class ExperimentConfig(models.Model):
     aggreg_radius_mm = models.FloatField(default=6.0, verbose_name=_("Rayon agrégation (mm)"))
 
     class Meta:
-        verbose_name        = _("Configuration expérience")
-        verbose_name_plural = _("Configuration des expériences")
+        verbose_name        = _("Configuration d'une expérience")
+        verbose_name_plural = _("Configurations des expériences")
         unique_together     = ("experiment", "well")
         ordering            = ["-created_at"]
 
@@ -135,8 +130,9 @@ class ExperimentConfig(models.Model):
     def to_params_dict(self) -> dict:
         """Retourne un dict compatible avec ExperimentParams."""
         return {
-            "experiment":            self.identifier,
+            "experiment":            self.experiment.identifier,
             "well":                  self.well.name,
+            
             "px_per_mm":             self.px_per_mm,
             "fps":                   self.fps,
             "well_radius_mm":        self.well_radius_mm,
@@ -158,22 +154,4 @@ class ExperimentConfig(models.Model):
             "avoid_radius_mm":       self.avoid_radius_mm,
             "aggreg_radius_mm":      self.aggreg_radius_mm,
         }
-
-    def save(self, *args, **kwargs):
-        session = self.get_session()
-        dte = self.experiment.created.isoformat()[:19]
-        self.identifier = f'{dte}-{session.id}-{self.experiment.id}-{self.experiment.multiwell.position}-{self.well.name}'      
-        super().save(*args, **kwargs)
         
-        
-        
-@receiver(post_save, sender=ExperimentConfig)
-def create_well_position(sender, instance, created, **kwargs):
-    if created:
-        active_well = WellPosition.active_well(instance.experiment.multiwell, instance.well)
-        instance.px_per_mm = active_well.px_per_mm
-        instance.well_radius_mm = instance.experiment.multiwell.diameter / 2
-        conf = ScannerConstants().get()
-        instance.fps = conf.video_frame_rate
-        instance.save()        
-

@@ -9,7 +9,7 @@ from .models import ExperimentConfig
 class ExperimentConfigAdmin(admin.ModelAdmin):
     """Admin Django pour les configurations d'expérience."""
     #readonly_fields = ('experiment',  )
-    readonly_fields = ("identifier", 'px_per_mm',  'fps', 'well_radius_mm',)
+    readonly_fields = ('px_per_mm',  'fps', 'well_radius_mm',)
     list_display  = ("experiment", "well", "px_per_mm", "fps",
                      "thresh_immobile", "thresh_mobile",
                      "photo_mode", "chemo_strength", "created_at")
@@ -19,7 +19,7 @@ class ExperimentConfigAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (_("Identification"), {
-            "fields": ("identifier", "experiment", "well", "description"),
+            "fields": ("experiment", "well", "description"),
         }),        
         (_("Calibration optique:  générée lors de la calibration"), {
             "fields": ("px_per_mm", "fps", "well_radius_mm"),
