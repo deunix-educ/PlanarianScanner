@@ -78,8 +78,7 @@ class MultiWellManager:
     def __init__(self, process):
         
         self.process = process
-        self.cnc_controller = process.grbl
-        
+        self.cnc_controller = process.grbl     
         logger.info(f"MultiWellManager initialized with CNC controller: {self.cnc_controller}")
         
         self.stop_playing = Event()
@@ -98,8 +97,6 @@ class MultiWellManager:
             merge_kernel_size = self.process.conf.merge_kernel_size,
             min_contour_dist_px = self.process.conf.min_contour_dist_px,
         )
-        
-
         
     def set_tracker_config(self):
         self.tracker_config = dict(
@@ -169,6 +166,8 @@ class MultiWellManager:
                 self.process.data.record = True
             self.process._send(current=well_position.order)
             
+            logger.info(f"Starting capture for {uuid} ordre: {well_position.order}")
+            
             start = time.monotonic()
             while not self.stop_playing.is_set():
                 ## stop after duration in experiemnt now
@@ -196,8 +195,8 @@ class MultiWellManager:
         logger.info(f"Simulating capture with file {vf}")           
 
 
-    def _is_well_valid(self, welposition):
-        names = models.ExperimentWell.wellname_by_experiment(welposition.experiment.id)       
+    def _is_well_valid(self, welposition, experiment):
+        names = models.ExperimentWell.wellname_by_experiment(experiment.id)       
         if welposition.well.name not in names:
             return False
         return True
@@ -206,13 +205,14 @@ class MultiWellManager:
         try:
             multiwell = experiment.multiwell
             wellpositions = models.WellPosition.objects.filter(multiwell_id=multiwell.id).order_by('order').all()
+            
             cam = self.process.cam
             cam._aligner.set_tube_diameter(multiwell.diameter)    
     
             for wl in wellpositions:
                 if self.stop_playing.is_set():
                     break
-                if not self._is_well_valid(wl):
+                if not self._is_well_valid(wl, experiment):
                     continue
                 
                 self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)  
@@ -223,17 +223,18 @@ class MultiWellManager:
             msg =f"Scan terminé — retour à l'origine (X={xnext:.1f}  Y={ynext:.1f})"
             logger.info(msg)
             self.process._send(state='scan_finished', msg=msg)
-                  
+            return True
         except Exception as e: 
             msg = f"Error during grid scanning - {e}"
             logger.error(msg)
             self.process._send(state='error', msg=msg)
-            
+            return False
         finally: 
             self.cnc_controller.move_to(xnext, ynext, feed=multiwell.feed*2)
              
 
     def _start_scanning(self, session, experiments, simulate=False):
+        result = False
         try:
             self.process.cam._aligner.debug = False
             self.stop_playing.clear()
@@ -247,18 +248,21 @@ class MultiWellManager:
             self.process.data.session = session.id
             started = timezone.now()
             for obs in experiments:
+                
+                logger.warning(f"Starting scan for {obs} (well {pos}/{len(experiments)})")
+                
                 if self.stop_playing.is_set():
                     break
                 obs.started = timezone.now()
                 obs.save()
                 xnext, ynext = xynext[pos]
                 pos +=1
-                self._grid_scanning(obs, xnext=xnext, ynext=ynext, simulate=simulate)
+                result = self._grid_scanning(obs, xnext=xnext, ynext=ynext, simulate=simulate)
                 obs.finished = timezone.now()
                 obs.save()
                 
             session.finished = timezone.now()
-            if self.stop_playing.is_set():
+            if self.stop_playing.is_set() or not result:
                 msg = f"Session {session.name} abandonnée à {session.finished} après {session.finished - started} secondes."
             else:
                 if not simulate:
@@ -273,6 +277,8 @@ class MultiWellManager:
             logger.error("Error during scanning process", e)
         finally:
             self.scan_thread = None
+            self.goto_0()
+            self.process._send(current=self.get_well_order())
 
 
     def halt_scanning(self):

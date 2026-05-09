@@ -373,7 +373,7 @@ class ScannerProcess(Task):
                             self.cam._active_median = False
                             self.grbl.go_origin(feed=self.manager.feed)
                             self.cam.set_draw_contours(False)
-                            buttons = self.manager.multiwell_buttons(btn_class="w3-btn", onclick="")
+                            buttons = self.manager.multiwell_buttons(btn_class="w3-btn well", onclick="")
                             self._send(buttons=buttons) 
                             
                         elif topic == 'scan' or topic == 'simulate':                           

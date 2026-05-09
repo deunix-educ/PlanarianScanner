@@ -14,7 +14,7 @@
             <div>{% trans "Choix de la session" %}</div>
             <select id="_session" class="w3-select">
                 {% for s in sessions %}
-                <option value="{{ s.id }}">{{ s.name }}</option>
+                <option value="{{ s.id }}">{{ s }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -28,26 +28,28 @@
         <div class="w3-row w3-row-padding">
 		    <div class="w3-half"> 
 		        <button id="_median" class="w3-button w3-dark-xlight w3-round-large w3-block">
-		             {% trans 'Axes' %}&nbsp;<br><i class="fa-solid fa-crosshairs w3-text-amber w3-xlarge"></i>
+		             <span class="median">{% trans 'Axes' %}</span><br><i class="fa-solid fa-crosshairs w3-text-amber w3-xlarge"></i>
 		        </button>  
 	        </div>
 	        <div class="w3-half">     
 		        <button id="_crop" class="w3-button w3-dark-xlight w3-round-large w3-block">
-		            {% trans 'Recadrer' %}<br><i class="fa-solid fa-crop w3-text-amber w3-xlarge"></i>
+		            <span class="crop" style="color: red">{% trans 'Recadrer' %}</span><br><i class="fa-solid fa-crop w3-text-amber w3-xlarge"></i>
 		        </button>
 	        </div>
         </div>
         <div class="w3-row w3-row-padding">
-	        <div class="w3-twothird w3-center">             
+	        <div class="{% if conf.scan_simulation %}w3-twothird{% else %}w3-col{% endif %} w3-center">             
 		        <button id="_scan" class="w3-button w3-light-blue w3-round-large w3-margin-top w3-block">
-		            {% trans 'Lancer' %}<br>{% trans 'le balayage' %}<br><i class="fa-solid fa-circle-check w3-text-blue w3-xlarge"></i>
+		            <span class="w3-bold">{% trans 'Lancer' %}<br>{% trans 'le balayage' %}</span><br><i class="fa-solid fa-circle-check w3-text-blue w3-xlarge"></i>
 		        </button>
 	        </div>  
+	        {% if conf.scan_simulation %}
 	        <div class="w3-third w3-center">             
 	            <button id="_simulate" class="w3-button w3-dark-xlight w3-round-large w3-margin-top w3-block">
-	                {% trans 'Simuler' %}<br>{% trans 'le balayage' %}<br><i class="fa-solid fa-triangle-exclamation w3-text-orange w3-xlarge"></i>
+	                <span class="w3-bold">{% trans 'Simuler' %}<br>{% trans 'le balayage' %}</span><br><i class="fa-solid fa-triangle-exclamation w3-text-orange w3-xlarge"></i>
 	            </button>
 	        </div>
+	        {% endif %}
 	        <div class="w3-col">
 	            <div id="_well_btn" class="w3-margin-top"></div>  	
 	        </div>         
@@ -58,10 +60,10 @@
 	        </div>        
         </div>
         <div class="w3-col">
-           <div class="w3-margin-top w3-padding w3-small">
+           <div class="w3-margin-top w3-padding-small w3-small">
                <span id="_ts"></span>
            </div>
-            <div class="w3-margin-top w3-small">
+           <div class="w3-margin-top w3-small w3-center w3-justify">
                <span id="_scan_state" class="w3-text-amber w3-padding"></span>
            </div>    
         </div>                      

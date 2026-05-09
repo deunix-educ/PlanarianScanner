@@ -64,6 +64,7 @@ class Configuration(models.Model):
     video_width_capture = models.PositiveSmallIntegerField(_("Largeur de capture vidéo"), help_text=_("Largeur de capture vidéo en pixels"), default=1280)
     video_height_capture = models.PositiveSmallIntegerField(_("Hauteur de capture vidéo"), help_text=_("Hauteur de capture vidéo en pixels"), default=720)
     # Calibration
+    scan_simulation = models.BooleanField(_("Simuler balayage"), help_text=_("Autorise la simulation du balayage"), default=False)
     calibration_crop_radius = models.PositiveSmallIntegerField(_("Rayon de découpe pour la calibration"), help_text=_("Rayon en pixels pour découper les images de calibration en px"), default=150)
     calibration_default_multiwell = models.CharField(_("Multi-puits de calibration par défaut"), help_text=_("Position du multi-puits de calibration par défaut"), max_length=8, choices=MULTIWELL_POSITION, default='HG')
     calibration_default_feed = models.PositiveIntegerField(_("Vitesse de calibration"), help_text=_("Vitesse de déplacement pour la calibration en mm/mn"), default=1000)
@@ -308,7 +309,7 @@ class Session(models.Model):
 
     def __str__(self):
         state = _("Terminée") if not self.active else _("Active")
-        return f'{self.name}: {state}'
+        return f'{self.id}: {self.name} {state}'
     
 
 @receiver(post_save, sender=Session)
@@ -409,10 +410,10 @@ class ExperimentWell(models.Model):
  
     @classmethod
     def wellname_by_experiment(cls, experiment_id):
-        return [ ew.well.name for ew in ExperimentWell.objects.filter(experiment__id=experiment_id, active=True).order_by('well__order') ]
+        return [ ew.well.name for ew in ExperimentWell.objects.filter(experiment__id=experiment_id, active=True).order_by('well__name') ]
 
     class Meta:
-        ordering = ['experiment',]
+        ordering = ['experiment', 'well']
         unique_together = ["experiment", "well", ]
         verbose_name = _("Expérience puit")
         verbose_name_plural = _("Expériences puitd")

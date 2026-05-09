@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
 from reduct.time import unix_timestamp_to_iso
 from modules.system_stats import get_cached_stats, start_background_updater
@@ -19,6 +19,10 @@ from .constants import ScannerConstants
 
 record_manager = CameraRecordManager(cameraDB)
 start_background_updater()
+
+
+def is_staff_or_admin(user):
+    return user.is_staff or user.is_superuser
 
     
 @require_GET
@@ -48,10 +52,12 @@ def global_context(request, **ctx):
     )
 
 @login_required
+@user_passes_test(is_staff_or_admin)
 def admin_view(request):
     return render(request, "scanner/iframe.html", context=global_context(request, link='/admin/'))
 
 @login_required
+
 def admin_session_view(request):
     return render(request, "scanner/iframe.html", context=global_context(request, link='/admin/scanner/session/'))
 
@@ -68,26 +74,33 @@ def admin_periodictask_view(request):
     return render(request, "scanner/iframe.html", context=global_context(request, link='/admin/django_celery_beat/periodictask/'))
 
 @login_required
+@user_passes_test(is_staff_or_admin)
 def reductstore_view(request):
+    
     return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:8383/'))
 
 @login_required
+@user_passes_test(is_staff_or_admin)
 def adminer_view(request):
     return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}/adminer/'))
 
 @login_required
+@user_passes_test(is_staff_or_admin)
 def portainer_view(request):
     return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9000/'))
 
 @login_required
+@user_passes_test(is_staff_or_admin)
 def supervisor_view(request):
     return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9001/'))
 
 @login_required
+@user_passes_test(is_staff_or_admin)
 def supervisor_worker(request):
     return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9001/logtail/test_tube:services'))
 
 @login_required
+@user_passes_test(is_staff_or_admin)
 def supervisor_scheduler(request):
     return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9001/logtail/test_tube:planification'))
 

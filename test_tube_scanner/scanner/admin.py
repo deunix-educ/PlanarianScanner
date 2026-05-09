@@ -26,10 +26,10 @@ class ConfigurationAdmin(admin.ModelAdmin):
             "classes": ("collapse",),
         }),
         (_("Camera"), {
-            "fields": ("capture_type", "webcam_device_index", "image_quality", "video_jpeg_quality", "video_frame_rate", "video_width_capture", "video_height_capture"),
+            "fields": ("scan_simulation", "capture_type", "webcam_device_index", "image_quality", "video_jpeg_quality", "video_frame_rate", "video_width_capture", "video_height_capture"),
             "classes": ("collapse",),
         }),
-        (_("Calibration"), {
+        (_("Calibration / Balayage"), {
             "fields": ("calibration_crop_radius", "calibration_default_multiwell", "calibration_default_feed", "calibration_default_step", "calibration_default_duration"),
             "classes": ("collapse",),
         }),
@@ -64,13 +64,14 @@ class MultiWellAdmin(admin.ModelAdmin):
 class WellPositionAdmin(admin.ModelAdmin):
     list_filter = ('author', 'multiwell')
     list_display = ('multiwell__position', 'well__name', 'order', 'x', 'y', 'px_per_mm', 'author',)
-    
-
+  
+  
 class ExperimentWellInline(admin.TabularInline):
     model = models.ExperimentWell
     extra = 0
-
-
+    #ordering = ('experiment__multiwell__wellposition__order',)
+    
+    
 class ExperimentAdmin(admin.ModelAdmin):
     inlines = (ExperimentWellInline, )
     list_filter = ('session_experiments__session', 'author', )

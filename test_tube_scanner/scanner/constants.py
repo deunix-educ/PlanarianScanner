@@ -22,6 +22,7 @@ class DefaultConfig:
     video_frame_rate: int = 5.0
     video_width_capture: int = 2028
     video_height_capture: int = 1520
+    scan_simulation: bool = False
     calibration_crop_radius: int = 500
     calibration_default_multiwell: str = 'HD'
     calibration_default_feed: int = 1000
