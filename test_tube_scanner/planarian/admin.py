@@ -10,9 +10,9 @@ class ExperimentConfigAdmin(admin.ModelAdmin):
     """Admin Django pour les configurations d'expérience."""
     #readonly_fields = ('experiment',  )
     readonly_fields = ('px_per_mm',  'fps', 'well_radius_mm',)
-    list_display  = ("experiment", "well", "px_per_mm", "fps",
+    list_display  = ("experiment", "well", "active", "px_per_mm", "fps",
                      "thresh_immobile", "thresh_mobile",
-                     "photo_mode", "chemo_strength", "created_at")
+                     "photo_mode", "chemo_strength", "created_at", )
     list_filter   = ("experiment", "photo_mode", "tube_axis")
     search_fields = ("experiment", "well", "description")
     ordering      = ("-created_at",)

@@ -1,4 +1,5 @@
 {% extends "planarian/base.html" %}
+
 {% load i18n %}
 
 {% block content %}
@@ -47,7 +48,9 @@
     <!-- Formulaire -->
     <form method="post" novalidate>
         {% csrf_token %}
-
+        <input type="hidden" id="_sid" name="_sid" value="{{ current_session.id }}">
+        <input type="hidden" id="_expid" name="_expid" value="{{ current_experiment.id }}">
+        
         {% if form.non_field_errors %}
         <div class="w3-panel w3-red w3-round">
             {% for error in form.non_field_errors %}
@@ -69,33 +72,24 @@
                         <label class="w3-text-blue"><b>{{ form.experiment.label }}</b></label>
                         {% if form.experiment.help_text %}
                         <p class="w3-small w3-text-grey" style="margin:0 0 4px;">{{ form.experiment.help_text }}</p>
-                        {% endif %}
-                        <!-- Saisie libre ou sélection depuis les configs existantes -->
-                        <input list="experiment-list" name="experiment" id="id_experiment"
-                               value="{{ form.experiment.value|default:'' }}"
-                               class="w3-input w3-border w3-round"
-                               placeholder="{% trans 'Ex : exp_2026_04_25' %}">
-                        <datalist id="experiment-list">
-                            {% for cfg in experiment_choices %}
-                            <option value="{{ cfg }}">
+                        {% endif %}                               
+                        <select id="experiment-list">
+                            {% for cfg in experiments %}
+                            <option value="{{ cfg.identifier}}" {% if current_experiment.identifier ==  cfg.identifier %}selected{% endif %} >{{ cfg.identifier }}</option>
                             {% endfor %}
-                        </datalist>
+                        </select>
                         {% if form.experiment.errors %}
-                        <span class="w3-text-red w3-small">{{ form.experiment.errors|join:", " }}</span>
+                        <!--span class="w3-text-red w3-small">{{ form.experiment.errors|join:", " }}</span-->
                         {% endif %}
                     </div>
 
                     <div class="w3-col m5 s12 w3-margin-bottom">
                         <label class="w3-text-blue"><b>{{ form.well.label }}</b></label>
-                        <input list="well-list" name="well" id="id_well"
-                               value="{{ form.well.value|default:'' }}"
-                               class="w3-input w3-border w3-round"
-                               placeholder="{% trans 'Ex : A1' %}">
-                        <datalist id="well-list">
+                        <select  id="id_well">
                             {% for w in well_choices %}
-                            <option value="{{ w }}">
+                            <option value="{{ w.name }}">{{ w.name }}</option>
                             {% endfor %}
-                        </datalist>
+                        </select>
                         {% if form.well.errors %}
                         <span class="w3-text-red w3-small">{{ form.well.errors|join:", " }}</span>
                         {% endif %}

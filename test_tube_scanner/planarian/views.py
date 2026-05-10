@@ -15,9 +15,11 @@ from django.views.decorators.http import require_GET
 
 from .forms import CsvImportForm, ExperimentConfigForm, ExportCsvForm
 from .models import ExperimentConfig
+
 from modules.planarian_metrics import ExperimentParams, ReductStoreClient
 from modules.system_stats import get_cached_stats, start_background_updater
 from scanner.constants import ScannerConstants
+from scanner import models
 
 
 logger = logging.getLogger(__name__)
@@ -35,23 +37,69 @@ def stats_view(request):
         return JsonResponse(data, safe=False)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
-    
-
-def global_context(request, **ctx):
-    conf = ScannerConstants().get()
-    return dict(
-        app_title=settings.APP_TITLE,
-        app_sub_title=settings.APP_SUB_TITLE,
-        domain_server=settings.DOMAIN_SERVER,
-        conf=conf,
-        **ctx
-    )
 
 
 def _get_reduct_client() -> ReductStoreClient:
     """Instancie le client ReductStore depuis les settings Django."""
     return ReductStoreClient(url=settings.REDUCTSTORE_URL, token=settings.REDUCTSTORE_TOKEN)
 
+
+def global_context(request, **ctx):
+    default_multiwell = models.MultiWell.objects.filter(default=True).first()
+    conf = ScannerConstants().get()
+    return dict(
+        app_title=settings.APP_TITLE,
+        app_sub_title=settings.APP_SUB_TITLE,
+        domain_server=settings.DOMAIN_SERVER,
+        local_ip_server=settings.LOCAL_IP_SERVER,
+        host_port=settings.SERVER_HOST_PORT,
+        conf=conf,
+        default_position = default_multiwell.position or 'HD',
+        export_destination=settings.EXPORT_DESTINATIONS,
+        well_choices = models.Well.objects.order_by('name').all(),
+        
+        **ctx
+    )
+
+
+def get_active_experiments(session, expid=None):
+    if session:
+        experiments = models.SessionExperiment.experiment_by_session(session.id, active=True) or []
+        eid = [str(e.id) for e in experiments]
+        
+        print(f"Found {eid} active experiments for session {session.id}")
+        
+        if experiments and not expid or expid not in eid:
+            return experiments, experiments[0]
+        
+        for e in experiments:
+            if expid == str(e.id):
+                return experiments, e
+    return [], None
+
+
+def get_experiment_config(request):
+    cursid = request.POST.get('_sid')
+    expid = request.POST.get('_expid')
+    
+    print(request.POST)
+    
+    current_session = models.Session.get_session(cursid)
+    experiments, current_experiment = get_active_experiments(current_session, expid)    
+    
+    qs = ExperimentConfig.objects
+    if not current_session: 
+        qs = qs.filter(experiment__session_experiments__isnull=False).select_related()
+    elif current_experiment:             
+        qs = qs.filter(experiment_id=current_experiment.id)
+        
+    context = dict(
+        current_session = current_session,
+        current_experiment = current_experiment,
+        experiments=experiments or [],
+        sessions=models.Session.objects.filter(active=True).all(),
+    )
+    return qs.all(), context
 
 # ---------------------------------------------------------------------------
 # Vue : liste des configurations
@@ -65,19 +113,22 @@ class ExperimentConfigListView(ListView):
     context_object_name = "configs"
     ordering            = ["-created_at"]
     
-    '''
     def get_queryset(self):
-        # Récupérer le queryset de base
-        queryset = ExperimentConfig.objects.filter(experiment__session_experiments__isnull=False).select_related()
-        return queryset'''
+        qs, self.config_context = get_experiment_config(self.request)
+        return qs
     
-    
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)     
+        
+    def post(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)     
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        context.update(self.config_context)
         return global_context(self.request, **context)
     
-    
-
 # ---------------------------------------------------------------------------
 # Vue : création / modification d'une configuration
 # ---------------------------------------------------------------------------
@@ -87,7 +138,11 @@ class ExperimentConfigFormView(FormView):
 
     template_name = "planarian/experiment_form.html"
     form_class    = ExperimentConfigForm
-
+    
+    
+    def get_queryset(self):
+        qs, self.config_context = get_experiment_config(self.request)
+        return qs
 
     def get_form(self, form_class=None):
         pk = self.kwargs.get("pk")
@@ -102,15 +157,13 @@ class ExperimentConfigFormView(FormView):
         return redirect("planarian:experiment-list")
     
     def form_invalid(self, form):
-        # Called when form validation fails
         print(f"Form validation failed: {form.errors}")
         messages.error(self.request, form.errors)
         return super().form_invalid(form)   
 
-    #def post(self, request, *args, **kwargs):
-    #    # Custom logic before processing the form
-    #    print(f"Received POST data: {request.POST}")
-    #    return response       
+    def post(self, request, *args, **kwargs):
+        print(f"Received POST data: {request.POST}")
+        return super().post(request, *args, **kwargs) 
 
     
     def get_context_data(self, **kwargs):
@@ -135,7 +188,11 @@ class ImportParamsView(FormView):
 
     template_name = "planarian/import_params.html"
     form_class    = CsvImportForm
-
+    
+    def get_queryset(self):
+        qs, self.config_context = get_experiment_config(self.request)
+        return qs
+    
     def form_valid(self, form):
         rows      = form.csv_rows
         overwrite = form.cleaned_data["overwrite"]
@@ -192,7 +249,7 @@ class ExportCsvView(FormView):
 
     template_name = "planarian/export_csv.html"
     form_class    = ExportCsvForm
-
+    
     def form_valid(self, form):
         d = form.cleaned_data
         
@@ -235,6 +292,8 @@ class ExportCsvView(FormView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        qs, config_context = get_experiment_config(self.request)
+        context.update(config_context)
         return global_context(self.request, choice_title=_("Tracking depuis ReductStore vers un fichier CSV"), **context)
     
 

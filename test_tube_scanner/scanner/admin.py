@@ -30,7 +30,7 @@ class ConfigurationAdmin(admin.ModelAdmin):
             "classes": ("collapse",),
         }),
         (_("Calibration / Balayage"), {
-            "fields": ("calibration_crop_radius", "calibration_default_multiwell", "calibration_default_feed", "calibration_default_step", "calibration_default_duration"),
+            "fields": ("tube_axis", "calibration_crop_radius", "calibration_default_multiwell", "calibration_default_feed", "calibration_default_step", "calibration_default_duration"),
             "classes": ("collapse",),
         }),
         (_("Tracking: valeurs par défaut"), {
@@ -101,7 +101,7 @@ class SessionExperimentInlineAdmin(admin.TabularInline):
 class SessionAdmin(admin.ModelAdmin):
     list_filter = ('author',)
     inlines = (SessionExperimentInlineAdmin, )
-    list_display = ('name', 'author', 'created', 'finished', 'active', 'expected_export', 'expected_scanning', )
+    list_display = ('name', 'id', 'author', 'created', 'finished', 'active', 'expected_export', 'expected_scanning', )
     readonly_fields = (
         'created', 
         'finished',

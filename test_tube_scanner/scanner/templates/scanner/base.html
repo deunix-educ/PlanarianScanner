@@ -11,12 +11,11 @@
         <a href="#" class="w3-bar-item w3-mobile w3-btn w3-hover-opacity w3-right w3-xlarge w3-text-green" onclick="goFullscreen()" title="{% trans 'Ecran plein' %}">
             <i class="fa-solid fa-maximize"></i>
         </a>
-        {% if request.user.is_superuser %}
-		<div class="w3-dropdown-hover w3-right">	    
-		    <button class="w3-button w3-dark-plus">&#9776;&nbsp;<span>{% trans "Administrations" %}</span></button>
-		    <div class="w3-dropdown-content w3-bar-block w3-border w3-dark-low"  style="right:.25em;">
-			        <hr class="w3-bar-item divider w3-grey">
 
+		<div class="w3-dropdown-hover w3-right">	    
+		    <button class="w3-button w3-dark-plus">&#9776;&nbsp;<span>{{ request.user.username }}</span></button>
+		    <div class="w3-dropdown-content w3-bar-block w3-border w3-dark-low"  style="right:.25em;">
+                {% if request.user.is_superuser %}
 	                <a href="{% url 'scanner:admin' %}"  class="w3-bar-item w3-btn w3-hover-opacity" title="{% trans "Accès django" %}">
 	                    <i class="fa-solid fa-gear w3-text-pink"></i> {% trans "Base de données" %}
 	                </a>
@@ -37,7 +36,7 @@
 	                <a href="{% url 'scanner:logs_worker' %}"  class="w3-bar-item w3-btn w3-hover-opacity" target="_blank">
 	                     <i class="fa-regular fa-file-lines w3-text-amber"></i> {% trans "Logs des services" %}
 	                </a>    		        
-
+                {% endif %}      
 		        <hr class="w3-bar-item divider w3-grey">
 		        <form method="post" action="{% url 'logout' %}">
 		            {% csrf_token %}
@@ -47,22 +46,16 @@
 		        </form>
 		    </div>
          </div>
-         {% endif %}        
+
     </div>
 {% endblock  %}
 {% block sidebar %}
 	<div class="w3-dark-xlight w3-border-bottom">
 	    <div class="w3-large w3-bold">
 	       <a href="/" class="w3-btn w3-hover-opacity w100 w3-left-align">{{ app_title }}<br>
-	       <span class="w3-tiny">{{ app_sub_title }}</span>
+	           <span class="w3-tiny">{{ app_sub_title }}</span>
 	       </a>
 	    </div>
-	    <form method="post" action="{% url 'logout' %}" class="w3-padding-small">
-	        {% csrf_token %}
-	        <button class="w3-bar-item w3-btn w3-hover-opacity" type="submit" title="{% trans 'Déconnexion' %}">
-	           {{ request.user.username }}<i class="fa-solid fa-right-from-bracket w3-right"></i>
-	        </button>
-	    </form>
 	</div>
 	{% block system %}
 	<div class="w3-light-blue w3-padding-large">
@@ -124,7 +117,8 @@
             {% endif %}   
             <a href="{% url 'scanner:scanning' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                 <i class="fa-solid fa-film w3-text-green w3-xlarge""></i> {% trans "Balayage multi-puits" %}
-            </a>             
+            </a>
+            <div class="w3-bar-item w3-dark-xxlight">{% trans "Résultats " %}</div>
             <a href="{% url 'scanner:images' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                  <i class="fa-regular fa-images w3-text-cyan w3-xlarge" w3-xlarge""></i> {% trans "Gestionnaire d'images" %}
             </a>
@@ -142,7 +136,7 @@
     <script>
     const stats_endpoint =  "{% url 'scanner:api_stats' %}";
     </script>
-    <script src="/static/scanner/js/stats.js"></script>
+    <!--script src="/static/scanner/js/stats.js"></script-->
 {% endblock %}
 
 

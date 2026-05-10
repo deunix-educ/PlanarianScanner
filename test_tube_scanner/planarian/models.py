@@ -18,6 +18,8 @@ class ExperimentConfig(models.Model):
     
     description = models.TextField( blank=True, verbose_name=_("Description"), default="-")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Créé le"))
+    
+    active = models.BooleanField(_("Active"), default=True)
 
     # --- Calibration optique ---
     # px_per_mm, fps, well_radius_mm 
@@ -122,7 +124,7 @@ class ExperimentConfig(models.Model):
         ordering            = ["-created_at"]
 
     def __str__(self):
-        return f"{self.experiment} / {self.well.name}"
+        return f"{self.experiment}:{self.well.name}"
     
     def get_session(self):
         return self.experiment.session_experiments.first() if self.experiment else None

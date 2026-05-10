@@ -33,6 +33,9 @@
     <form method="post" novalidate>
         {% csrf_token %}
 
+	    <input type="hidden" id="_sid" name="_sid" value="{{ current_session.id }}">
+	    <input type="hidden" id="_expid" name="_expid" value="{{ current_experiment.id }}">
+	    
         <!-- Erreurs globales du formulaire -->
         {% if form.non_field_errors %}
         <div class="w3-panel w3-red w3-round">

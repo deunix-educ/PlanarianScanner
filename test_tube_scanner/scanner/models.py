@@ -35,7 +35,7 @@ VIDEO_TYPE = [
 CAPTURE_TYPE = [
     ('rpi', _("Arducam")),
     ('webcam', _("Webcam")),
-    ('file', _("mp4")),
+    ('file', _("Fichier vidéo (mp4, avi)")),
 ]
 
 TUBE_AXIS_TYPE = [
@@ -250,7 +250,7 @@ class Experiment(models.Model):
     
     
     def save(self, *args, **kwargs):
-        self.identifier = slugify(f'{self.created.isoformat()[:19]}-{self.id}-{self.multiwell.position}')
+        self.identifier = f'{self.id}-{self.multiwell.position}_{self.created.isoformat()[:19]}'
         super().save(*args, **kwargs)
 
 
@@ -265,7 +265,7 @@ class Experiment(models.Model):
         verbose_name_plural = _("Expériences")
 
     def __str__(self):
-        return f'{self.id}:{self.title}-{self.created}'
+        return f'{self.identifier}'
 
 
 class Session(models.Model):

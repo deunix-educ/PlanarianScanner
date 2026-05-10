@@ -5,7 +5,9 @@ import io
 
 from django import forms
 from django.utils.translation import gettext_lazy as _
+from scanner import models
 from .models import ExperimentConfig
+
 
 
 class ExperimentConfigForm(forms.ModelForm):
@@ -13,7 +15,7 @@ class ExperimentConfigForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['identifier'].disabled = True
+        #self.fields['identifier'].disabled = True
 
     class Meta:
         model  = ExperimentConfig
