@@ -99,20 +99,20 @@
                     <i class="fa-solid fa-gear w3-text-purple w3-xlarge"></i> {% trans "Création de sessions d'expériences" %}
                 </a>
                 <hr class="w3-bar-item divider w3-grey"> 
+                <a href="{% url 'scanner:experiment_view' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
+                    <i class="fa-solid fa-gear w3-text-pink w3-xlarge"></i> {% trans "Gestions des expériences" %}
+                </a>             
                 <a href="{% url 'scanner:experimentconfig_view' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                     <i class="fa-solid fa-gears w3-text-pink w3-xlarge"></i> {% trans "Configuration des expériences" %}
                 </a>           
-                <a href="{% url 'scanner:experiment_view' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
-                    <i class="fa-solid fa-gear w3-text-pink w3-xlarge"></i> {% trans "Gestions des expériences" %}
-                </a>
                 <a href="{% url 'scanner:calibration' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
-                    <i class="fa-solid fa-wrench w3-text-red w3-xlarge"></i> {% trans "Calibration" %}
+                    <i class="fa-solid fa-wrench w3-text-orange w3-xlarge"></i> {% trans "Calibration" %}
                 </a>
                 <hr class="w3-bar-item divider w3-grey w3-margin-bottom"> 
             {% endif %}
             {% if conf.tracking %}
-            <a href="{% url 'planarian:experiment-list' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
-                <i class="fa-solid fa-vials w3-text-lime w3-xlarge"></i> {% trans "Préparation des expériences" %}
+            <a href="{% url 'planarian:export-csv' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
+                <i class="fa-solid fa-vials w3-text-lime w3-xlarge"></i> {% trans "Export CSV des expériences" %}
             </a>    
             {% endif %}   
             <a href="{% url 'scanner:scanning' %}"  class="w3-bar-item w3-btn w3-hover-opacity">

@@ -1,10 +1,39 @@
 {% extends "planarian/base.html" %}
+
 {% load i18n %}
 
 {% block content %}
+
 <div class="w3-container w3-padding" style="max-width:760px; margin:auto;">
 {% if current_session and current_experiment %}
-    {% include "inc/alert.html" %}
+    <!-- En-tête -->
+    <div class="w3-panel w3-blue w3-round-large w3-padding-16 w3-margin-bottom">
+        <div class="w3-row">
+            <div class="w3-col s12 m8 w3-bar-item">
+                <span class="w3-xlarge">
+                    📥 {% trans "Exporter les données vers CSV" %}
+                </span>
+            </div>
+            <div class="w3-col s12 m4 w3-bar-item w3-right-align" style="padding-top:6px;">
+                <a href="/"
+                   class="w3-button w3-white w3-round w3-text-blue">
+                    ← {% trans "Retour" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages Django -->
+    {% for message in messages %}
+    <div class="w3-panel w3-round
+        {% if message.tags == 'success' %}w3-green
+        {% elif message.tags == 'error'   %}w3-red
+        {% elif message.tags == 'warning' %}w3-orange
+        {% else %}w3-blue{% endif %}">
+        <p>{{ message }}</p>
+    </div>
+    {% endfor %}
+
     <!-- Explication -->
     <div class="w3-panel w3-pale-blue w3-round w3-margin-bottom">
         <p>
@@ -15,12 +44,21 @@
             {% trans "Colonnes exportées compatibles EthoVision XT : distance, vitesse, états de mobilité, thigmotactisme." %}
         </p>
     </div>
+
     <!-- Formulaire -->
     <form method="post" novalidate>
         {% csrf_token %}
         <input type="hidden" id="_sid" name="_sid" value="{{ current_session.id }}">
         <input type="hidden" id="_expid" name="_expid" value="{{ current_experiment.id }}">
         
+        
+        {% if form.non_field_errors %}
+        <div class="w3-panel w3-red w3-round">
+            {% for error in form.non_field_errors %}
+            <p>⚠ {{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
 
         <div class="w3-card-4 w3-border w3-round w3-round-large">
             <header class="w3-container w3-blue w3-round w3-round-top-large">
@@ -31,38 +69,57 @@
                 <div class="w3-row-padding w3-margin-bottom">
 
                     <div class="w3-col m7 s12 w3-margin-bottom">
-                        <label class="w3-text-blue"><b>{% trans "Expérience" %}</b></label>
-                        <input type="text" name="experiment" value="{{ current_experiment.identifier }}" readonly/>
+                        <label class="w3-text-blue"><b>{{ form.experiment.label }}</b></label>
+                        {% if form.experiment.help_text %}
+                        <p class="w3-small w3-text-grey" style="margin:0 0 4px;">{{ form.experiment.help_text }}</p>
+                        {% endif %}  
+                                                   
+                        {{ form.experiment }}
+                        {% if form.experiment.errors %}
+                        <!--span class="w3-text-red w3-small">{{ form.experiment.errors|join:", " }}</span-->
+                        {% endif %}
                     </div>
+
                     <div class="w3-col m5 s12 w3-margin-bottom">
-                        <label class="w3-text-blue"><b>{% trans "Puits" %}</b></label>
-                        <select name="well">
-                            {% for well in well_choices %}
-                            <option value="{{ well.name }}">{{ well.name }}</option>
-                            {% endfor %}
-                        </select>
+                        <label class="w3-text-blue"><b>{{ form.well.label }}</b></label>
+                         {{ form.well }}
+                        {% if form.well.errors %}
+                        <span class="w3-text-red w3-small">{{ form.well.errors|join:", " }}</span>
+                        {% endif %}
                     </div>
+
                 </div>
+
                 <!-- Ligne 2 : planaire + type d'enregistrement -->
                 <div class="w3-row-padding w3-margin-bottom">
+
                     <div class="w3-col m4 s12 w3-margin-bottom">
-                        <label class="w3-text-blue"><b>{% trans "Index planaire" %}</b></label>        
+                        <label class="w3-text-blue"><b>{{ form.planarian.label }}</b></label>
                         <p class="w3-small w3-text-light-grey" style="margin:0 0 4px;">
                             {% trans "Index du planaire dans le puits (commence à 0)" %}
                         </p>
-                        <input type="number" name="planarian" step="1"  min="0" max="20" value="{{ planarian }}" />
+                        {{ form.planarian }}
+                        {% if form.planarian.errors %}
+                        <span class="w3-text-red w3-small">{{ form.planarian.errors|join:", " }}</span>
+                        {% endif %}
                     </div>
+
                     <div class="w3-col m8 s12 w3-margin-bottom">
-                        <label class="w3-text-blue"><b>{% trans "Type d'enregistrement" %}</b></label>
+                        <label class="w3-text-blue"><b>{{ form.record_type.label }}</b></label>
                         <p class="w3-small w3-text-light-grey" style="margin:0 0 4px;">
                             {% trans "Frame par frame : une ligne par image. Résumé : métriques agrégées de la session." %}
                         </p>
-                        <select name="record_type">
-                            <option value="frame">{% trans "Frame par frame" %}</option>
-                            <option value="summary">{% trans "Résumé" %}</option>
-                        </select>                       
+                        <!-- Radio buttons stylisés W3 -->
+                        <div class="w3-row-padding" style="margin-top:6px;">
+                            {{ form.record_type }}
+                        </div>
+                        {% if form.record_type.errors %}
+                        <span class="w3-text-red w3-small">{{ form.record_type.errors|join:", " }}</span>
+                        {% endif %}
                     </div>
+
                 </div>
+
                 <!-- Ligne 3 : plage temporelle (optionnel) -->
                 <div class="w3-border-top w3-padding-top w3-margin-top">
                     <p class="w3-text-blue-grey">
@@ -72,23 +129,33 @@
                         </span>
                     </p>
                     <div class="w3-row-padding">
+
                         <div class="w3-col m6 s12 w3-margin-bottom">
-                            <label class="w3-text-blue-grey">{% trans "Début (UTC)" %}</label>
-                            <input type="datetime-local" class="datetime" name="start_dt">
+                            <label class="w3-text-blue-grey">{{ form.start_dt.label }}</label>
+                            {{ form.start_dt }}
+                            {% if form.start_dt.errors %}
+                            <span class="w3-text-red w3-small">{{ form.start_dt.errors|join:", " }}</span>
+                            {% endif %}
                         </div>
+
                         <div class="w3-col m6 s12 w3-margin-bottom">
-                            <label class="w3-text-blue-grey">{% trans "Fin (UTC)" %}</label>
-                            <input type="datetime-local" class="datetime" name="stop_dt">
+                            <label class="w3-text-blue-grey">{{ form.stop_dt.label }}</label>
+                            {{ form.stop_dt }}
+                            {% if form.stop_dt.errors %}
+                            <span class="w3-text-red w3-small">{{ form.stop_dt.errors|join:", " }}</span>
+                            {% endif %}
                         </div>
+
                     </div>
                 </div>
+
             </div><!-- fin padding -->
         </div><!-- fin card -->
 
         <!-- Boutons -->
         <div class="w3-row-padding w3-margin-top">
             <div class="w3-col s12">
-                <button type="submit" name="valid" class="w3-button w3-blue w3-large w3-padding-large" value="ok">
+                <button type="submit" class="w3-button w3-blue w3-large w3-padding-large">
                     📥 {% trans "Générer et télécharger le CSV" %}
                 </button>
                 <a href="/"
@@ -99,6 +166,7 @@
         </div>
 
     </form>
+
     <!-- Rappel des colonnes exportées -->
     <div class="w3-card w3-round-large w3-margin-top w3-border w3-round w3-round-large w3-margin-bottom">
         <header class="w3-container w3-blue-grey w3-round w3-round-top-large">
@@ -134,7 +202,9 @@
             </div>
         </div>
     </div>
+
 </div><!-- fin container -->
+
 <style>
     input[type="text"],
     input[type="number"],
@@ -154,10 +224,10 @@
         outline: none;
         background-color: #fff;
     }
+    /* Masquer le radio natif, laisser le label stylisé */
+    .w3-button input[type="radio"] {
+        display: none;
+    }
 </style>
-{% else %}
-<div class="w3-container w3-padding-64 w3-margin" style="max-width:760px; margin:auto;">
-    <h3 class="w3-panel w3-blue w3-round-xlarge w3-padding-64 w3-center"> {% trans "Choisir une session" %}</h3>
-</div>
 {% endif %}
 {% endblock %}

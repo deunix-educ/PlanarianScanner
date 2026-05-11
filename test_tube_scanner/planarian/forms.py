@@ -53,6 +53,7 @@ class CsvImportForm(forms.Form):
         label=_("Écraser les configurations existantes"),
     )
 
+
     def clean_csv_file(self):
         f = self.cleaned_data["csv_file"]
         try:
@@ -77,8 +78,14 @@ class ExportCsvForm(forms.Form):
     """Formulaire de demande d'export CSV depuis ReductStore."""
 
     experiment  = forms.CharField(label=_("Expérience"), max_length=100)
-    well        = forms.CharField(label=_("Puits"), max_length=20)
-    planarian   = forms.IntegerField(label=_("Index planaire"), initial=0, min_value=0)
+    #well        = forms.CharField(label=_("Puits"), max_length=20)
+    well = forms.ModelChoiceField(
+        queryset=models.Well.objects.filter().order_by('name').all(),
+        label=_('Puits'),
+        widget=forms.Select(attrs={'class': 'w3-select',}),
+        required=True,initial="D1",
+    )
+    planarian   = forms.IntegerField(label=_("Index planaire"), initial=0, min_value=0, max_value=20)
     record_type = forms.ChoiceField(
         label=_("Type d'enregistrement"),
         choices=[("frame", _("Frame par frame")), ("summary", _("Résumé"))],

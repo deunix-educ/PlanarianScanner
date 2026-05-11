@@ -3,7 +3,6 @@
 
 {% block content %}
 <div class="w3-container w3-padding" style="max-width:1200px; margin:auto;">
-
     <!-- En-tête -->
     <div class="w3-panel w3-teal w3-round-large w3-padding-16 w3-margin-bottom">
         <div class="w3-row">
@@ -21,7 +20,6 @@
             </div>
         </div>
     </div>
-
     <!-- Messages Django -->
     {% for message in messages %}
     <div class="w3-panel w3-round alert
@@ -137,15 +135,17 @@
                               title="{% trans 'Interactions inter-individus' %}">🔀</span>
                         {% endif %}
                     </td>
-
                     <!-- Date de création -->
                     <td class="w3-hide-small w3-small w3-text-grey">
                         {{ cfg.created_at|date:"d/m/Y H:i" }}
                     </td>
-
                     <!-- Actions -->
                     <td style="white-space:nowrap;">
+                        {% if current_session and current_experiment %}
+                        <a href="{% url 'planarian:experiment-edit' cfg.pk current_session.id current_experiment.id %}"
+                        {% else %}
                         <a href="{% url 'planarian:experiment-edit' cfg.pk %}"
+                        {% endif %}
                            class="w3-button w3-small w3-teal w3-round"
                            title="{% trans 'Modifier' %}">✏</a>
                         <a href="{% url 'planarian:export-csv' %}?experiment={{ cfg.experiment }}&well={{ cfg.well }}"

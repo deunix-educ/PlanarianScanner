@@ -9,9 +9,15 @@ from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect    #, render
 from django.utils.translation import gettext_lazy as _
+
+from django.shortcuts import render #, redirect
+from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required, user_passes_test
+
 from django.views import View
 from django.views.generic import FormView, ListView
-from django.views.decorators.http import require_GET
+
 
 from .forms import CsvImportForm, ExperimentConfigForm, ExportCsvForm
 from .models import ExperimentConfig
@@ -23,10 +29,13 @@ from scanner import models
 
 
 logger = logging.getLogger(__name__)
-
 start_background_updater()
 
-    
+
+def is_staff_or_admin(user):
+    return user.is_staff or user.is_superuser   
+
+
 @require_GET
 def stats_view(request):
     """
@@ -45,7 +54,6 @@ def _get_reduct_client() -> ReductStoreClient:
 
 
 def global_context(request, **ctx):
-    default_multiwell = models.MultiWell.objects.filter(default=True).first()
     conf = ScannerConstants().get()
     return dict(
         app_title=settings.APP_TITLE,
@@ -54,10 +62,6 @@ def global_context(request, **ctx):
         local_ip_server=settings.LOCAL_IP_SERVER,
         host_port=settings.SERVER_HOST_PORT,
         conf=conf,
-        default_position = default_multiwell.position or 'HD',
-        export_destination=settings.EXPORT_DESTINATIONS,
-        well_choices = models.Well.objects.order_by('name').all(),
-        
         **ctx
     )
 
@@ -78,104 +82,104 @@ def get_active_experiments(session, expid=None):
     return [], None
 
 
-def get_experiment_config(request):
-    cursid = request.POST.get('_sid')
-    expid = request.POST.get('_expid')
-    
-    print(request.POST)
-    
+def get_active_session(request, session_id=None, experiment_id=None):
+    cursid = session_id or request.POST.get('_sid')
+    expid = experiment_id or request.POST.get('_expid')
+
     current_session = models.Session.get_session(cursid)
-    experiments, current_experiment = get_active_experiments(current_session, expid)    
-    
-    qs = ExperimentConfig.objects
-    if not current_session: 
-        qs = qs.filter(experiment__session_experiments__isnull=False).select_related()
-    elif current_experiment:             
-        qs = qs.filter(experiment_id=current_experiment.id)
-        
+    experiments, current_experiment = get_active_experiments(current_session, expid) 
     context = dict(
         current_session = current_session,
         current_experiment = current_experiment,
         experiments=experiments or [],
         sessions=models.Session.objects.filter(active=True).all(),
+        well_choices=models.Well.objects.order_by('name').all(),
     )
-    return qs.all(), context
-
-# ---------------------------------------------------------------------------
-# Vue : liste des configurations
-# ---------------------------------------------------------------------------
-
-class ExperimentConfigListView(ListView):
-    """Liste toutes les configurations expériences."""
-
-    model               = ExperimentConfig
-    template_name       = "planarian/experiment_list.html"
-    context_object_name = "configs"
-    ordering            = ["-created_at"]
-    
-    def get_queryset(self):
-        qs, self.config_context = get_experiment_config(self.request)
-        return qs
-    
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)     
-        
-    def post(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)     
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        
-        context.update(self.config_context)
-        return global_context(self.request, **context)
+    return context    
     
 # ---------------------------------------------------------------------------
-# Vue : création / modification d'une configuration
+# Vue :Export CSV depuis ReductStore
 # ---------------------------------------------------------------------------
-
-class ExperimentConfigFormView(FormView):
-    """Formulaire de saisie des paramètres d'une expérience."""
-
-    template_name = "planarian/experiment_form.html"
-    form_class    = ExperimentConfigForm
+def export_csv(request):
+    d = request.POST
     
-    
-    def get_queryset(self):
-        qs, self.config_context = get_experiment_config(self.request)
-        return qs
+    @async_to_sync
+    async def _do_export():
+        client = _get_reduct_client()
+        await client.connect()
+        try:
+            csv_content, n = await client.export_csv_response(
+                experiment  = d.get("experiment"),
+                well        = d.get("well"),
+                planarian   = d.get("planarian"),
+                record_type = d.get("record_type"),
+                start       = d.get("start_dt"),
+                stop        = d.get("stop_dt"),
+            )          
+            print(f"Export CSV: export_csv_response done, {n} lignes, content size={len(csv_content)}, {csv_content}")
+        except Exception as e:
+            logger.error(f"Erreur export CSV: {e}")
+            messages.error(request, _("Erreur lors de l'export CSV: %(error)s") % {"error": str(e)})
+            return None, 0
+        return csv_content, n
 
-    def get_form(self, form_class=None):
-        pk = self.kwargs.get("pk")
-        if pk:
-            instance = get_object_or_404(ExperimentConfig, pk=pk)
-            return ExperimentConfigForm(self.request.POST or None, instance=instance)
-        return ExperimentConfigForm(self.request.POST or None)
+    csv_content, n = _do_export()
 
-    def form_valid(self, form):
-        form.save()
-        messages.success(self.request, _("Configuration sauvegardée."))
-        return redirect("planarian:experiment-list")
-    
-    def form_invalid(self, form):
-        print(f"Form validation failed: {form.errors}")
-        messages.error(self.request, form.errors)
-        return super().form_invalid(form)   
+    logger.info(f"Export CSV: {n} lignes, content size={len(csv_content)}")
+    if not csv_content:
+        messages.warning(request, _("Aucune donnée trouvée."))
+        return None
 
-    def post(self, request, *args, **kwargs):
-        print(f"Received POST data: {request.POST}")
-        return super().post(request, *args, **kwargs) 
+    filename = (
+        f"{d['experiment']}_{d['well']}_planaire{d['planarian']}"
+        f"_{d['record_type']}.csv"
+    )
+    response = HttpResponse(csv_content, content_type="text/csv; charset=utf-8")
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'       
+    messages.success(request, _("%(n)d lignes exportées.") % {"n": n})
+    return response
 
+
+@login_required
+def export_csv_view(request, session_id=None, experiment_id=None):   
+    session_context = get_active_session(request, session_id, experiment_id)
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)    
-        context['is_creation'] = 'pk' not in self.kwargs
-        context['is_update'] = 'pk' in self.kwargs
-        return global_context(self.request, choice_title=_("Paramètres d'une expérience"), **context)
-    
+    if request.method == 'POST':
+        valid = request.POST.get('valid')
+        if valid == 'ok':
+            export_csv(request)
+
+    ctx = {
+        'choice_title': _("Export vers un fichier CSV depuis ReductStore"), 
+        'well': 'A1',
+        'planarian': "0",
+        'record_type': 'frame',        
+        **session_context
+    }
+
+    return render(request, "planarian/export_csv.html", context=global_context(request, **ctx))
+
 
 # ---------------------------------------------------------------------------
 # Vue : import CSV de paramètres
 # ---------------------------------------------------------------------------
+@login_required
+def import_csv_view(request, session_id=None, experiment_id=None):  
+    """
+    Import de configurations d'expérience depuis un fichier CSV.
+    Une ligne CSV = un puits = un ExperimentConfig.
+
+    Colonnes CSV obligatoires : experiment, well, px_per_mm, fps
+    Toutes les autres colonnes correspondent aux champs du modèle.
+    """
+    
+    
+    
+    ctx = {
+        'choice_title': _("Importer des configurations depuis un fichier CSV"),  
+    }
+    return render(request, "planarian/import_params.html", context=global_context(request, **ctx))    
+
 
 class ImportParamsView(FormView):
     """
@@ -189,9 +193,6 @@ class ImportParamsView(FormView):
     template_name = "planarian/import_params.html"
     form_class    = CsvImportForm
     
-    def get_queryset(self):
-        qs, self.config_context = get_experiment_config(self.request)
-        return qs
     
     def form_valid(self, form):
         rows      = form.csv_rows
@@ -233,69 +234,8 @@ class ImportParamsView(FormView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        return global_context(self.request, choice_title=_("configurations d'expérience depuis un fichier CSV"), **context)
-    
-
-
-# ---------------------------------------------------------------------------
-# Vue : export CSV depuis ReductStore
-# ---------------------------------------------------------------------------
-
-class ExportCsvView(FormView):
-    """
-    Export des données de tracking depuis ReductStore vers un fichier CSV.
-    Retourne le fichier en téléchargement HTTP.
-    """
-
-    template_name = "planarian/export_csv.html"
-    form_class    = ExportCsvForm
-    
-    def form_valid(self, form):
-        d = form.cleaned_data
-        
-        @async_to_sync
-        async def _do_export():
-            client = _get_reduct_client()
-            await client.connect()
-            try:
-                csv_content, n = await client.export_csv_response(
-                    experiment  = d["experiment"],
-                    well        = d["well"],
-                    planarian   = d["planarian"],
-                    record_type = d["record_type"],
-                    start       = d.get("start_dt"),
-                    stop        = d.get("stop_dt"),
-                )          
-                print(f"Export CSV: export_csv_response done, {n} lignes, content size={len(csv_content)}, {csv_content}")
-            except Exception as e:
-                logger.error(f"Erreur export CSV: {e}")
-                messages.error(self.request, _("Erreur lors de l'export CSV: %(error)s") % {"error": str(e)})
-                return None, 0
-            
-            return csv_content, n
-
-        csv_content, n = _do_export()
-
-        print(f"Export CSV: {n} lignes, content size={len(csv_content)}")
-        if not csv_content:
-            messages.warning(self.request, _("Aucune donnée trouvée."))
-            return self.form_invalid(form)
-
-        filename = (
-            f"{d['experiment']}_{d['well']}_planaire{d['planarian']}"
-            f"_{d['record_type']}.csv"
-        )
-        response = HttpResponse(csv_content, content_type="text/csv; charset=utf-8")
-        response["Content-Disposition"] = f'attachment; filename="{filename}"'       
-        messages.success(self.request, _("%(n)d lignes exportées.") % {"n": n})
-        return response
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        qs, config_context = get_experiment_config(self.request)
-        context.update(config_context)
-        return global_context(self.request, choice_title=_("Tracking depuis ReductStore vers un fichier CSV"), **context)
-    
+        return global_context(self.request, choice_title=_("Importer des configurations depuis un fichier CSV"), **context)
+       
 
 # ---------------------------------------------------------------------------
 # Vue API JSON : données de tracking (pour polling front-end)
@@ -337,5 +277,5 @@ class TrackingDataView(View):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        return global_context(self.request, choice_title=_("Métriques de tracking d'un planaire"), **context)
+        return global_context(self.request, choice_title=str(_("Métriques de tracking d'un planaire")), **context)
     
