@@ -6,8 +6,6 @@ from planarian import views
 app_name = "planarian"
 
 urlpatterns = [
-    # Configurations expériences
-
     # Import / export   
     path("import/csv/",     views.import_csv_view,              name="import-params"),
     path("export/csv/",     views.export_csv_view,              name="export-csv"),
