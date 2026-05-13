@@ -8,19 +8,18 @@ from .models import ExperimentConfig
 @admin.register(ExperimentConfig)
 class ExperimentConfigAdmin(admin.ModelAdmin):
     """Admin Django pour les configurations d'expérience."""
-    #readonly_fields = ('experiment',  )
-    readonly_fields = ('px_per_mm',  'fps', 'well_radius_mm',)
-    list_display  = ("experiment", "well", "active", "px_per_mm", "fps",
+    readonly_fields = ('experiment', 'px_per_mm',  'fps', 'well_radius_mm',)
+    list_display  = ("experiment_key", "well", "active", "px_per_mm", "fps",
                      "thresh_immobile", "thresh_mobile",
                      "photo_mode", "chemo_strength", "created_at", )
     
-    list_filter   = ("experiment", "photo_mode", "tube_axis")
-    search_fields = ("experiment", "well", "description")
+    list_filter   = ("experiment_key", "photo_mode", "tube_axis")
+    search_fields = ("experiment_key", "well_name", "description")
     ordering      = ("-created_at",)
 
     fieldsets = (
         (_("Identification"), {
-            "fields": ("experiment", "well", "active", "description"),
+            "fields": ("experiment_key", "well", "active", "description"),
         }),        
         (_("Calibration optique:  générée lors de la calibration"), {
             "fields": ("px_per_mm", "fps", "well_radius_mm"),
@@ -58,19 +57,19 @@ class ExperimentConfigAdmin(admin.ModelAdmin):
     @admin.action(description=_("Exporter un template CSV de ces configurations"))
     def export_csv_template(self, request, queryset):
         import csv
-        from django.http import HttpResponse
+        from django.http import FileResponse
         from io import StringIO
 
         output = StringIO()
         fields = [f.name for f in ExperimentConfig._meta.fields if f.name != "id"]  # @UndefinedVariable
+        
         writer = csv.DictWriter(output, fieldnames=fields)
         writer.writeheader()
         for obj in queryset:
             row = {f: getattr(obj, f) for f in fields}
             writer.writerow(row)
 
-        response = HttpResponse(output.getvalue(), content_type="text/csv")
-        response["Content-Disposition"] = 'attachment; filename="experiment_configs.csv"'
-        
+        response = FileResponse(output.getvalue(), content_type='text/csv')
+        response["Content-Disposition"] = 'attachment; filename="experiment_configs.csv"'       
         return response
 

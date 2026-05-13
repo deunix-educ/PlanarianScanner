@@ -3,53 +3,24 @@
 
 {% block content %}
 <div class="w3-container w3-padding-32" style="max-width:760px; margin:auto;">
-
-    <!-- En-tête -->
-    <div class="w3-panel w3-blue-grey w3-round-large w3-padding-16 w3-margin-bottom">
-        <div class="w3-row">
-            <div class="w3-col s12 m8 w3-bar-item">
-                <span class="w3-xlarge">
-                    📂 {% trans "Importer des configurations depuis CSV" %}
-                </span>
-            </div>
-            <div class="w3-col s12 m4 w3-bar-item w3-right-align" style="padding-top:6px;">
-                <a href="{% url 'planarian:experiment-list' %}"
-                   class="w3-button w3-white w3-round w3-text-blue-grey">
-                    ← {% trans "Retour à la liste" %}
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Messages Django -->
-    {% for message in messages %}
-    <div class="w3-panel w3-round
-        {% if message.tags == 'success' %}w3-green
-        {% elif message.tags == 'error'   %}w3-red
-        {% elif message.tags == 'warning' %}w3-orange
-        {% else %}w3-blue{% endif %}">
-        <p>{{ message }}</p>
-    </div>
-    {% endfor %}
-
+{% if current_session and current_experiment %}
+    {% include "inc/alert.html" %}
+    
     <!-- Formulaire d'import -->
     <form method="post" enctype="multipart/form-data" novalidate id="import-form">
         {% csrf_token %}
-
-        {% if form.non_field_errors %}
-        <div class="w3-panel w3-red w3-round">
-            {% for error in form.non_field_errors %}
-            <p>⚠ {{ error }}</p>
-            {% endfor %}
-        </div>
-        {% endif %}
-
+        <input type="hidden" id="_sid" name="_sid" value="{{ current_session.id }}">
+        <input type="hidden" id="_expid" name="_expid" value="{{ current_experiment.id }}">
+         
         <div class="w3-card-4 w3-margin-bottom w3-border w3-round w3-round-large">
             <header class="w3-container w3-blue-grey w3-round  w3-round-top-large">
-                <h3 class="w3-text-white">{% trans "Fichier CSV à importer" %}</h3>
+                <h3 class="w3-text-white">{% trans "Fichier CSV à importer" %}: <span class="w3-large w3-text-lime">{{ current_experiment }}</span></h3>
             </header>
             <div class="w3-container w3-padding-24">
-
+                <p class="w3-light-blue w3-padding w3-border w3-round" style="margin:0 0 4px;">
+                    {% trans "Colonnes obligatoires : well, px_per_mm, fps." %}<br>
+                    {% trans "Toutes les autres colonnes sont optionnelles." %}
+            
                 <!-- Zone de dépôt de fichier -->
                 <div id="drop-zone"
                      class="w3-border w3-border-blue-grey w3-round-large w3-padding-32"
@@ -67,22 +38,12 @@
                             {% trans "ou cliquez pour sélectionner" %}
                         </span>
                     </p>
-
                     <!-- Input fichier caché -->
                     <input type="file" id="id_csv_file" name="csv_file"
                            accept=".csv,text/csv"
                            style="display:none;"
                            onchange="fileSelected(this)">
                 </div>
-
-                {% if form.csv_file.errors %}
-                <div class="w3-panel w3-red w3-round w3-margin-top">
-                    {% for error in form.csv_file.errors %}
-                    <p>⚠ {{ error }}</p>
-                    {% endfor %}
-                </div>
-                {% endif %}
-
                 <!-- Aperçu du fichier sélectionné -->
                 <div id="file-info" class="w3-panel w3-pale-green w3-round w3-margin-top" style="display:none;">
                     <p id="file-name" class="w3-text-green"><b></b></p>
@@ -92,39 +53,32 @@
                 <!-- Option : écraser -->
                 <div class="w3-margin-top w3-padding-top w3-border-top">
                     <label class="w3-text-blue-grey" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
-                        {{ form.overwrite }}
+                        <input type="checkbox" name="overwriteoverwrite" class="w3-check" value="1" />
                         <span>
-                            <b>{{ form.overwrite.label }}</b><br>
+                            <b>{% trans "Écraser les configurations existantes" %}</b><br>
                             <span class="w3-small w3-text-grey">
                                 {% trans "Si décoché, les configurations déjà existantes (même experiment + well) seront ignorées." %}
                             </span>
                         </span>
                     </label>
-                    {% if form.overwrite.errors %}
-                    <span class="w3-text-red w3-small">{{ form.overwrite.errors|join:", " }}</span>
-                    {% endif %}
                 </div>
-
             </div>
         </div>
-
         <!-- Boutons -->
         <div class="w3-row-padding w3-margin-bottom">
             <div class="w3-col s12">
-                <button type="submit" id="submit-btn"
+                <button type="submit" id="submit-btn" name="valid" value="ok"
                         class="w3-button w3-blue-grey w3-round w3-large w3-padding-large"
                         disabled>
                     📂 {% trans "Importer" %}
                 </button>
-                <a href="{% url 'planarian:experiment-list' %}"
+                <a href="/"
                    class="w3-button w3-light-grey w3-round w3-large w3-padding-large w3-margin-left">
                     ✖ {% trans "Annuler" %}
                 </a>
             </div>
         </div>
-
     </form>
-
     <!-- ============================================================
          Format attendu du CSV
     ============================================================ -->
@@ -214,18 +168,6 @@ exp_ctrl_01,A2,26.25,10,0.2,1.5,none<br>
 exp_light_01,B1,26.25,10,0.2,1.5,fixed<br>
 exp_light_01,B2,26.25,10,0.2,1.5,fixed<br>
             </div>
-
-            <!-- Téléchargement du template -->
-            <div class="w3-margin-top">
-                <a href="{% url 'planarian:experiment-list' %}?export_template=1"
-                   class="w3-button w3-teal w3-round w3-small">
-                    ⬇ {% trans "Télécharger un template CSV vide" %}
-                </a>
-                <span class="w3-small w3-text-grey w3-margin-left">
-                    {% trans "Ou exportez vos configurations existantes depuis l'admin Django." %}
-                </span>
-            </div>
-
         </div>
     </div>
 
@@ -321,5 +263,9 @@ exp_light_01,B2,26.25,10,0.2,1.5,fixed<br>
         return (bytes / 1048576).toFixed(1) + ' MB';
     }
 </script>
-
+{% else %}
+<div class="w3-container w3-padding-64 w3-margin" style="max-width:760px; margin:auto;">
+    <h3 class="w3-panel w3-blue w3-round-xlarge w3-padding-64 w3-center"> {% trans "Choisir une session" %}<br>{% trans "Puis une expérience." %}</h3>
+</div>
+{% endif %}
 {% endblock %}

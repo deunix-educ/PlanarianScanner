@@ -23,15 +23,15 @@
             {% endfor %}       
         </div>
     </form>
-    {% if current_session.id and current_experiment.id %}
-    <hr class="w3-bar-item divider w3-grey">
-    <form method="post" class="w3-bar-item" action="{% url 'planarian:export-csv' %}">
-        {% csrf_token %}
-        <input type="hidden" name="_sid" value="{{ current_session.id }}">
-        <input type="hidden" name="_expid" value="{{ current_experiment.id }}">       
-        <button type="submit" class="w3-button w3-blue w3-round w3-padding w3-margin-top">📥 {% trans "Exporter CSV" %}</button>   
-    </form>   
-    {% endif %}    
+    {% if current_session and current_experiment %}
+    {% url "planarian:api-export-csv"  as url_export %}
+    <a href="#" class="w3-bar-item w3-btn w3-hover-opacity" onclick="export_csv('{{ url_export }}', {{ current_experiment.id }}, 'experiment_csv')">
+        <i class="fa-solid fa-file-export w3-text-red w3-xlarge"></i> {% trans "Exporter les metrics de l'expérience" %}<br>
+        <span class="w3-margin-left-5">&nbsp;$> {{ export_csv_destination }}
+    </a>
+    
+    {% endif %}   
+    
 {% endblock %}
 
 {% block js_footer %}
@@ -53,5 +53,20 @@
 	            }, 15000); // 15 seconds
 	        });
 	    });
+	    function export_csv(url, pid, mode) {
+	        fetch(url, {
+	            method: 'POST',
+	            headers: { 'Content-Type': 'application/json' },
+	            body: JSON.stringify({
+	                action: mode,
+	                pid: pid,
+	            })
+	        })
+	        .then(response => response.json())
+	        .then(res      => { alert(res.msg);  })
+	        .catch(error   => { console.error('Erreur:', error); });       
+	    }
+   
+	   
 	</script>
 {% endblock %}

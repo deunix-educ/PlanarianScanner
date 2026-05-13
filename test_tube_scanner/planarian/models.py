@@ -6,6 +6,12 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from scanner.models import Experiment, Well
 
+WELL_CHOICES = []
+def get_well_choices():
+    wells = Well.objects.order_by('name').all()
+    for well in wells:
+        WELL_CHOICES.append((well.name, well.name))
+
 
 class ExperimentConfig(models.Model):
     """
@@ -13,12 +19,14 @@ class ExperimentConfig(models.Model):
     Peut être créé depuis Django admin, une vue formulaire ou un import CSV.
     """
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)   
-    experiment = models.ForeignKey(Experiment, verbose_name="Expérience", on_delete=models.CASCADE, related_name="experiment_well", null=True, blank=False)
-    well = models.ForeignKey(Well, verbose_name="Puit", on_delete=models.CASCADE, related_name="well_experiment", null=True, blank=False )
+    experiment_key = models.ForeignKey(Experiment, verbose_name="Expérience", on_delete=models.CASCADE, null=True, blank=False)
+    experiment = models.CharField(_("Identifiant expérience"), max_length=128, null=True, blank=False, default='Identifier' )
+    well = models.CharField(_("Puit"), help_text=_("Nom du puit"), max_length=8, choices=WELL_CHOICES, null=True, blank=False, default='A1' )
     
     description = models.TextField( blank=True, verbose_name=_("Description"), default="-")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Créé le"))
     
+
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Créé le"))
     active = models.BooleanField(_("Active"), default=True)
 
     # --- Calibration optique ---
@@ -117,24 +125,32 @@ class ExperimentConfig(models.Model):
     avoid_radius_mm  = models.FloatField(default=3.0, verbose_name=_("Rayon évitement (mm)"))
     aggreg_radius_mm = models.FloatField(default=6.0, verbose_name=_("Rayon agrégation (mm)"))
 
+
     class Meta:
         verbose_name        = _("Configuration d'une expérience")
         verbose_name_plural = _("Configurations des expériences")
-        unique_together     = ("experiment", "well")
-        ordering            = ["-created_at"]
+        unique_together     = ("experiment_key", "well")
+        ordering            = ["-created_at"]       
 
     def __str__(self):
-        return f"{self.experiment}:{self.well.name}"
+        return f"{self.experiment_key}:{self.well}"
+    
+    def save(self, *args, **kwargs):
+        if not self.author:
+            self.author = self.experiment_key.author
+        self.experiment = self.experiment_key.identifier   
+        super().save(*args, **kwargs)    
+    
     
     def get_session(self):
-        return self.experiment.session_experiments.first() if self.experiment else None
+        return self.experiment_key.session_experiments.first() if self.experiment_key else None
+    
 
     def to_params_dict(self) -> dict:
         """Retourne un dict compatible avec ExperimentParams."""
         return {
-            "experiment":            self.experiment.identifier,
-            "well":                  self.well.name,
-            
+            "experiment":            self.experiment,
+            "well":                  self.well,        
             "px_per_mm":             self.px_per_mm,
             "fps":                   self.fps,
             "well_radius_mm":        self.well_radius_mm,

@@ -618,7 +618,7 @@ class ExperimentParams:
     def from_csv_file(cls, filepath: str) -> list:
         """Charge toutes les expériences d'un fichier CSV."""
         results = []
-        with open(filepath, newline="", encoding="utf-8") as f:
+        with open(filepath, newline="", encoding="utf-8-sig") as f:
             for row in csv.DictReader(f):
                 try:
                     results.append(cls.from_csv_row(row))

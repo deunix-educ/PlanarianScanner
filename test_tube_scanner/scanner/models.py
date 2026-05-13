@@ -7,7 +7,6 @@ import json
 from django_celery_beat.models import PeriodicTask, ClockedSchedule
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
-from django.utils.text import slugify
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
@@ -440,12 +439,14 @@ def create_experiment_well(sender, instance, created, **kwargs):
         ExperimentWell.objects.get_or_create(experiment=instance, well=wp.well, author=instance.author, defaults={'active':True})
         
         ExperimentConfig.objects.get_or_create(
-            experiment=instance, 
-            well=wp.well, 
+            experiment_key=instance, 
+            well=wp.well.name, 
             author=instance.author, 
+            experiment=instance.identifier,
             defaults={
                 'px_per_mm': wp.px_per_mm,
                 'fps': ScannerConstants().get().video_frame_rate,
                 'well_radius_mm': instance.multiwell.diameter / 2, 
             }
-        )
+        )       
+        
