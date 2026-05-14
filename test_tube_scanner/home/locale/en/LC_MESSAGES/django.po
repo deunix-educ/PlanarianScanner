@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-14 16:19+0200\n"
+"POT-Creation-Date: 2026-05-14 17:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,19 +16,19 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: home/apps.py:7
 msgid "Scanner de tube à essais"
-msgstr ""
+msgstr "Test tube scanner"
 
 #: home/templates/docs/doc_calibration.html:21
 msgid "Calibration du scanner"
-msgstr ""
+msgstr "Scanner calibration"
 
 #: home/templates/docs/doc_calibration.html:22
 msgid "Procédure, organisation de l'écran et commandes disponibles"
-msgstr ""
+msgstr "Procedure, screen organization and available commands"
 
 #: home/templates/docs/doc_calibration.html:29
 #: home/templates/docs/doc_database.html:29
@@ -36,43 +36,43 @@ msgstr ""
 #: home/templates/docs/doc_results.html:32
 #: home/templates/docs/doc_scanning.html:31
 msgid "Navigation"
-msgstr ""
+msgstr "Navigation"
 
 #: home/templates/docs/doc_calibration.html:30
 #: home/templates/docs/doc_experiment.html:31
 #: home/templates/docs/doc_results.html:33
 #: home/templates/docs/doc_scanning.html:32
 msgid "Présentation"
-msgstr ""
+msgstr "Introduction"
 
 #: home/templates/docs/doc_calibration.html:31
 msgid "Organisation écran"
-msgstr ""
+msgstr "Screen organization"
 
 #: home/templates/docs/doc_calibration.html:32
 msgid "Panneau gauche"
-msgstr ""
+msgstr "Left panel"
 
 #: home/templates/docs/doc_calibration.html:33
 msgid "Centre — vidéo live"
-msgstr ""
+msgstr "Centre — live video"
 
 #: home/templates/docs/doc_calibration.html:34
 msgid "Panneau droit"
-msgstr ""
+msgstr "Right panel"
 
 #: home/templates/docs/doc_calibration.html:35
 msgid "Centrage"
-msgstr ""
+msgstr "Balance"
 
 #: home/templates/docs/doc_calibration.html:36
 #: home/templates/docs/doc_calibration.html:183
 msgid "Définir la base"
-msgstr ""
+msgstr "Set Base"
 
 #: home/templates/docs/doc_calibration.html:47
 msgid "Prérequis"
-msgstr ""
+msgstr "Prerequisite"
 
 #: home/templates/docs/doc_calibration.html:48
 #: home/templates/docs/doc_database.html:327
@@ -82,726 +82,734 @@ msgstr ""
 #: home/templates/docs/doc_database.html:367
 #: scanner/templates/scanner/base.html:132 scanner/views.py:131
 msgid "Calibration"
-msgstr ""
+msgstr "Calibration"
 
 #: home/templates/docs/doc_calibration.html:50
 msgid "La calibration est indispensable au fonctionnement du scanner."
-msgstr ""
+msgstr "Calibration is essential to the operation of the scanner."
 
 #: home/templates/docs/doc_calibration.html:51
 msgid "Affichage des logs en bas de page"
-msgstr ""
+msgstr "Viewing logs at the bottom of the page"
 
 #: home/templates/docs/doc_calibration.html:59
 msgid "Objectifs"
-msgstr ""
+msgstr "Objectives"
 
 #: home/templates/docs/doc_calibration.html:63
 msgid "Pointer l'axe de la caméra dans l'axe du tube."
-msgstr ""
+msgstr "Point the camera axis in the tube axis."
 
 #: home/templates/docs/doc_calibration.html:67
 msgid ""
 "Recadrer l'image pour porter l'origine du suivi des planaires au centre du "
 "tube."
 msgstr ""
+"Reframe the image to bring the origin of the planar tracking to the centre "
+"of the tube."
 
 #: home/templates/docs/doc_calibration.html:77
 msgid "Avantage du recadrage"
-msgstr ""
+msgstr "Advantage of cropping"
 
 #: home/templates/docs/doc_calibration.html:81
 msgid "Réduit la taille des images stockées."
-msgstr ""
+msgstr "Reduces the size of stored images."
 
 #: home/templates/docs/doc_calibration.html:93
 msgid "IMPORTANT — Avant toute manipulation"
-msgstr ""
+msgstr "IMPORTANT — Before handling"
 
 #: home/templates/docs/doc_calibration.html:93
 #: home/templates/docs/doc_calibration.html:184
 #: home/templates/docs/doc_database.html:374
 #: home/templates/docs/doc_experiment.html:216
 msgid "IMPORTANT"
-msgstr ""
+msgstr "IMPORTANT"
 
 #: home/templates/docs/doc_calibration.html:94
 msgid "Pour tout multi-puits, trouver la base de départ avant de commencer."
-msgstr ""
+msgstr "For any multi-well, find the starting base before starting."
 
 #: home/templates/docs/doc_calibration.html:105
 #: home/templates/docs/doc_scanning.html:73
 msgid "Interface"
-msgstr ""
+msgstr "Interface"
 
 #: home/templates/docs/doc_calibration.html:106
 msgid "Organisation de l'écran"
-msgstr ""
+msgstr "Screen Organization"
 
 #: home/templates/docs/doc_calibration.html:107
 msgid "L'écran de calibration est divisé en trois zones fonctionnelles."
-msgstr ""
+msgstr "The calibration screen is divided into three functional areas."
 
 #: home/templates/docs/doc_calibration.html:114
 #: home/templates/docs/doc_database.html:320
 msgid "Déplacements"
-msgstr ""
+msgstr "Travel"
 
 #: home/templates/docs/doc_calibration.html:118
 msgid "Vidéo live"
-msgstr ""
+msgstr "Live video"
 
 #: home/templates/docs/doc_calibration.html:122
 #: home/templates/docs/doc_scanning.html:33
 msgid "Commandes"
-msgstr ""
+msgstr "Orders"
 
 #: home/templates/docs/doc_calibration.html:129
 msgid "Panneau gauche — Déplacements caméra"
-msgstr ""
+msgstr "Left Panel — Camera Moves"
 
 #: home/templates/docs/doc_calibration.html:137
 msgid "Sélection & vitesse"
-msgstr ""
+msgstr "& Speed Selection"
 
 #: home/templates/docs/doc_calibration.html:139
 msgid "Changer de multi-puits"
-msgstr ""
+msgstr "Change multi-well"
 
 #: home/templates/docs/doc_calibration.html:140
 msgid "Modifier la vitesse (mm/mn)"
-msgstr ""
+msgstr "Change speed (mm/min)"
 
 #: home/templates/docs/doc_calibration.html:141
 msgid "Modifier le pas de déplacement (mm)"
-msgstr ""
+msgstr "Change travel step (mm)"
 
 #: home/templates/docs/doc_calibration.html:150
 msgid "Manœuvre manuelle"
-msgstr ""
+msgstr "Manual handling"
 
 #: home/templates/docs/doc_calibration.html:154 scanner/admin.py:55
 msgid "Déplacement"
-msgstr ""
+msgstr "Movement"
 
 #: home/templates/docs/doc_calibration.html:160
 msgid "Sauver la position courante"
-msgstr ""
+msgstr "Save current position"
 
 #: home/templates/docs/doc_calibration.html:169
 msgid "Navigation puit à puit"
-msgstr ""
+msgstr "Navigation well to well"
 
 #: home/templates/docs/doc_calibration.html:171
 msgid "Boutons de déplacement puit à puit"
-msgstr ""
+msgstr "Displacement buttons well to well"
 
 #: home/templates/docs/doc_calibration.html:172
 msgid "Bouton centrage manuel"
-msgstr ""
+msgstr "Manual centre button"
 
 #: home/templates/docs/doc_calibration.html:173
 msgid "Bouton calibrage automatique"
-msgstr ""
+msgstr "Automatic calibration button"
 
 #: home/templates/docs/doc_calibration.html:192
 msgid "À la création du multi-puits en base"
-msgstr ""
+msgstr "At the creation of the multi-well base"
 
 #: home/templates/docs/doc_calibration.html:196
 msgid "Fixe la base par défaut en"
-msgstr ""
+msgstr "Set the default base to"
 
 #: home/templates/docs/doc_calibration.html:200
 msgid "Calcule et enregistre toutes les positions des puits dans"
-msgstr ""
+msgstr "Calculates and records all well positions in"
 
 #: home/templates/docs/doc_calibration.html:204
 msgid "Permet de gagner du temps au centrage manuel ou automatique."
-msgstr ""
+msgstr "Saves time to manual or automatic centering."
 
 #: home/templates/docs/doc_calibration.html:216
 #: home/templates/docs/doc_database.html:345 scanner/admin.py:58
 msgid "Positions générées"
-msgstr ""
+msgstr "Generated positions"
 
 #: home/templates/docs/doc_calibration.html:217
 #: home/templates/docs/doc_calibration.html:260
 #: home/templates/docs/doc_results.html:81
 #: home/templates/docs/doc_scanning.html:105
 msgid "ATTENTION"
-msgstr ""
+msgstr "ATTENTION"
 
 #: home/templates/docs/doc_calibration.html:222
 msgid "À la création : donnée fixée à"
-msgstr ""
+msgstr "At creation: data set at"
 
 #: home/templates/docs/doc_calibration.html:222
 #: home/templates/docs/doc_calibration.html:371
 #: home/templates/docs/doc_calibration.html:379
 #: home/templates/docs/doc_calibration.html:387
 msgid "Oui"
-msgstr ""
+msgstr "Yes"
 
 #: home/templates/docs/doc_calibration.html:226
 msgid "Non → efface"
-msgstr ""
+msgstr "No → erase"
 
 #: home/templates/docs/doc_calibration.html:227
 msgid "et recalcule toutes les positions"
-msgstr ""
+msgstr "and recalculate all positions"
 
 #: home/templates/docs/doc_calibration.html:239
 msgid "Bouton « Définir la base »"
-msgstr ""
+msgstr "\"Defining the Base\" button"
 
 #: home/templates/docs/doc_calibration.html:243
 msgid "Fixe la base aux coordonnées"
-msgstr ""
+msgstr "Set the base to coordinates"
 
 #: home/templates/docs/doc_calibration.html:243
 msgid "courantes"
-msgstr ""
+msgstr "current"
 
 #: home/templates/docs/doc_calibration.html:247
 msgid "Recalcule toutes les positions des puits dans"
-msgstr ""
+msgstr "Recalculates all well positions in"
 
 #: home/templates/docs/doc_calibration.html:259
 msgid "Centrage manuel / automatique"
-msgstr ""
+msgstr "Manual/automatic centering"
 
 #: home/templates/docs/doc_calibration.html:268
 msgid "Conditions requises"
-msgstr ""
+msgstr "Requirements"
 
 #: home/templates/docs/doc_calibration.html:272
 msgid "Éclairage important des puits — éviter les ombres."
-msgstr ""
+msgstr "Important lighting of wells — avoid shadows."
 
 #: home/templates/docs/doc_calibration.html:276
 msgid "Actif uniquement si Debug"
-msgstr ""
+msgstr "Active only if Debug"
 
 #: home/templates/docs/doc_calibration.html:276
 msgid "ET"
-msgstr ""
+msgstr "AND"
 
 #: home/templates/docs/doc_calibration.html:276
 msgid "Recadrage activés (commandes à droite)."
-msgstr ""
+msgstr "Boxing enabled (right hand controls)."
 
 #: home/templates/docs/doc_calibration.html:286
 msgid "Indicateurs visuels de centrage"
-msgstr ""
+msgstr "Visual indicators of balance"
 
 #: home/templates/docs/doc_calibration.html:290
 msgid "Cercle rouge"
-msgstr ""
+msgstr "Red circle"
 
 #: home/templates/docs/doc_calibration.html:291
 msgid "déplacement centre"
-msgstr ""
+msgstr "centre displacement"
 
 #: home/templates/docs/doc_calibration.html:295
 msgid "Cercle jaune"
-msgstr ""
+msgstr "Yellow circle"
 
 #: home/templates/docs/doc_calibration.html:296
 msgid "au plus près"
-msgstr ""
+msgstr "nearest"
 
 #: home/templates/docs/doc_calibration.html:300
 msgid "Cercle vert"
-msgstr ""
+msgstr "Green circle"
 
 #: home/templates/docs/doc_calibration.html:301
 msgid "centré"
-msgstr ""
+msgstr "Centered"
 
 #: home/templates/docs/doc_calibration.html:313
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: home/templates/docs/doc_calibration.html:325
 msgid "Centre — Vidéo live"
-msgstr ""
+msgstr "Centre — Live video"
 
 #: home/templates/docs/doc_calibration.html:331
 msgid "Flux vidéo en temps réel"
-msgstr ""
+msgstr "Real-time video stream"
 
 #: home/templates/docs/doc_calibration.html:332
 msgid ""
 "Affiche le flux caméra en direct, avec ou sans recadrage selon l'état de la "
 "commande."
 msgstr ""
+"Displays the camera stream live, with or without cropping depending on the "
+"state of the control."
 
 #: home/templates/docs/doc_calibration.html:334
 msgid "Recadrage actif"
-msgstr ""
+msgstr "Active cropping"
 
 #: home/templates/docs/doc_calibration.html:335
 msgid "Image pleine"
-msgstr ""
+msgstr "Full image"
 
 #: home/templates/docs/doc_calibration.html:345
 msgid "Panneau droit — Commandes"
-msgstr ""
+msgstr "Straight panel — Controls"
 
 #: home/templates/docs/doc_calibration.html:353
 msgid "Navigation rapide"
-msgstr ""
+msgstr "Fast navigation"
 
 #: home/templates/docs/doc_calibration.html:355
 msgid "Déplacer à l'origine (0, 0)"
-msgstr ""
+msgstr "Move originally (0, 0)"
 
 #: home/templates/docs/doc_calibration.html:356
 msgid "Aller à la base du multi-puits"
-msgstr ""
+msgstr "Go to the base of the multi-well"
 
 #: home/templates/docs/doc_calibration.html:365
 msgid "Bascules"
-msgstr ""
+msgstr "Plates"
 
 #: home/templates/docs/doc_calibration.html:369
 #: scanner/templates/scanner/calibration.html:138
 msgid "Debug"
-msgstr ""
+msgstr "Debug"
 
 #: home/templates/docs/doc_calibration.html:372
 #: home/templates/docs/doc_calibration.html:380
 #: home/templates/docs/doc_calibration.html:388
 msgid "Non"
-msgstr ""
+msgstr "No"
 
 #: home/templates/docs/doc_calibration.html:377
 msgid "Tracer axes"
-msgstr ""
+msgstr "Trace axes"
 
 #: home/templates/docs/doc_calibration.html:385
 msgid "Recadrage"
-msgstr ""
+msgstr "Boxing"
 
 #: home/templates/docs/doc_calibration.html:401
 msgid "Rayon de recadrage"
-msgstr ""
+msgstr "Frame radius"
 
 #: home/templates/docs/doc_calibration.html:402
 msgid "Ajuster le recadrage en pixels."
-msgstr ""
+msgstr "Adjust the cropping to pixels."
 
 #: home/templates/docs/doc_calibration.html:410
 msgid "Durée entre puits"
-msgstr ""
+msgstr "Duration between wells"
 
 #: home/templates/docs/doc_calibration.html:411
 msgid "Durée de pause entre chaque puit lors du test du circuit."
-msgstr ""
+msgstr "Break time between each well during the circuit test."
 
 #: home/templates/docs/doc_calibration.html:419
 msgid "Tester le circuit"
-msgstr ""
+msgstr "Test circuit"
 
 #: home/templates/docs/doc_calibration.html:420
-msgid "Vérifier les déplacements en parcourant automatiquement tous les puits."
-msgstr ""
+msgid ""
+"Vérifier les déplacements en parcourant automatiquement tous les puits."
+msgstr "Check movements by automatically browsing all wells."
 
 #: home/templates/docs/doc_calibration.html:431
 #: home/templates/docs/doc_scanning.html:104
 msgid "ARRÊT"
-msgstr ""
+msgstr "JUDGMENT"
 
 #: home/templates/docs/doc_calibration.html:432
 msgid "URGENCE"
-msgstr ""
+msgstr "EMERGENCY"
 
 #: home/templates/docs/doc_calibration.html:436
 msgid "Stoppe immédiatement tout mouvement du scanner."
-msgstr ""
+msgstr "Stop immediately any movement of the scanner."
 
 #: home/templates/docs/doc_database.html:21
 msgid "Architecture des bases de données"
-msgstr ""
+msgstr "Database architecture"
 
 #: home/templates/docs/doc_database.html:22
 msgid "Planarian Scanner — Infrastructure de stockage et modèles de données"
-msgstr ""
+msgstr "Planarian Scanner — Storage infrastructure and data models"
 
 #: home/templates/docs/doc_database.html:37
 msgid "Authentification"
-msgstr ""
+msgstr "Authentication"
 
 #: home/templates/docs/doc_database.html:46 scanner/models.py:90
 msgid "Configuration"
-msgstr ""
+msgstr "Configuration"
 
 #: home/templates/docs/doc_database.html:49
 #: planarian/templates/planarian/export_csv.html:37 scanner/models.py:103
 msgid "Puits"
-msgstr ""
+msgstr "Wells"
 
 #: home/templates/docs/doc_database.html:52 scanner/models.py:169
 #: scanner/models.py:170 scanner/models.py:180 scanner/models.py:243
 msgid "Multi-puits"
-msgstr ""
+msgstr "Multi-well"
 
 #: home/templates/docs/doc_database.html:55 scanner/models.py:132
 msgid "Positions"
-msgstr ""
+msgstr "Positions"
 
 #: home/templates/docs/doc_database.html:58 scanner/models.py:264
 msgid "Expériences"
-msgstr ""
+msgstr "Experiences"
 
 #: home/templates/docs/doc_database.html:61 scanner/models.py:312
 msgid "Sessions"
-msgstr ""
+msgstr "Sessions"
 
 #: home/templates/docs/doc_database.html:76
 #: home/templates/docs/doc_database.html:102
 #: home/templates/docs/doc_database.html:113
 msgid "Séries temporelles"
-msgstr ""
+msgstr "Time series"
 
 #: home/templates/docs/doc_database.html:78
 msgid ""
 "Base de données de séries temporelles pour les images et métriques de "
 "l'application."
-msgstr ""
+msgstr "Time series database for images and metrics of the application."
 
 #: home/templates/docs/doc_database.html:85
 msgid "Accès"
-msgstr ""
+msgstr "Access"
 
 #: home/templates/docs/doc_database.html:93
 msgid "Buckets"
-msgstr ""
+msgstr "Buckets"
 
 #: home/templates/docs/doc_database.html:99
 msgid "Stockage des images capturées par la caméra."
-msgstr ""
+msgstr "Storage of images captured by the camera."
 
 #: home/templates/docs/doc_database.html:110
 msgid "Métriques de suivi des planaires."
-msgstr ""
+msgstr "Metrics of planar tracking."
 
 #: home/templates/docs/doc_database.html:125
 msgid "Base relationnelle"
-msgstr ""
+msgstr "Relationship base"
 
 #: home/templates/docs/doc_database.html:127
 msgid "Base de données relationnelle principale de l'application Django."
-msgstr ""
+msgstr "Main relational database of the Django application."
 
 #: home/templates/docs/doc_database.html:143
 #: home/templates/docs/doc_experiment.html:52
 msgid "Administration Django"
-msgstr ""
+msgstr "Django Administration"
 
 #: home/templates/docs/doc_database.html:155
 msgid "Authentification & Autorisation"
-msgstr ""
+msgstr "Authentication & Authorization"
 
 #: home/templates/docs/doc_database.html:161
 msgid "Groupes"
-msgstr ""
+msgstr "Groups"
 
 #: home/templates/docs/doc_database.html:165
 msgid "Staff limité"
-msgstr ""
+msgstr "Limited staff"
 
 #: home/templates/docs/doc_database.html:172
 msgid "Utilisateurs"
-msgstr ""
+msgstr "Users"
 
 #: home/templates/docs/doc_database.html:185
 msgid "Application Planarian"
-msgstr ""
+msgstr "Planarian application"
 
 #: home/templates/docs/doc_database.html:191
 msgid "Configurations des expériences de suivi des planaires."
-msgstr ""
+msgstr "Configurations of planar monitoring experiments."
 
 #: home/templates/docs/doc_database.html:201
 msgid "Application Scanner"
-msgstr ""
+msgstr "Application Scanner"
 
 #: home/templates/docs/doc_database.html:208
 msgid "Constantes et valeurs par défaut"
-msgstr ""
+msgstr "Constants and default values"
 
 #: home/templates/docs/doc_database.html:214
 msgid "Caméra"
-msgstr ""
+msgstr "Camera"
 
 #: home/templates/docs/doc_database.html:218 scanner/models.py:56
 msgid "Capture"
-msgstr ""
+msgstr "Capture"
 
 #: home/templates/docs/doc_database.html:222
 msgid "Fichier vidéo"
-msgstr ""
+msgstr "Video file"
 
 #: home/templates/docs/doc_database.html:225 scanner/models.py:60
 msgid "Fréquence vidéos (fps)"
-msgstr ""
+msgstr "Frequency videos (fps)"
 
 #: home/templates/docs/doc_database.html:226 scanner/models.py:61
 msgid "Largeur de capture vidéo"
-msgstr ""
+msgstr "Video capture width"
 
 #: home/templates/docs/doc_database.html:227 scanner/models.py:62
 msgid "Hauteur de capture vidéo"
-msgstr ""
+msgstr "Video capture height"
 
 #: home/templates/docs/doc_database.html:234
 msgid "Suivi / Tracking"
-msgstr ""
+msgstr "Tracking / Tracking"
 
 #: home/templates/docs/doc_database.html:236
 msgid "Valeurs par défaut du tracking"
-msgstr ""
+msgstr "Tracking default values"
 
 #: home/templates/docs/doc_database.html:248
 msgid "Noms des puits"
-msgstr ""
+msgstr "Well names"
 
 #: home/templates/docs/doc_database.html:254
 msgid "Contient uniquement les noms des puits disponibles."
-msgstr ""
+msgstr "Contains only the names of the available wells."
 
 #: home/templates/docs/doc_database.html:255
 msgid "Lecture en serpentin dans le sens des ±X"
-msgstr ""
+msgstr "Snake reading in the direction of ±X"
 
 #: home/templates/docs/doc_database.html:285
 msgid "Géométrie et déplacements"
-msgstr ""
+msgstr "Geometry and displacement"
 
 #: home/templates/docs/doc_database.html:291
 msgid "Position sur la table"
-msgstr ""
+msgstr "Position on the table"
 
 #: home/templates/docs/doc_database.html:293
 msgid "Haut gauche"
-msgstr ""
+msgstr "Top left"
 
 #: home/templates/docs/doc_database.html:294
 msgid "Haut droit"
-msgstr ""
+msgstr "High right"
 
 #: home/templates/docs/doc_database.html:295
 msgid "Bas gauche"
-msgstr ""
+msgstr "Left bottom"
 
 #: home/templates/docs/doc_database.html:296
 msgid "Bas droit"
-msgstr ""
+msgstr "Right low"
 
 #: home/templates/docs/doc_database.html:298
 msgid "4 positions disponibles sur la table"
-msgstr ""
+msgstr "4 positions available on the table"
 
 #: home/templates/docs/doc_database.html:299
 msgid "(0, 0) de le CNC est en HD"
-msgstr ""
+msgstr "(0,0) CNC is in HD"
 
 #: home/templates/docs/doc_database.html:300
 msgid "HD --> HG +X"
-msgstr ""
+msgstr "HD --> HG +X"
 
 #: home/templates/docs/doc_database.html:301
 msgid "HD --> BD +Y"
-msgstr ""
+msgstr "HD --> BD +Y"
 
 #: home/templates/docs/doc_database.html:307 scanner/admin.py:52
 msgid "Géométrie"
-msgstr ""
+msgstr "Geometry"
 
 #: home/templates/docs/doc_database.html:309 scanner/models.py:118
 msgid "Nombre de lignes"
-msgstr ""
+msgstr "Number of lines"
 
 #: home/templates/docs/doc_database.html:310 scanner/models.py:117
 msgid "Nombre de colonnes"
-msgstr ""
+msgstr "Number of columns"
 
 #: home/templates/docs/doc_database.html:311
 msgid "Diamètre des puits"
-msgstr ""
+msgstr "Well diameter"
 
 #: home/templates/docs/doc_database.html:312
 msgid "Définition des lignes (A, B, C, D)"
-msgstr ""
+msgstr "Definition of lines (A, B, C, D)"
 
 #: home/templates/docs/doc_database.html:313
 msgid "Lecture en serpentin ±X (D→C→B→A)"
-msgstr ""
+msgstr "Snake reading ±X (D→C→B→A)"
 
 #: home/templates/docs/doc_database.html:322
 msgid "Ordre de lecture"
-msgstr ""
+msgstr "Reading Order"
 
 #: home/templates/docs/doc_database.html:323
 msgid "Durée de capture (calibration)"
-msgstr ""
+msgstr "Capture time (calibration)"
 
 #: home/templates/docs/doc_database.html:326 scanner/models.py:125
 msgid "Origine X"
-msgstr ""
+msgstr "Origin X"
 
 #: home/templates/docs/doc_database.html:331 scanner/models.py:126
 msgid "Origine Y"
-msgstr ""
+msgstr "Origin Y"
 
 #: home/templates/docs/doc_database.html:334
 msgid "Pas X mesuré"
-msgstr ""
+msgstr "Not X measured"
 
 #: home/templates/docs/doc_database.html:335
 msgid "Pas Y mesuré"
-msgstr ""
+msgstr "Not Y measured"
 
 #: home/templates/docs/doc_database.html:336
 msgid "Vitesse (mm/mn)"
-msgstr ""
+msgstr "Speed (mm/min)"
 
 #: home/templates/docs/doc_database.html:346
 msgid "Si les positions ne sont pas encore générées, le système efface"
-msgstr ""
+msgstr "If positions are not yet generated, the system will erase"
 
 #: home/templates/docs/doc_database.html:346
 msgid "et recalcule toutes les positions des puits."
-msgstr ""
+msgstr "and recalculate all well positions."
 
 #: home/templates/docs/doc_database.html:357
 msgid "Positions calibrées des puits"
-msgstr ""
+msgstr "Calibrated well positions"
 
 #: home/templates/docs/doc_database.html:364
 msgid "Manuelle ou automatique."
-msgstr ""
+msgstr "Manual or automatic."
 
 #: home/templates/docs/doc_database.html:366
 msgid "Axe X (mm)"
-msgstr ""
+msgstr "X-axis (mm)"
 
 #: home/templates/docs/doc_database.html:367
 msgid "Axe Y (mm)"
-msgstr ""
+msgstr "Y axis (mm)"
 
 #: home/templates/docs/doc_database.html:374 planarian/models.py:36
 #: scanner/models.py:185
 msgid "Pixels par mm"
-msgstr ""
+msgstr "Pixels per mm"
 
 #: home/templates/docs/doc_database.html:375
 msgid ""
 "Facteur de calibration optique calculé en fonction de la taille de l'image."
-msgstr ""
+msgstr "Optical calibration factor calculated as a function of image size."
 
 #: home/templates/docs/doc_database.html:378
 msgid "Recalibrer si la taille de l'image est modifiée !"
-msgstr ""
+msgstr "Recalibrate if image size is changed!"
 
 #: home/templates/docs/doc_database.html:390
 msgid "Expériences et puits associés"
-msgstr ""
+msgstr "Associated experiments and wells"
 
 #: home/templates/docs/doc_database.html:396
 msgid "Valeurs importantes"
-msgstr ""
+msgstr "Important values"
 
 #: home/templates/docs/doc_database.html:398
 msgid "Multi-puits lié"
-msgstr ""
+msgstr "Multi-well linked"
 
 #: home/templates/docs/doc_database.html:399
 msgid "Durée de capture (secondes)"
-msgstr ""
+msgstr "Catch time (seconds)"
 
 #: home/templates/docs/doc_database.html:400 scanner/models.py:240
 msgid "Identifiant d'expérience"
-msgstr ""
+msgstr "Experience ID"
 
 #: home/templates/docs/doc_database.html:407
 #: home/templates/docs/doc_experiment.html:38
 msgid "Création automatique"
-msgstr ""
+msgstr "Automatic creation"
 
 #: home/templates/docs/doc_database.html:408
 msgid ""
 "À la création d'une expérience, les puits liés sont automatiquement créés "
 "dans"
 msgstr ""
+"When creating an experiment, the linked wells are automatically created in"
 
 #: home/templates/docs/doc_database.html:419
 msgid "Sessions d'expériences"
-msgstr ""
+msgstr "Experience sessions"
 
 #: home/templates/docs/doc_database.html:425
 msgid "Regroupement"
-msgstr ""
+msgstr "Grouping"
 
 #: home/templates/docs/doc_database.html:426
 msgid "Regroupe les expériences lors d'un balayage dans"
-msgstr ""
+msgstr "Consolidates experiments during scanning in"
 
 #: home/templates/docs/doc_database.html:428
 msgid "4 multi-puits maximum"
-msgstr ""
+msgstr "Maximum 4 multi-wells"
 
 #: home/templates/docs/doc_database.html:435
 msgid "2 tâches Celery créées"
-msgstr ""
+msgstr "2 Celery tasks created"
 
 #: home/templates/docs/doc_database.html:440
 msgid "Lancement différé d'un balayage de session."
-msgstr ""
+msgstr "Delayed session scanning."
 
 #: home/templates/docs/doc_database.html:446
 msgid "Export images et vidéos :"
-msgstr ""
+msgstr "Export images and videos :"
 
 #: home/templates/docs/doc_database.html:447
 msgid "Local"
-msgstr ""
+msgstr "Local"
 
 #: home/templates/docs/doc_database.html:448
 msgid "Support distant"
-msgstr ""
+msgstr "Remote support"
 
 #: home/templates/docs/doc_database.html:462
 msgid "Gestion des tâches différées"
-msgstr ""
+msgstr "Management of deferred tasks"
 
 #: home/templates/docs/doc_database.html:468
 msgid "Gère le déclenchement et la planification des tâches Celery différées."
-msgstr ""
+msgstr "Manages the triggering and planning of delayed Celery tasks."
 
 #: home/templates/docs/doc_database.html:471
 #: home/templates/docs/doc_experiment.html:35
 msgid "Tâches périodiques"
-msgstr ""
+msgstr "Periodic tasks"
 
 #: home/templates/docs/doc_experiment.html:22
 #: home/templates/docs/doc_experiment.html:53
 #: scanner/templates/scanner/base.html:47
 msgid "Démarrer des expériences"
-msgstr ""
+msgstr "Start Experiences"
 
 #: home/templates/docs/doc_experiment.html:23
 msgid ""
 "Sessions, expériences, configurations et import CSV — interface "
 "Administration Django"
 msgstr ""
+"Sessions, experiments, configurations and import CSV — Django Administration"
+" interface"
 
 #: home/templates/docs/doc_experiment.html:32
 #: home/templates/docs/doc_experiment.html:86
 msgid "Ordre de création"
-msgstr ""
+msgstr "Order of establishment"
 
 #: home/templates/docs/doc_experiment.html:33
 #: home/templates/docs/doc_experiment.html:125
@@ -809,1942 +817,1969 @@ msgstr ""
 #: scanner/models.py:380 scanner/templates/scanner/images.html:13
 #: scanner/templates/scanner/replay.html:14
 msgid "Session"
-msgstr ""
+msgstr "Session"
 
 #: home/templates/docs/doc_experiment.html:34
 #: home/templates/docs/doc_experiment.html:37
 #: home/templates/docs/doc_experiment.html:200
 #: home/templates/docs/doc_scanning.html:118
 msgid "Données"
-msgstr ""
+msgstr "Data"
 
 #: home/templates/docs/doc_experiment.html:36
 #: home/templates/docs/doc_experiment.html:195
 #: planarian/templates/planarian/export_csv.html:33 scanner/models.py:263
 #: scanner/models.py:381 scanner/models.py:411
 msgid "Expérience"
-msgstr ""
+msgstr "Experience"
 
 #: home/templates/docs/doc_experiment.html:39
 msgid "Métriques"
-msgstr ""
+msgstr "Metrics"
 
 #: home/templates/docs/doc_experiment.html:40
 msgid "Configuration puits"
-msgstr ""
+msgstr "Well configuration"
 
 #: home/templates/docs/doc_experiment.html:41
 msgid "Import CSV"
-msgstr ""
+msgstr "CSV import"
 
 #: home/templates/docs/doc_experiment.html:55
 msgid ""
-"C'est l'interface Administration Django qui est chargée de créer les données."
+"C'est l'interface Administration Django qui est chargée de créer les "
+"données."
 msgstr ""
+"The Django Administration interface is responsible for creating the data."
 
 #: home/templates/docs/doc_experiment.html:63
 msgid "Principe général"
-msgstr ""
+msgstr "General principle"
 
 #: home/templates/docs/doc_experiment.html:67
 msgid "Une expérience est toujours affectée à un multi-puits."
-msgstr ""
+msgstr "An experiment is always assigned to a multi-well."
 
 #: home/templates/docs/doc_experiment.html:71
 msgid "Il y a 4 emplacements multi-puits, donc"
-msgstr ""
+msgstr "There are 4 multi-well locations, so"
 
 #: home/templates/docs/doc_experiment.html:72
 msgid "4 expériences maximum par session."
-msgstr ""
+msgstr "4 maximum experiences per session."
 
 #: home/templates/docs/doc_experiment.html:85
 msgid "Workflow"
-msgstr ""
+msgstr "Workflow"
 
 #: home/templates/docs/doc_experiment.html:87
 msgid "Les deux approches sont équivalentes — au choix."
-msgstr ""
+msgstr "Both approaches are equivalent — to choice."
 
 #: home/templates/docs/doc_experiment.html:95
 msgid "Option A — Session en premier"
-msgstr ""
+msgstr "Option A — Session first"
 
 #: home/templates/docs/doc_experiment.html:97
 #: home/templates/docs/doc_experiment.html:111
 msgid "Créer la session"
-msgstr ""
+msgstr "Create session"
 
 #: home/templates/docs/doc_experiment.html:98
 msgid "Créer les expériences (4 maxi)"
-msgstr ""
+msgstr "Create experiences (4 max)"
 
 #: home/templates/docs/doc_experiment.html:99
 msgid "Revenir sur la session et ajouter les expériences"
-msgstr ""
+msgstr "Back to session and add experiences"
 
 #: home/templates/docs/doc_experiment.html:108
 msgid "Option B — Expériences en premier"
-msgstr ""
+msgstr "Option B — Experiences first"
 
 #: home/templates/docs/doc_experiment.html:110
 msgid "Créer les expériences"
-msgstr ""
+msgstr "Create Experiences"
 
 #: home/templates/docs/doc_experiment.html:112
 msgid "Ajouter les expériences à la session"
-msgstr ""
+msgstr "Add experiences to the session"
 
 #: home/templates/docs/doc_experiment.html:131
 msgid "Données importantes"
-msgstr ""
+msgstr "Important data"
 
 #: home/templates/docs/doc_experiment.html:137
 #: home/templates/docs/doc_experiment.html:205 planarian/admin.py:21
 #: scanner/admin.py:15 scanner/admin.py:49
 msgid "Identification"
-msgstr ""
+msgstr "Identification"
 
 #: home/templates/docs/doc_experiment.html:139
 #: home/templates/docs/doc_experiment.html:207
 msgid "Titre"
-msgstr ""
+msgstr "Title"
 
 #: home/templates/docs/doc_experiment.html:140
 #: home/templates/docs/doc_experiment.html:208
 msgid "Auteur"
-msgstr ""
+msgstr "Author"
 
 #: home/templates/docs/doc_experiment.html:149 scanner/models.py:403
 msgid "Expériences d'une session"
-msgstr ""
+msgstr "Experiences of a session"
 
 #: home/templates/docs/doc_experiment.html:150
 msgid "Ajouter les expériences à la suite dans l'inline"
-msgstr ""
+msgstr "Add the experiments to the next inline"
 
 #: home/templates/docs/doc_experiment.html:152
 msgid "4 maximum"
-msgstr ""
+msgstr "Maximum 4"
 
 #: home/templates/docs/doc_experiment.html:162
 msgid "Options tâches périodiques"
-msgstr ""
+msgstr "Periodic Task Options"
 
 #: home/templates/docs/doc_experiment.html:168 scanner/models.py:281
 msgid "Date d'exportation"
-msgstr ""
+msgstr "Date of export"
 
 #: home/templates/docs/doc_experiment.html:169
 msgid ""
-"Crée une tâche différée pour exporter automatiquement les images et vidéos à "
-"la date choisie."
+"Crée une tâche différée pour exporter automatiquement les images et vidéos à"
+" la date choisie."
 msgstr ""
+"Creates a delayed task to automatically export images and videos to the "
+"selected date."
 
 #: home/templates/docs/doc_experiment.html:178 scanner/models.py:282
 msgid "Date du balayage"
-msgstr ""
+msgstr "Date of scanning"
 
 #: home/templates/docs/doc_experiment.html:179
 msgid ""
 "Planifie le déclenchement du balayage de la session à une date ultérieure."
-msgstr ""
+msgstr "Plan to trigger the session scan at a later date."
 
 #: home/templates/docs/doc_experiment.html:209 scanner/models.py:239
 msgid "Commentaires"
-msgstr ""
+msgstr "Remarks"
 
 #: home/templates/docs/doc_experiment.html:216
 msgid "Paramètres critiques"
-msgstr ""
+msgstr "Critical parameters"
 
 #: home/templates/docs/doc_experiment.html:220
 msgid "Choix du multi-puits"
-msgstr ""
+msgstr "Multi-well selection"
 
 #: home/templates/docs/doc_experiment.html:224
 msgid "Durée de la prise de vue (secondes)"
-msgstr ""
+msgstr "Length of shooting (seconds)"
 
 #: home/templates/docs/doc_experiment.html:235
 msgid "Fonctionnement à la création"
-msgstr ""
+msgstr "Operation at the establishment"
 
 #: home/templates/docs/doc_experiment.html:242
 #: home/templates/docs/doc_experiment.html:264
 msgid "Création/MAJ"
-msgstr ""
+msgstr "Establishment/MAJ"
 
 #: home/templates/docs/doc_experiment.html:246
 msgid "Création de chaque puit individuel."
-msgstr ""
+msgstr "Creation of each individual well."
 
 #: home/templates/docs/doc_experiment.html:250
 msgid "Par défaut, tous les puits sont actifs."
-msgstr ""
+msgstr "By default, all wells are active."
 
 #: home/templates/docs/doc_experiment.html:255
-msgid "Il est possible d'ignorer le balayage d'un ou plusieurs puits au choix."
-msgstr ""
+msgid ""
+"Il est possible d'ignorer le balayage d'un ou plusieurs puits au choix."
+msgstr "It is possible to ignore the scanning of one or more wells of choice."
 
 #: home/templates/docs/doc_experiment.html:265
 msgid "Paramètres d'une expérience PlanarianScanner."
-msgstr ""
+msgstr "Parameters of a PlanarianScanner experiment."
 
 #: home/templates/docs/doc_experiment.html:269
 msgid "Créé depuis Django admin"
-msgstr ""
+msgstr "Created from Django admin"
 
 #: home/templates/docs/doc_experiment.html:273
 msgid "Ou import CSV depuis l'admin"
-msgstr ""
+msgstr "Or import CSV from admin"
 
 #: home/templates/docs/doc_experiment.html:277
 msgid "Données descriptives supplémentaires (à définir)"
-msgstr ""
+msgstr "Additional descriptive data (to be defined)"
 
 #: home/templates/docs/doc_experiment.html:289
 msgid "Intégration métriques EthoVision XT + comportementales"
-msgstr ""
+msgstr "Metric integration EthoVision XT + behavioral"
 
 #: home/templates/docs/doc_experiment.html:294
 msgid "Métriques par frame"
-msgstr ""
+msgstr "Metrics per frame"
 
 #: home/templates/docs/doc_experiment.html:300
 #: home/templates/docs/doc_experiment.html:366
 msgid "Mobilité"
-msgstr ""
+msgstr "Mobility"
 
 #: home/templates/docs/doc_experiment.html:312
 #: home/templates/docs/doc_experiment.html:377
 msgid "Thigmotaxie"
-msgstr ""
+msgstr "Thigmotaxis"
 
 #: home/templates/docs/doc_experiment.html:322
 #: home/templates/docs/doc_experiment.html:386
 msgid "Phototaxie"
-msgstr ""
+msgstr "Phototaxia"
 
 #: home/templates/docs/doc_experiment.html:335
 #: home/templates/docs/doc_experiment.html:399
 msgid "Chimiotaxie"
-msgstr ""
+msgstr "Chemiotaxia"
 
 #: home/templates/docs/doc_experiment.html:347
 #: home/templates/docs/doc_experiment.html:411
 msgid "Social"
-msgstr ""
+msgstr "Social"
 
 #: home/templates/docs/doc_experiment.html:360
 msgid "Métriques résumé (summary)"
-msgstr ""
+msgstr "Summary metrics (summary)"
 
 #: home/templates/docs/doc_experiment.html:370
 msgid "durations par état"
-msgstr ""
+msgstr "durations per state"
 
 #: home/templates/docs/doc_experiment.html:429
 msgid "Interface Scanner"
-msgstr ""
+msgstr "Scanner Interface"
 
 #: home/templates/docs/doc_experiment.html:430
 #: scanner/templates/scanner/base.html:124
 msgid "Configuration des expériences"
-msgstr ""
+msgstr "Configuring Experiences"
 
 #: home/templates/docs/doc_experiment.html:431
 msgid ""
 "Sélectionner l'expérience et le puit à modifier pour compléter la fiche."
-msgstr ""
+msgstr "Select the experiment and could modify it to complete the sheet."
 
 #: home/templates/docs/doc_experiment.html:437
 msgid "Procédure"
-msgstr ""
+msgstr "Procedure"
 
 #: home/templates/docs/doc_experiment.html:439
 msgid "Sélectionner l'expérience dans la liste"
-msgstr ""
+msgstr "Select experience from the list"
 
 #: home/templates/docs/doc_experiment.html:440
 msgid "Sélectionner le puit à modifier"
-msgstr ""
+msgstr "Select the well to change"
 
 #: home/templates/docs/doc_experiment.html:441
 msgid "Compléter la fiche de configuration"
-msgstr ""
+msgstr "Complete the configuration sheet"
 
 #: home/templates/docs/doc_experiment.html:453
 msgid "Import"
-msgstr ""
+msgstr "Import"
 
 #: home/templates/docs/doc_experiment.html:454
 #: scanner/templates/scanner/base.html:128
 msgid "Importer des configurations depuis CSV"
-msgstr ""
+msgstr "Import configurations from CSV"
 
 #: home/templates/docs/doc_experiment.html:462
 #: home/templates/docs/doc_results.html:34
 #: home/templates/docs/doc_results.html:60
 msgid "Menu gauche"
-msgstr ""
+msgstr "Left Menu"
 
 #: home/templates/docs/doc_experiment.html:464
 #: home/templates/docs/doc_results.html:69
 msgid "Sélectionner la session"
-msgstr ""
+msgstr "Select session"
 
 #: home/templates/docs/doc_experiment.html:465
 #: home/templates/docs/doc_results.html:70
 msgid "Cocher l'expérience souhaitée"
-msgstr ""
+msgstr "Check the desired experience"
 
 #: home/templates/docs/doc_experiment.html:474
 msgid "Zone d'import"
-msgstr ""
+msgstr "Import area"
 
 #: home/templates/docs/doc_experiment.html:476
 msgid "Glisser-déposer le fichier CSV"
-msgstr ""
+msgstr "Drag & Drop CSV File"
 
 #: home/templates/docs/doc_experiment.html:477
 msgid "Cliquer sur Importer"
-msgstr ""
+msgstr "Click Import"
 
 #: home/templates/docs/doc_experiment.html:488
 msgid "Astuce — Générer le template CSV depuis Django admin"
-msgstr ""
+msgstr "Tip — Generate CSV template from Django admin"
 
 #: home/templates/docs/doc_experiment.html:492
 msgid "Aller dans"
-msgstr ""
+msgstr "Go to"
 
 #: home/templates/docs/doc_experiment.html:493
 msgid "Planarian › Configurations des expériences"
-msgstr ""
+msgstr "Planarian › Configurations of experiments"
 
 #: home/templates/docs/doc_experiment.html:497
 msgid "Cocher le puit de l'expérience ou un groupe d'expériences"
-msgstr ""
+msgstr "Check the well of the experiment or a group of experiments"
 
 #: home/templates/docs/doc_experiment.html:501
 msgid "Action :"
-msgstr ""
+msgstr "Action:"
 
 #: home/templates/docs/doc_experiment.html:501
 msgid "Exporter un template CSV…"
-msgstr ""
+msgstr "Export a CSV template..."
 
 #: home/templates/docs/doc_experiment.html:505
 msgid "Vérifier l'emplacement du fichier téléchargé (dossier Download)."
-msgstr ""
+msgstr "Check the location of the downloaded file (Download folder)."
 
 #: home/templates/docs/doc_results.html:24
 msgid "Exploiter les résultats"
-msgstr ""
+msgstr "Exploiting results"
 
 #: home/templates/docs/doc_results.html:25
 msgid "Export CSV des métriques par session, expérience et planaire"
-msgstr ""
+msgstr "CSV export of metrics by session, experience and planar"
 
 #: home/templates/docs/doc_results.html:35
 msgid "Export serveur"
-msgstr ""
+msgstr "Export server"
 
 #: home/templates/docs/doc_results.html:36
 msgid "Partie droite"
-msgstr ""
+msgstr "Right part"
 
 #: home/templates/docs/doc_results.html:37
 msgid "Générer le CSV"
-msgstr ""
+msgstr "Generate CSV"
 
 #: home/templates/docs/doc_results.html:48
 msgid "Export CSV"
-msgstr ""
+msgstr "Export CSV"
 
 #: home/templates/docs/doc_results.html:49
 #: scanner/templates/scanner/base.html:53
 msgid "Exploiter les résultats des expériences"
-msgstr ""
+msgstr "Exploiting the results of experiments"
 
 #: home/templates/docs/doc_results.html:50
 msgid ""
 "Les métriques de suivi des planaires sont exportables au format CSV depuis "
 "l'interface Scanner."
 msgstr ""
+"Planar tracking metrics can be exported in CSV format from the Scanner "
+"interface."
 
 #: home/templates/docs/doc_results.html:59
 #: home/templates/docs/doc_results.html:67
 msgid "Sélection"
-msgstr ""
+msgstr "Selection"
 
 #: home/templates/docs/doc_results.html:71
 msgid "Cliquer sur Exporter les métriques de l'expérience"
-msgstr ""
+msgstr "Click Export Experience Metrics"
 
 #: home/templates/docs/doc_results.html:80
 msgid "Export côté serveur"
-msgstr ""
+msgstr "Export server-side"
 
 #: home/templates/docs/doc_results.html:89
 msgid "Durée variable"
-msgstr ""
+msgstr "Variable duration"
 
 #: home/templates/docs/doc_results.html:92
 msgid "La procédure peut être longue selon le nombre de planaires à suivre."
 msgstr ""
+"The procedure may be lengthy depending on the number of planners to follow."
 
 #: home/templates/docs/doc_results.html:101
 msgid "Tâche de fond"
-msgstr ""
+msgstr "Background"
 
 #: home/templates/docs/doc_results.html:102
 msgid "Le service est exécuté en arrière-plan (Celery)."
-msgstr ""
+msgstr "The service is executed in the background (Celery)."
 
 #: home/templates/docs/doc_results.html:115
 msgid "Emplacement des fichiers sur le serveur"
-msgstr ""
+msgstr "File locations on the server"
 
 #: home/templates/docs/doc_results.html:131
 msgid "Téléchargement"
-msgstr ""
+msgstr "Download"
 
 #: home/templates/docs/doc_results.html:132
 msgid "Partie droite — Téléchargement client"
-msgstr ""
+msgstr "Right side — Download client"
 
 #: home/templates/docs/doc_results.html:141
 msgid "Paramètres"
-msgstr ""
+msgstr "Parameters"
 
 #: home/templates/docs/doc_results.html:145
 msgid "Choisir le puit"
-msgstr ""
+msgstr "Choose the well"
 
 #: home/templates/docs/doc_results.html:149
 msgid "Choisir l'index du planaire"
-msgstr ""
+msgstr "Choose the planar index"
 
 #: home/templates/docs/doc_results.html:152
 msgid "Le nombre de planaires est défini dans"
-msgstr ""
+msgstr "The number of planaires is defined in"
 
 #: home/templates/docs/doc_results.html:153
 msgid "Paramètres d'une expérience"
-msgstr ""
+msgstr "Experience Parameters"
 
 #: home/templates/docs/doc_results.html:164
 msgid "Bouton Générer"
-msgstr ""
+msgstr "Generate Button"
 
 #: home/templates/docs/doc_results.html:165
 msgid "Télécharge le fichier CSV directement sur le poste client."
-msgstr ""
+msgstr "Download the CSV file directly to the client station."
 
 #: home/templates/docs/doc_results.html:168
 msgid "La procédure peut être longue."
-msgstr ""
+msgstr "The procedure can be lengthy."
 
 #: home/templates/docs/doc_scanning.html:23
 #: home/templates/docs/doc_scanning.html:49
 #: scanner/templates/scanner/base.html:50
 msgid "Balayage des puits"
-msgstr ""
+msgstr "Well sweeping"
 
 #: home/templates/docs/doc_scanning.html:24
 msgid "Lancement, suivi et procédure en cas d'arrêt"
-msgstr ""
+msgstr "Launch, follow-up and procedure in case of arrest"
 
 #: home/templates/docs/doc_scanning.html:34
 #: home/templates/docs/doc_scanning.html:80 scanner/models.py:298
 msgid "Lancer le balayage"
-msgstr ""
+msgstr "Run Scan"
 
 #: home/templates/docs/doc_scanning.html:35
 msgid "Arrêt"
-msgstr ""
+msgstr "Judgment"
 
 #: home/templates/docs/doc_scanning.html:36
 msgid "Procédure après arrêt"
-msgstr ""
+msgstr "Post-stop procedure"
 
 #: home/templates/docs/doc_scanning.html:48
 msgid "Balayage"
-msgstr ""
+msgstr "Scanning"
 
 #: home/templates/docs/doc_scanning.html:56
 msgid "Recadrage forcé"
-msgstr ""
+msgstr "Forced cropping"
 
 #: home/templates/docs/doc_scanning.html:57
 msgid "Le balayage force toujours le recadrage de l'image."
-msgstr ""
+msgstr "Scanning always forces the cropping of the image."
 
 #: home/templates/docs/doc_scanning.html:58
 msgid "Le balayage est disponible quand la session est marquée ACTIVE"
-msgstr ""
+msgstr "Scanning is available when the session is marked ACTIVE"
 
 #: home/templates/docs/doc_scanning.html:61
 msgid ""
 "Les boutons Axes et Recadrer sont affichés à titre indicatif uniquement."
-msgstr ""
+msgstr "The Axes and Reframe buttons are shown for information purposes only."
 
 #: home/templates/docs/doc_scanning.html:74
 msgid "Commandes importantes"
-msgstr ""
+msgstr "Important orders"
 
 #: home/templates/docs/doc_scanning.html:89
 msgid "Suivi pas à pas de tous les puits de la session."
-msgstr ""
+msgstr "Step by step from all the wells of the session."
 
 #: home/templates/docs/doc_scanning.html:93
 msgid "Les logs s'affichent en bas de l'écran en temps réel."
-msgstr ""
+msgstr "Logs are displayed at the bottom of the screen in real time."
 
 #: home/templates/docs/doc_scanning.html:111
 msgid "Images"
-msgstr ""
+msgstr "Images"
 
 #: home/templates/docs/doc_scanning.html:112
 msgid "Les images capturées jusqu'à l'arrêt seront enregistrées."
-msgstr ""
+msgstr "The images captured until the stop will be recorded."
 
 #: home/templates/docs/doc_scanning.html:119
 msgid "Les données de suivi ne seront pas enregistrées."
-msgstr ""
+msgstr "Follow-up data will not be recorded."
 
 #: home/templates/docs/doc_scanning.html:131
 msgid "Récupération"
-msgstr ""
+msgstr "Recovery"
 
 #: home/templates/docs/doc_scanning.html:132
 msgid "Procédure en cas d'arrêt"
-msgstr ""
+msgstr "Procedure for stopping"
 
 #: home/templates/docs/doc_scanning.html:140
 msgid "Réinitialiser la session"
-msgstr ""
+msgstr "Reset session"
 
 #: home/templates/docs/doc_scanning.html:144
 msgid "Supprimer la session en cours depuis l'administration Django."
-msgstr ""
+msgstr "Delete the current session from the Django administration."
 
 #: home/templates/docs/doc_scanning.html:148
 msgid "Créer une nouvelle session."
-msgstr ""
+msgstr "Create a new session."
 
 #: home/templates/docs/doc_scanning.html:159
 msgid "Nettoyage ReductStore"
-msgstr ""
+msgstr "ReductionStore Cleaning"
 
 #: home/templates/docs/doc_scanning.html:167
 msgid "Accès ReductStore"
-msgstr ""
+msgstr "ReduceStore access"
 
 #: home/templates/docs/doc_scanning.html:181
 #: home/templates/docs/doc_scanning.html:201
 msgid "Bucket"
-msgstr ""
+msgstr "Bucket"
 
 #: home/templates/docs/doc_scanning.html:186
 msgid "Localiser les entrées correspondant aux UUIDs des expériences."
-msgstr ""
+msgstr "Locate UUID entries for experiments."
 
 #: home/templates/docs/doc_scanning.html:190
 msgid "Supprimer les UUIDs des expériences concernées."
-msgstr ""
+msgstr "Remove UUIDs from relevant experiments."
 
 #: home/templates/docs/doc_scanning.html:206
 msgid "Repérer les enregistrements dont le label correspond aux UUIDs."
-msgstr ""
+msgstr "Identify records with a UUID label."
 
 #: home/templates/docs/doc_scanning.html:210
 msgid "Supprimer ces enregistrements."
-msgstr ""
+msgstr "Delete these records."
 
 #: home/templates/docs/doc_scanning.html:225
 msgid "Identifier les UUIDs à supprimer"
-msgstr ""
+msgstr "Identify UUIDs to remove"
 
 #: home/templates/docs/doc_scanning.html:226
 msgid ""
 "Les UUIDs des expériences sont visibles dans l'administration Django, dans "
 "la session supprimée ou dans les logs affichés pendant le balayage."
 msgstr ""
+"The UUIDs of the experiments are visible in the Django administration, in "
+"the deleted session or in the logs displayed during scanning."
 
 #: home/templates/inc/404.html:9
 msgid "Error: missing page."
-msgstr ""
+msgstr "Error: missing page."
 
 #: home/templates/inc/404.html:17
 msgid "This page does not exist.<br>Please re-enter a new address."
-msgstr ""
+msgstr "This page does not exist.<br>Please re-enter a new address."
 
 #: home/templates/inc/500.html:9
 msgid "System error"
-msgstr ""
+msgstr "System error"
 
 #: home/templates/inc/500.html:17
 msgid ""
 "This page server can't run correctly.<br>Please contact the site "
 "administrator."
 msgstr ""
+"This page server can't run correctly.<br>Please contact the site "
+"administrator."
 
 #: planarian/admin.py:24
 msgid "Calibration optique:  générée lors de la calibration"
-msgstr ""
+msgstr "Optical calibration: generated during calibration"
 
 #: planarian/admin.py:28
 msgid "Seuils de mobilité EthoVision"
-msgstr ""
+msgstr "EthoVision mobility thresholds"
 
 #: planarian/admin.py:32
 msgid "Tracker"
-msgstr ""
+msgstr "Tracker"
 
 #: planarian/admin.py:36
 msgid "Thigmotactisme"
-msgstr ""
+msgstr "Thigmotactism"
 
 #: planarian/admin.py:40
 msgid "Phototactisme"
-msgstr ""
+msgstr "Phototactism"
 
 #: planarian/admin.py:44
 msgid "Chimiotactisme"
-msgstr ""
+msgstr "Chemistry"
 
 #: planarian/admin.py:48
 msgid "Interactions inter-individus"
-msgstr ""
+msgstr "Interactions between individuals"
 
 #: planarian/admin.py:57
 msgid "Exporter un template CSV de ces configurations"
-msgstr ""
+msgstr "Export a CSV template from these configurations"
 
 #: planarian/models.py:23
 msgid "Identifiant expérience"
-msgstr ""
+msgstr "Identifier experience"
 
 #: planarian/models.py:24 scanner/models.py:102 scanner/models.py:179
 #: scanner/models.py:412
 msgid "Puit"
-msgstr ""
+msgstr "Fish"
 
 #: planarian/models.py:24
 msgid "Nom du puit"
-msgstr ""
+msgstr "Name of well"
 
 #: planarian/models.py:26 planarian/templates/planarian/import_params.html:100
 #: planarian/templates/planarian/import_params.html:142
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #: planarian/models.py:29
 msgid "Créé le"
-msgstr ""
+msgstr "Created on"
 
 #: planarian/models.py:30 scanner/models.py:133 scanner/models.py:280
 #: scanner/models.py:315 scanner/models.py:413
 msgid "Active"
-msgstr ""
+msgstr "Active"
 
 #: planarian/models.py:37 scanner/models.py:185
 msgid "Facteur de calibration optique"
-msgstr ""
+msgstr "Optical calibration factor"
 
 #: planarian/models.py:41
 msgid "FPS de capture"
-msgstr ""
+msgstr "FPS capture"
 
 #: planarian/models.py:42
 msgid "Image de capture en img/s"
-msgstr ""
+msgstr "Capture image in img/s"
 
 #: planarian/models.py:46
 msgid "Rayon du puits"
-msgstr ""
+msgstr "Well radius"
 
 #: planarian/models.py:47
 msgid "En mm"
-msgstr ""
+msgstr "In mm"
 
 #: planarian/models.py:53
 msgid "Seuil Immobile (mm/s)"
-msgstr ""
+msgstr "Fixed threshold (mm/s)"
 
 #: planarian/models.py:57
 msgid "Seuil Mobile (mm/s)"
-msgstr ""
+msgstr "Mobile threshold (mm/s)"
 
 #: planarian/models.py:64 scanner/models.py:39
 msgid "Vertical"
-msgstr ""
+msgstr "Vertical"
 
 #: planarian/models.py:64 scanner/models.py:40
 msgid "Horizontal"
-msgstr ""
+msgstr "Horizontal"
 
 #: planarian/models.py:65 scanner/models.py:74
 msgid "Axe du tube"
-msgstr ""
+msgstr "Tube axis"
 
 #: planarian/models.py:69
 msgid "Surface min détection (px²)"
-msgstr ""
+msgstr "Min area detection (px2)"
 
 #: planarian/models.py:74
 msgid "Surface max contour (fraction de la frame)"
-msgstr ""
+msgstr "Max surface contour (frame fraction)"
 
 #: planarian/models.py:75
 msgid "Ratio de la surface du puits, ex: 0.10 pour 10%"
-msgstr ""
+msgstr "Well area ratio, e.g. 0.10 for 10%"
 
 #: planarian/models.py:80
 msgid "Nombre de planaires"
-msgstr ""
+msgstr "Number of planners"
 
 #: planarian/models.py:84 scanner/models.py:78
 msgid "Taille du kernel"
-msgstr ""
+msgstr "Size of the kernel"
 
 #: planarian/models.py:85 scanner/models.py:78
 msgid ""
 "taille du kernel elliptique de fusion des fragments (px). Augmenter si "
 "fragments résiduels"
 msgstr ""
+"size of the elliptic fragment fusion kernel (px). Increase if residual "
+"fragments"
 
 #: planarian/models.py:90 scanner/models.py:79
 msgid "Distance <contour>"
-msgstr ""
+msgstr "Distance <contour>"
 
 #: planarian/models.py:91 scanner/models.py:79
 msgid ""
 "Distance min entre deux contours pour les considérer comme individus "
 "distincts. Défaut : 40px. Augmenter si IDs multiples persistent"
 msgstr ""
+"Min distance between two contours to consider them separate individuals. "
+"Default: 40px. Increase if multiple IDs persist"
 
 #: planarian/models.py:98
 msgid "Distance paroi thigmotactisme (mm)"
-msgstr ""
+msgstr "Distance of thigmotactic wall (mm)"
 
 #: planarian/models.py:103
 msgid "Désactivé"
-msgstr ""
+msgstr "Off"
 
 #: planarian/models.py:104
 msgid "Source fixe"
-msgstr ""
+msgstr "Fixed source"
 
 #: planarian/models.py:105
 msgid "Source sinusoïdale"
-msgstr ""
+msgstr "sinusoidal source"
 
 #: planarian/models.py:106
 msgid "Gradient radial"
-msgstr ""
+msgstr "Radial grade"
 
 #: planarian/models.py:112
 msgid "Mode phototactisme"
-msgstr ""
+msgstr "Phototactical mode"
 
 #: planarian/models.py:114
 msgid "Intensité phototactisme"
-msgstr ""
+msgstr "Phototact intensity"
 
 #: planarian/models.py:115
 msgid "Source lumière X (0-1)"
-msgstr ""
+msgstr "Source light X (0-1)"
 
 #: planarian/models.py:116
 msgid "Source lumière Y (0-1)"
-msgstr ""
+msgstr "Light source Y (0-1)"
 
 #: planarian/models.py:119
 msgid "Intensité chimiotactisme"
-msgstr ""
+msgstr "Intensity chemotacticism"
 
 #: planarian/models.py:120
 msgid "Nourriture X (0-1)"
-msgstr ""
+msgstr "Food X (0-1)"
 
 #: planarian/models.py:121
 msgid "Nourriture Y (0-1)"
-msgstr ""
+msgstr "Food Y (0-1)"
 
 #: planarian/models.py:122
 msgid "Rayon nourriture (mm)"
-msgstr ""
+msgstr "Food radius (mm)"
 
 #: planarian/models.py:125
 msgid "Rayon évitement (mm)"
-msgstr ""
+msgstr "Avoidance radius (mm)"
 
 #: planarian/models.py:126
 msgid "Rayon agrégation (mm)"
-msgstr ""
+msgstr "Aggregation radius (mm)"
 
 #: planarian/models.py:130
 msgid "Configuration d'une expérience"
-msgstr ""
+msgstr "Configuring an experiment"
 
 #: planarian/models.py:131
 msgid "Configurations des expériences"
-msgstr ""
+msgstr "Configurations of experiments"
 
 #: planarian/templates/planarian/base.html:10
 #: scanner/templates/scanner/images.html:9
 #: scanner/templates/scanner/replay.html:10
 msgid "Retour accueil"
-msgstr ""
+msgstr "Back home"
 
 #: planarian/templates/planarian/base.html:13
 #: scanner/templates/scanner/images.html:12
 msgid "Ensemble d'expériences"
-msgstr ""
+msgstr "Set of experiments"
 
 #: planarian/templates/planarian/base.html:30
 msgid "Exporter les metrics de l'expérience"
-msgstr ""
+msgstr "Export the metrics of the experience"
 
 #: planarian/templates/planarian/export_csv.html:11
 msgid ""
 "Sélectionnez l'expérience, le puits et le type d'enregistrement à exporter."
-msgstr ""
+msgstr "Select the experience, well and type of record to export."
 
 #: planarian/templates/planarian/export_csv.html:12
 msgid ""
 "Le fichier CSV sera généré depuis ReductStore et téléchargé directement."
 msgstr ""
+"The CSV file will be generated from ReduceStore and downloaded directly."
 
 #: planarian/templates/planarian/export_csv.html:15
 msgid ""
 "Colonnes exportées compatibles EthoVision XT : distance, vitesse, états de "
 "mobilité, thigmotactisme."
 msgstr ""
+"EthoVision XT compatible export columns: distance, speed, mobility, "
+"thigmotactism."
 
 #: planarian/templates/planarian/export_csv.html:26
 msgid "Paramètres d'export"
-msgstr ""
+msgstr "Export parameters"
 
 #: planarian/templates/planarian/export_csv.html:48
 msgid "Index planaire"
-msgstr ""
+msgstr "Plan index"
 
 #: planarian/templates/planarian/export_csv.html:50
 msgid "Index du planaire dans le puits (commence à 0)"
-msgstr ""
+msgstr "Well Planner Index (starts at 0)"
 
 #: planarian/templates/planarian/export_csv.html:55
 msgid "Type d'enregistrement"
-msgstr ""
+msgstr "Type of registration"
 
 #: planarian/templates/planarian/export_csv.html:57
 msgid ""
 "Frame par frame : une ligne par image. Résumé : métriques agrégées de la "
 "session."
 msgstr ""
+"Frame by frame: one line per image. Summary: aggregate metrics of the "
+"session."
 
 #: planarian/templates/planarian/export_csv.html:60
 msgid "Frame par frame"
-msgstr ""
+msgstr "Frame by frame"
 
 #: planarian/templates/planarian/export_csv.html:61
 msgid "Résumé"
-msgstr ""
+msgstr "Executive summary"
 
 #: planarian/templates/planarian/export_csv.html:68
 msgid "Plage temporelle"
-msgstr ""
+msgstr "Time range"
 
 #: planarian/templates/planarian/export_csv.html:70
 msgid "(optionnel — laisser vide pour exporter toute la session)"
-msgstr ""
+msgstr "(optional — leave blank to export the entire session)"
 
 #: planarian/templates/planarian/export_csv.html:75
 msgid "Début (UTC)"
-msgstr ""
+msgstr "Start (UTC)"
 
 #: planarian/templates/planarian/export_csv.html:79
 msgid "Fin (UTC)"
-msgstr ""
+msgstr "End (UTC)"
 
 #: planarian/templates/planarian/export_csv.html:91
 msgid "Générer et télécharger le CSV"
-msgstr ""
+msgstr "Generate and download CSV"
 
 #: planarian/templates/planarian/export_csv.html:95
 #: planarian/templates/planarian/import_params.html:77
 msgid "Annuler"
-msgstr ""
+msgstr "Cancel"
 
 #: planarian/templates/planarian/export_csv.html:105
 msgid "Colonnes du fichier CSV exporté"
-msgstr ""
+msgstr "Exported CSV file columns"
 
 #: planarian/templates/planarian/export_csv.html:112
 msgid "Identification / position"
-msgstr ""
+msgstr "Identification / position"
 
 #: planarian/templates/planarian/export_csv.html:123
 msgid "Métriques EthoVision XT"
-msgstr ""
+msgstr "EthoVision XT Metrics"
 
 #: planarian/templates/planarian/export_csv.html:125
 msgid "vitesse instantanée"
-msgstr ""
+msgstr "instant speed"
 
 #: planarian/templates/planarian/export_csv.html:126
 msgid "distance cumulée"
-msgstr ""
+msgstr "cumulative distance"
 
 #: planarian/templates/planarian/export_csv.html:128
 msgid "Immobile / Mobile / Highly mobile"
-msgstr ""
+msgstr "Immobile / Mobile / Highly mobile"
 
 #: planarian/templates/planarian/export_csv.html:159
 #: planarian/templates/planarian/import_params.html:268
 msgid "Choisir une session"
-msgstr ""
+msgstr "Select session"
 
 #: planarian/templates/planarian/import_params.html:17
 msgid "Fichier CSV à importer"
-msgstr ""
+msgstr "CSV file to be imported"
 
 #: planarian/templates/planarian/import_params.html:21
 msgid "Colonnes obligatoires : well, px_per_mm, fps."
-msgstr ""
+msgstr "Required columns: well, px per mm, fps."
 
 #: planarian/templates/planarian/import_params.html:22
 msgid "Toutes les autres colonnes sont optionnelles."
-msgstr ""
+msgstr "All other columns are optional."
 
 #: planarian/templates/planarian/import_params.html:36
 msgid "Glissez-déposez votre fichier CSV ici"
-msgstr ""
+msgstr "Drag-down your CSV file here"
 
 #: planarian/templates/planarian/import_params.html:38
 msgid "ou cliquez pour sélectionner"
-msgstr ""
+msgstr "or click to select"
 
 #: planarian/templates/planarian/import_params.html:58
 msgid "Écraser les configurations existantes"
-msgstr ""
+msgstr "Crushing existing configurations"
 
 #: planarian/templates/planarian/import_params.html:60
 msgid ""
 "Si décoché, les configurations déjà existantes (même experiment + well) "
 "seront ignorées."
 msgstr ""
+"If unchecked, already existing configurations (even experiment + well) will "
+"be ignored."
 
 #: planarian/templates/planarian/import_params.html:73
 msgid "Importer"
-msgstr ""
+msgstr "Import"
 
 #: planarian/templates/planarian/import_params.html:87
 msgid "Format du fichier CSV"
-msgstr ""
+msgstr "CSV file format"
 
 #: planarian/templates/planarian/import_params.html:92
 msgid "Colonnes obligatoires"
-msgstr ""
+msgstr "Mandatory columns"
 
 #: planarian/templates/planarian/import_params.html:97
 #: planarian/templates/planarian/import_params.html:140
 msgid "Colonne"
-msgstr ""
+msgstr "Column"
 
 #: planarian/templates/planarian/import_params.html:98
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: planarian/templates/planarian/import_params.html:99
 msgid "Exemple"
-msgstr ""
+msgstr "Example"
 
 #: planarian/templates/planarian/import_params.html:106
 #: planarian/templates/planarian/import_params.html:112
 msgid "texte"
-msgstr ""
+msgstr "text"
 
 #: planarian/templates/planarian/import_params.html:108
 msgid "Identifiant unique de l'expérience"
-msgstr ""
+msgstr "Unique experience identifier"
 
 #: planarian/templates/planarian/import_params.html:114
 msgid "Identifiant du puits"
-msgstr ""
+msgstr "Well ID"
 
 #: planarian/templates/planarian/import_params.html:118
 #: planarian/templates/planarian/import_params.html:124
 msgid "flottant"
-msgstr ""
+msgstr "floating"
 
 #: planarian/templates/planarian/import_params.html:120
 msgid "Calibration optique (pixels/mm)"
-msgstr ""
+msgstr "Optical calibration (pixel/mm)"
 
 #: planarian/templates/planarian/import_params.html:126
 msgid "Fréquence de capture (images/s)"
-msgstr ""
+msgstr "Capture frequency (images/s)"
 
 #: planarian/templates/planarian/import_params.html:133
 msgid "Colonnes optionnelles"
-msgstr ""
+msgstr "Optional columns"
 
 #: planarian/templates/planarian/import_params.html:134
 msgid "(valeurs par défaut utilisées si absentes)"
-msgstr ""
+msgstr "(default values used if absent)"
 
 #: planarian/templates/planarian/import_params.html:141
 msgid "Défaut"
-msgstr ""
+msgstr "Default"
 
 #: planarian/templates/planarian/import_params.html:146
 msgid "Rayon du puits (mm)"
-msgstr ""
+msgstr "Well radius (mm)"
 
 #: planarian/templates/planarian/import_params.html:147
 msgid "Seuil Immobile EthoVision (mm/s)"
-msgstr ""
+msgstr "Fixed Threshold EthoVision (mm/s)"
 
 #: planarian/templates/planarian/import_params.html:148
 msgid "Seuil Mobile EthoVision (mm/s)"
-msgstr ""
+msgstr "EthoVision Mobile Threshold (mm/s)"
 
 #: planarian/templates/planarian/import_params.html:149
 msgid "Axe du tube : vertical | horizontal"
-msgstr ""
+msgstr "Tube axis: horizontal vertical"
 
 #: planarian/templates/planarian/import_params.html:150
 msgid "Surface min de détection (px²)"
-msgstr ""
+msgstr "Min area of detection (px2)"
 
 #: planarian/templates/planarian/import_params.html:151
 msgid "Nombre de planaires par puits"
-msgstr ""
+msgstr "Number of planars per well"
 
 #: planarian/templates/planarian/import_params.html:152
 msgid "Phototactisme : none | fixed | sine | radial"
-msgstr ""
+msgstr "Phototactivism: none"
 
 #: planarian/templates/planarian/import_params.html:153
 msgid "Intensité phototactisme (0-1)"
-msgstr ""
+msgstr "Phototactic intensity (0-1)"
 
 #: planarian/templates/planarian/import_params.html:154
 msgid "Intensité chimiotactisme (0-1)"
-msgstr ""
+msgstr "Chemical intensity (0-1)"
 
 #: planarian/templates/planarian/import_params.html:155
 msgid "Rayon zone nourriture (mm)"
-msgstr ""
+msgstr "Rayon food zone (mm)"
 
 #: planarian/templates/planarian/import_params.html:156
 msgid "Rayon évitement inter-individus (mm)"
-msgstr ""
+msgstr "Inter-individual avoidance radius (mm)"
 
 #: planarian/templates/planarian/import_params.html:157
 msgid "Rayon agrégation inter-individus (mm)"
-msgstr ""
+msgstr "Inter-individual aggregation radius (mm)"
 
 #: planarian/templates/planarian/import_params.html:163
 msgid "Exemple minimal"
-msgstr ""
+msgstr "Minimum example"
 
 #: planarian/templates/planarian/import_params.html:238
 msgid "Le fichier doit être au format .csv"
-msgstr ""
+msgstr "The file must be in .csv format"
 
 #: planarian/templates/planarian/import_params.html:245
 msgid "Fichier prêt à importer"
-msgstr ""
+msgstr "File ready to import"
 
 #: planarian/templates/planarian/import_params.html:268
 msgid "Puis une expérience."
-msgstr ""
+msgstr "Then an experiment."
 
 #: planarian/views.py:140
 #, python-format
 msgid "Erreur lors de l'export CSV: %(error)s"
-msgstr ""
+msgstr "Error exporting CSV: %(error)s"
 
 #: planarian/views.py:157
 msgid "Export vers un fichier CSV depuis ReductStore"
-msgstr ""
+msgstr "Export to a CSV file from ReduceStore"
 
 #: planarian/views.py:172
 msgid "Aucune donnée trouvée."
-msgstr ""
+msgstr "No data found."
 
 #: planarian/views.py:209
 #, python-format
 msgid "Import terminé : %(c)d créés, %(u)d mis à jour, %(e)d erreurs."
-msgstr ""
+msgstr "Import completed: %(c)d created, %(u)d updated, %(e)d errors."
 
 #: planarian/views.py:246
 #, python-format
 msgid "Colonnes manquantes : %(cols)s"
-msgstr ""
+msgstr "Missing columns: %(cols)s"
 
 #: planarian/views.py:253
 msgid "Importer des configurations depuis un fichier CSV"
-msgstr ""
+msgstr "Import configurations from a CSV file"
 
 #: planarian/views.py:295
 msgid "Métriques de tracking d'un planaire"
-msgstr ""
+msgstr "Tracking Metrics of a Planar"
 
 #: scanner/admin.py:18
 msgid "Dashboard"
-msgstr ""
+msgstr "Dashboard"
 
 #: scanner/admin.py:21
 msgid "opencv"
-msgstr ""
+msgstr "opencv"
 
 #: scanner/admin.py:24
 msgid "Grbl"
-msgstr ""
+msgstr "Grbl"
 
 #: scanner/admin.py:28
 msgid "Camera"
-msgstr ""
+msgstr "Camera"
 
 #: scanner/admin.py:32
 msgid "Calibration / Balayage"
-msgstr ""
+msgstr "Calibration / Scanning"
 
 #: scanner/admin.py:36
 msgid "Tracking: valeurs par défaut"
-msgstr ""
+msgstr "Tracking: default values"
 
 #: scanner/models.py:16
 msgid "HG-Haut gauche"
-msgstr ""
+msgstr "HG-High left"
 
 #: scanner/models.py:17
 msgid "HD-Haut droit"
-msgstr ""
+msgstr "HD-High right"
 
 #: scanner/models.py:18
 msgid "BG-Bas gauche"
-msgstr ""
+msgstr "BG-Lower left"
 
 #: scanner/models.py:19
 msgid "BD-Bas droit"
-msgstr ""
+msgstr "BD-Low right"
 
 #: scanner/models.py:23 scanner/models.py:28
 msgid "MP4"
-msgstr ""
+msgstr "MP4"
 
 #: scanner/models.py:24
 msgid "XVID"
-msgstr ""
+msgstr "XVID"
 
 #: scanner/models.py:29
 msgid "AVI"
-msgstr ""
+msgstr "AVI"
 
 #: scanner/models.py:33
 msgid "Arducam"
-msgstr ""
+msgstr "Arducam"
 
 #: scanner/models.py:34
 msgid "Webcam"
-msgstr ""
+msgstr "Webcam"
 
 #: scanner/models.py:35
 msgid "Fichier vidéo (mp4, avi)"
-msgstr ""
+msgstr "Video file (mp4, avi)"
 
 #: scanner/models.py:44
 msgid "Nom de la Configuration"
-msgstr ""
+msgstr "Configuration Name"
 
 #: scanner/models.py:44
 msgid "Nom de la configuration"
-msgstr ""
+msgstr "Configuration name"
 
 #: scanner/models.py:44
 msgid "Configuration par défaut"
-msgstr ""
+msgstr "Default Configuration"
 
 #: scanner/models.py:47
 msgid "Barre latérale"
-msgstr ""
+msgstr "Side bar"
 
 #: scanner/models.py:47
 msgid "Largeur barre latérale (css)"
-msgstr ""
+msgstr "Side bar width (css)"
 
 #: scanner/models.py:48
 msgid "Colonnes de la grille par défaut"
-msgstr ""
+msgstr "Default grid columns"
 
 #: scanner/models.py:48
 msgid "Nombre de colonnes de la grille par défaut"
-msgstr ""
+msgstr "Number of columns in the default grid"
 
 #: scanner/models.py:50
 msgid "Fourcc"
-msgstr ""
+msgstr "Fourcc"
 
 #: scanner/models.py:50
 msgid "Opencv fourcc format"
-msgstr ""
+msgstr "Opencv forcc format"
 
 #: scanner/models.py:51
 msgid "Video type"
-msgstr ""
+msgstr "Video type"
 
 #: scanner/models.py:51
 msgid "Opencv video type"
-msgstr ""
+msgstr "Opencv video type"
 
 #: scanner/models.py:53
 msgid "Grbl Xmax"
-msgstr ""
+msgstr "Grbl Xmax"
 
 #: scanner/models.py:53
 msgid "CNC Grbl Xmax en mm"
-msgstr ""
+msgstr "CNC Grbl Xmax in mm"
 
 #: scanner/models.py:54
 msgid "Grbl Ymax"
-msgstr ""
+msgstr "Grbl Ymax"
 
 #: scanner/models.py:54
 msgid "CNC Grbl Ymax en mm"
-msgstr ""
+msgstr "CNC Grbl Ymax in mm"
 
 #: scanner/models.py:56
 msgid "Type de capture"
-msgstr ""
+msgstr "Type of catch"
 
 #: scanner/models.py:57
 msgid "Index de la webcam"
-msgstr ""
+msgstr "Webcam Index"
 
 #: scanner/models.py:57
 msgid "Index de la webcam (0, 1, ...) si présente"
-msgstr ""
+msgstr "Webcam index (0, 1, ...) if present"
 
 #: scanner/models.py:58
 msgid "Qualité JPEG"
-msgstr ""
+msgstr "JPEG quality"
 
 #: scanner/models.py:58
 msgid "Qualité JPEG (1-100) pour les images exportées"
-msgstr ""
+msgstr "JPEG quality (1-100) for exported images"
 
 #: scanner/models.py:59
 msgid "Qualité JPEG pour les vidéos"
-msgstr ""
+msgstr "JPEG quality for videos"
 
 #: scanner/models.py:59
 msgid "Qualité JPEG (1-100) pour les images extraites des vidéos"
-msgstr ""
+msgstr "JPEG quality (1-100) for images extracted from videos"
 
 #: scanner/models.py:60
 msgid "Fréquence d'extraction des images des vidéos (images par seconde)"
-msgstr ""
+msgstr "Video image extraction frequency (images per second)"
 
 #: scanner/models.py:61
 msgid "Largeur de capture vidéo en pixels"
-msgstr ""
+msgstr "Video capture width in pixels"
 
 #: scanner/models.py:62
 msgid "Hauteur de capture vidéo en pixels"
-msgstr ""
+msgstr "Video capture height in pixels"
 
 #: scanner/models.py:64
 msgid "Simuler balayage"
-msgstr ""
+msgstr "Simulate Scanning"
 
 #: scanner/models.py:64
 msgid "Autorise la simulation du balayage"
-msgstr ""
+msgstr "Allows scanning simulation"
 
 #: scanner/models.py:65
 msgid "Rayon de découpe pour la calibration"
-msgstr ""
+msgstr "Cutting radius for calibration"
 
 #: scanner/models.py:65
 msgid "Rayon en pixels pour découper les images de calibration en px"
-msgstr ""
+msgstr "Pixel radius for px calibration images"
 
 #: scanner/models.py:66
 msgid "Multi-puits de calibration par défaut"
-msgstr ""
+msgstr "Default multi-scaling wells"
 
 #: scanner/models.py:66
 msgid "Position du multi-puits de calibration par défaut"
-msgstr ""
+msgstr "Default multi-sink calibration position"
 
 #: scanner/models.py:67
 msgid "Vitesse de calibration"
-msgstr ""
+msgstr "Calibration speed"
 
 #: scanner/models.py:67
 msgid "Vitesse de déplacement pour la calibration en mm/mn"
-msgstr ""
+msgstr "Speed of movement for calibration in mm/min"
 
 #: scanner/models.py:68
 msgid "Pas de calibration"
-msgstr ""
+msgstr "No calibration"
 
 #: scanner/models.py:68
 msgid "Pas de déplacement pour la calibration en mm"
-msgstr ""
+msgstr "No displacement for calibration in mm"
 
 #: scanner/models.py:69
 msgid "Duruée calibration"
-msgstr ""
+msgstr "Dured calibration"
 
 #: scanner/models.py:69
 msgid "Durée de pose entre chaque puits en s"
-msgstr ""
+msgstr "Installation time between each well in s"
 
 #: scanner/models.py:71
 msgid "Suivi"
-msgstr ""
+msgstr "Monitoring"
 
 #: scanner/models.py:71
 msgid "Suivi et analyse des planaires"
-msgstr ""
+msgstr "Monitoring and analysis of planners"
 
 #: scanner/models.py:72
 msgid "Réglage dans calibration"
-msgstr ""
+msgstr "Adjustment in calibration"
 
 #: scanner/models.py:72
 msgid "Autorise le réglage des valeurs par défaut dans la calibration"
-msgstr ""
+msgstr "Allow default setting in calibration"
 
 #: scanner/models.py:74
 msgid "Axe du puit"
-msgstr ""
+msgstr "Well axis"
 
 #: scanner/models.py:75
 msgid "Surface minimale"
-msgstr ""
+msgstr "Minimum surface area"
 
 #: scanner/models.py:75
 msgid "surface minimale d'un contour pour être considéré valide (px²)"
-msgstr ""
+msgstr "minimum surface of a contour to be considered valid (px2)"
 
 #: scanner/models.py:76
 msgid "surface maximale "
-msgstr ""
+msgstr "maximum surface area"
 
 #: scanner/models.py:76
 msgid "surface maximale d'un contour en fraction de la frame (défaut 10%)"
-msgstr ""
+msgstr "maximum surface of a frame fractional contour (default 10%)"
 
 #: scanner/models.py:77
 msgid "Max planaire"
-msgstr ""
+msgstr "Max planar"
 
 #: scanner/models.py:77
 msgid "nombre maximum de planaires à suivre simultanément (1-10)"
-msgstr ""
+msgstr "maximum number of planaries to follow simultaneously (1-10)"
 
 #: scanner/models.py:81
 msgid "Actif"
-msgstr ""
+msgstr "Assets"
 
 #: scanner/models.py:98
 msgid "Nom"
-msgstr ""
+msgstr "Name"
 
 #: scanner/models.py:98
 msgid "Nom du puit: Ai..Di"
-msgstr ""
+msgstr "Name of well: Ai.. Di"
 
 #: scanner/models.py:112
 msgid "Label"
-msgstr ""
+msgstr "Label"
 
 #: scanner/models.py:112
 msgid "Label du multi-puit"
-msgstr ""
+msgstr "Multi-well label"
 
 #: scanner/models.py:114
 msgid "Position"
-msgstr ""
+msgstr "Position"
 
 #: scanner/models.py:114
 msgid "Position du multi-puits sur la table"
-msgstr ""
+msgstr "Multi-well position on the table"
 
 #: scanner/models.py:115
 msgid "Par défaut"
-msgstr ""
+msgstr "Default"
 
 #: scanner/models.py:115
 msgid "Multi-puit par défaut"
-msgstr ""
+msgstr "Default multi-sink"
 
 #: scanner/models.py:117
 msgid "Colonnes"
-msgstr ""
+msgstr "Columns"
 
 #: scanner/models.py:118
 msgid "Lignes"
-msgstr ""
+msgstr "Lines"
 
 #: scanner/models.py:119
 msgid "Diamètre"
-msgstr ""
+msgstr "Diameter"
 
 #: scanner/models.py:119
 msgid "Diamètre des tubes en mm"
-msgstr ""
+msgstr "Tube diameter in mm"
 
 #: scanner/models.py:120
 msgid "Définition"
-msgstr ""
+msgstr "Definition"
 
 #: scanner/models.py:120
 msgid "Définition des lignes"
-msgstr ""
+msgstr "Definition of lines"
 
 #: scanner/models.py:121
 msgid "Ordre ligne"
-msgstr ""
+msgstr "Order line"
 
 #: scanner/models.py:121
 msgid "Ordre ligne de puit. Lecture en serpentin dans le sens des +- X"
-msgstr ""
+msgstr "Well line order. Snake reading in the direction of +- X"
 
 #: scanner/models.py:123 scanner/models.py:182
 msgid "Ordre"
-msgstr ""
+msgstr "Order"
 
 #: scanner/models.py:123
 msgid "Ordre de lecture du multi-puit"
-msgstr ""
+msgstr "Multi-well reading order"
 
 #: scanner/models.py:124 scanner/models.py:244
 #: scanner/templates/scanner/calibration.html:187
 msgid "Durée"
-msgstr ""
+msgstr "Duration"
 
 #: scanner/models.py:124
 msgid "Durée de capture en secondes pour la calibration"
-msgstr ""
+msgstr "Capture time in seconds for calibration"
 
 #: scanner/models.py:125
 msgid "Base origine X en mm"
-msgstr ""
+msgstr "Base origin X in mm"
 
 #: scanner/models.py:126
 msgid "Base origine Y en mm"
-msgstr ""
+msgstr "Base origin Y in mm"
 
 #: scanner/models.py:128
 msgid "Pas X"
-msgstr ""
+msgstr "Not X"
 
 #: scanner/models.py:128
 msgid "Pas ou interval sur X en mm"
-msgstr ""
+msgstr "Not or interval on X in mm"
 
 #: scanner/models.py:129
 msgid "Pas Y"
-msgstr ""
+msgstr "Not Y"
 
 #: scanner/models.py:129
 msgid "Pas ou interval sur Y en mm"
-msgstr ""
+msgstr "Not or interval on Y in mm"
 
 #: scanner/models.py:130 scanner/templates/scanner/calibration.html:23
 msgid "Vitesse"
-msgstr ""
+msgstr "Speed"
 
 #: scanner/models.py:130
 msgid "Vitesse déplacement en mm/mn "
-msgstr ""
+msgstr "Movement speed in mm/min"
 
 #: scanner/models.py:132
 msgid ""
 "Positions des puits générées ?. Non => efface WellPosition et recalcule les "
 "positions"
 msgstr ""
+"Positions of generated wells ?. No => erase WellPosition and recalculate "
+"positions"
 
 #: scanner/models.py:182
 msgid "Ordre de lecture du puit"
-msgstr ""
+msgstr "Reading order of the well"
 
 #: scanner/models.py:183
 msgid "X"
-msgstr ""
+msgstr "X"
 
 #: scanner/models.py:183
 msgid "Axe X en mm"
-msgstr ""
+msgstr "X axis in mm"
 
 #: scanner/models.py:184
 msgid "Y"
-msgstr ""
+msgstr "Y"
 
 #: scanner/models.py:184
 msgid "Axe Y en mm"
-msgstr ""
+msgstr "Y axis in mm"
 
 #: scanner/models.py:199
 msgid "Position du puit"
-msgstr ""
+msgstr "Well position"
 
 #: scanner/models.py:200
 msgid "Position des puits"
-msgstr ""
+msgstr "Position of wells"
 
 #: scanner/models.py:238
 msgid "Titre de l'expérience"
-msgstr ""
+msgstr "Title of experience"
 
 #: scanner/models.py:239
 msgid "Descriptions de l'expérience"
-msgstr ""
+msgstr "Descriptions of experience"
 
 #: scanner/models.py:244
 msgid "Durée de la prise de vue en secondes"
-msgstr ""
+msgstr "Time taken in seconds"
 
 #: scanner/models.py:246 scanner/models.py:284
 msgid "Date de création"
-msgstr ""
+msgstr "Date of establishment"
 
 #: scanner/models.py:247
 msgid "Date de début"
-msgstr ""
+msgstr "Start date"
 
 #: scanner/models.py:248 scanner/models.py:285
 msgid "Date de fin"
-msgstr ""
+msgstr "End date"
 
 #: scanner/models.py:273
 msgid "En attente"
-msgstr ""
+msgstr "Pending"
 
 #: scanner/models.py:274
 msgid "En cours"
-msgstr ""
+msgstr "Ongoing"
 
 #: scanner/models.py:275
 msgid "Terminé"
-msgstr ""
+msgstr "Completed"
 
 #: scanner/models.py:276
 msgid "Erreur"
-msgstr ""
+msgstr "Error"
 
 #: scanner/models.py:278
 msgid "Nom de la session"
-msgstr ""
+msgstr "Name of session"
 
 #: scanner/models.py:278
 msgid "Session d'expérience. 4 Multi-puits maximum"
-msgstr ""
+msgstr "Experience session. 4 Maximum multi-well"
 
 #: scanner/models.py:281
 msgid "Date d'exportation prévue"
-msgstr ""
+msgstr "Expected export date"
 
 #: scanner/models.py:282
 msgid "Date du balayage prévue"
-msgstr ""
+msgstr "Date of planned scan"
 
 #: scanner/models.py:287
 msgid "Status exportation"
-msgstr ""
+msgstr "Export status"
 
 #: scanner/models.py:290
 msgid "Export médias"
-msgstr ""
+msgstr "Export media"
 
 #: scanner/models.py:291
 msgid "Programmation de l'exportation des vidéos et images"
-msgstr ""
+msgstr "Programming the export of videos and images"
 
 #: scanner/models.py:293
 msgid "Exportation terminée à"
-msgstr ""
+msgstr "Export completed at"
 
 #: scanner/models.py:295
 msgid "Status scanning"
-msgstr ""
+msgstr "Status scanning"
 
 #: scanner/models.py:299
 msgid "Programmation du lancement du balayage"
-msgstr ""
+msgstr "Scanning Launch Programming"
 
 #: scanner/models.py:301
 msgid "Balayage terminé à"
-msgstr ""
+msgstr "Sweeping completed at"
 
 #: scanner/models.py:315
 msgid "Terminée"
-msgstr ""
+msgstr "Completed"
 
 #: scanner/models.py:402
 msgid "Expérience d'une session"
-msgstr ""
+msgstr "Experience of a session"
 
 #: scanner/models.py:426
 msgid "Expérience puit"
-msgstr ""
+msgstr "Experience well"
 
 #: scanner/models.py:427
 msgid "Expériences puits"
-msgstr ""
+msgstr "Well experiments"
 
 #: scanner/process.py:381
 msgid "La session est nulle!..."
-msgstr ""
+msgstr "The session sucks!..."
 
 #: scanner/process.py:388
 msgid "Balayage démarré..."
-msgstr ""
+msgstr "Scanning started..."
 
 #: scanner/process.py:391
 msgid "Erreur lors du démarrage du balayage..."
-msgstr ""
+msgstr "Error starting scanning..."
 
 #: scanner/templates/scanner/base.html:5
 msgid "Barre de côté"
-msgstr ""
+msgstr "Side bar"
 
 #: scanner/templates/scanner/base.html:11
 msgid "Ecran plein"
-msgstr ""
+msgstr "Full screen"
 
 #: scanner/templates/scanner/base.html:19
 msgid "Accès django"
-msgstr ""
+msgstr "Django access"
 
 #: scanner/templates/scanner/base.html:20
 msgid "Base de données"
-msgstr ""
+msgstr "Database"
 
 #: scanner/templates/scanner/base.html:22
 #: scanner/templates/scanner/base.html:26
 #: scanner/templates/scanner/base.html:29
 msgid "Accès système"
-msgstr ""
+msgstr "System access"
 
 #: scanner/templates/scanner/base.html:23
 msgid "Supervision des services"
-msgstr ""
+msgstr "Supervision of services"
 
 #: scanner/templates/scanner/base.html:27
 msgid "Base de données Reductstore"
-msgstr ""
+msgstr "Reductstore database"
 
 #: scanner/templates/scanner/base.html:30
 msgid "Base de données mariadb"
-msgstr ""
+msgstr "Mariadb database"
 
 #: scanner/templates/scanner/base.html:33
 msgid "Logs des planifications"
-msgstr ""
+msgstr "Planning Logs"
 
 #: scanner/templates/scanner/base.html:36
 msgid "Logs des services"
-msgstr ""
+msgstr "Services"
 
 #: scanner/templates/scanner/base.html:39
 msgid "Guides"
-msgstr ""
+msgstr "Guides"
 
 #: scanner/templates/scanner/base.html:41
 msgid "Descriptif des données"
-msgstr ""
+msgstr "Data description"
 
 #: scanner/templates/scanner/base.html:44
 msgid "Calibration des multi-puits"
-msgstr ""
+msgstr "Calibration of multi-wells"
 
 #: scanner/templates/scanner/base.html:56
 msgid "Gestionnaires des médias"
-msgstr ""
+msgstr "Media managers"
 
 #: scanner/templates/scanner/base.html:62
 msgid "Déconnexion"
-msgstr ""
+msgstr "Logout"
 
 #: scanner/templates/scanner/base.html:80
 msgid "Mémoire partagée"
-msgstr ""
+msgstr "Shared memory"
 
 #: scanner/templates/scanner/base.html:81
 msgid "Disque RAM"
-msgstr ""
+msgstr "RAM disc"
 
 #: scanner/templates/scanner/base.html:82
 msgid "Swap disk"
-msgstr ""
+msgstr "Swap disk"
 
 #: scanner/templates/scanner/base.html:83
 msgid "Mémoire RAM"
-msgstr ""
+msgstr "RAM memory"
 
 #: scanner/templates/scanner/base.html:84
 msgid "Charge CPU"
-msgstr ""
+msgstr "CPU load"
 
 #: scanner/templates/scanner/base.html:85
 msgid "Disque /"
-msgstr ""
+msgstr "Disc /"
 
 #: scanner/templates/scanner/base.html:91
 msgid "Grille"
-msgstr ""
+msgstr "Grid"
 
 #: scanner/templates/scanner/base.html:117
 msgid "Création de sessions d'expériences"
-msgstr ""
+msgstr "Creation of experience sessions"
 
 #: scanner/templates/scanner/base.html:121
 msgid "Gestions des expériences"
-msgstr ""
+msgstr "Experience management"
 
 #: scanner/templates/scanner/base.html:137 scanner/views.py:121
 msgid "Balayage multi-puits"
-msgstr ""
+msgstr "Multi-well sweeping"
 
 #: scanner/templates/scanner/base.html:139
 msgid "Résultats "
-msgstr ""
+msgstr "Results"
 
 #: scanner/templates/scanner/base.html:142
 msgid "Export CSV des expériences"
-msgstr ""
+msgstr "CSV export of experiments"
 
 #: scanner/templates/scanner/base.html:146 scanner/views.py:185
 msgid "Gestionnaire d'images"
-msgstr ""
+msgstr "Image Manager"
 
 #: scanner/templates/scanner/base.html:149
 msgid "Redifusion vidéos"
-msgstr ""
+msgstr "Redifusion videos"
 
 #: scanner/templates/scanner/calibration.html:15
 msgid "Position multi-puit"
-msgstr ""
+msgstr "Multi-sink position"
 
 #: scanner/templates/scanner/calibration.html:24
 msgid "Vitesse en mm / mn"
-msgstr ""
+msgstr "Speed in mm/min"
 
 #: scanner/templates/scanner/calibration.html:35
 msgid "Pas"
-msgstr ""
+msgstr "Not"
 
 #: scanner/templates/scanner/calibration.html:36
 msgid "Pas en mm"
-msgstr ""
+msgstr "Not in mm"
 
 #: scanner/templates/scanner/calibration.html:56
 msgid "Définir la base (x, y) du multi-puit"
-msgstr ""
+msgstr "Set the base (x, y) of the multi-well"
 
 #: scanner/templates/scanner/calibration.html:57
 msgid "Définir base"
-msgstr ""
+msgstr "Define base"
 
 #: scanner/templates/scanner/calibration.html:72
 msgid "Sauvegarder la position du puit courant"
-msgstr ""
+msgstr "Save current well position"
 
 #: scanner/templates/scanner/calibration.html:73
 msgid "Sauver"
-msgstr ""
+msgstr "Save"
 
 #: scanner/templates/scanner/calibration.html:92
 msgid "Précéd."
-msgstr ""
+msgstr "Previous."
 
 #: scanner/templates/scanner/calibration.html:96
 msgid "Centrer manuellement"
-msgstr ""
+msgstr "Manually Centre"
 
 #: scanner/templates/scanner/calibration.html:97
 msgid "Centrer"
-msgstr ""
+msgstr "Center"
 
 #: scanner/templates/scanner/calibration.html:102
 msgid "Suivant"
-msgstr ""
+msgstr "Next"
 
 #: scanner/templates/scanner/calibration.html:107
 msgid "Centrage auto et sauvegarde des positions"
-msgstr ""
+msgstr "Auto center and backup positions"
 
 #: scanner/templates/scanner/calibration.html:108
 msgid "Calibrage auto"
-msgstr ""
+msgstr "Auto calibration"
 
 #: scanner/templates/scanner/calibration.html:131
 msgid "Aller à la base"
-msgstr ""
+msgstr "Go to base"
 
 #: scanner/templates/scanner/calibration.html:137
 msgid "Ce mode permet les réglages graphiques"
-msgstr ""
+msgstr "This mode allows graphical settings"
 
 #: scanner/templates/scanner/calibration.html:143
 #: scanner/templates/scanner/scanning.html:31
 msgid "Axes"
-msgstr ""
+msgstr "Axis"
 
 #: scanner/templates/scanner/calibration.html:147
 msgid "Ce mode actionne le pointage graphique"
-msgstr ""
+msgstr "This mode activates the graphical pointing"
 
 #: scanner/templates/scanner/calibration.html:148
 msgid "Recadrer pour calibrer / suivre"
-msgstr ""
+msgstr "Frame to calibrate / follow"
 
 #: scanner/templates/scanner/calibration.html:156
 msgid "surface minimale de contour pour être considéré valide (px carré)"
-msgstr ""
+msgstr "minimum contour area to be considered valid (px square)"
 
 #: scanner/templates/scanner/calibration.html:156
 msgid "Min contour"
-msgstr ""
+msgstr "Min contour"
 
 #: scanner/templates/scanner/calibration.html:160
 #, python-format
 msgid "surface maximale de contour en fraction de la frame (défaut 10%%)"
-msgstr ""
+msgstr "Maximum contour area in fraction of frame (default 10%%)"
 
 #: scanner/templates/scanner/calibration.html:160
 msgid "Max contour"
-msgstr ""
+msgstr "Max contour"
 
 #: scanner/templates/scanner/calibration.html:164
 msgid "Taille du kernel elliptique de fusion des fragments (px)"
-msgstr ""
+msgstr "Size of elliptical fragment fusion kernel (px)"
 
 #: scanner/templates/scanner/calibration.html:164
 msgid "Taille kernel"
-msgstr ""
+msgstr "Kernel size"
 
 #: scanner/templates/scanner/calibration.html:168
 msgid ""
 "Distance min entre deux contours pour les considérer comme individus "
 "distincts. Défaut: 40px"
 msgstr ""
+"Min distance between two contours to consider them separate individuals. "
+"Default: 40px"
 
 #: scanner/templates/scanner/calibration.html:168
 msgid "Distance min"
-msgstr ""
+msgstr "Distance min"
 
 #: scanner/templates/scanner/calibration.html:172
 msgid "Nombre maximum de planaires à suivre simultanément (1-10)"
-msgstr ""
+msgstr "Maximum number of planaries to follow simultaneously (1-10)"
 
 #: scanner/templates/scanner/calibration.html:172
 msgid "Planaires"
-msgstr ""
+msgstr "Planaries"
 
 #: scanner/templates/scanner/calibration.html:175
 msgid "Dessiner le contour"
-msgstr ""
+msgstr "Draw contour"
 
 #: scanner/templates/scanner/calibration.html:176
 msgid "Contour"
-msgstr ""
+msgstr "Contour"
 
 #: scanner/templates/scanner/calibration.html:182
 msgid "Rayon"
-msgstr ""
+msgstr "Rayon"
 
 #: scanner/templates/scanner/calibration.html:183
 msgid "Rayon du recadrement"
-msgstr ""
+msgstr "Reframe radius"
 
 #: scanner/templates/scanner/calibration.html:184
 msgid "Rayon de cadrage"
-msgstr ""
+msgstr "Frame radius"
 
 #: scanner/templates/scanner/calibration.html:188
 msgid "Durée entre vidéos"
-msgstr ""
+msgstr "Duration between videos"
 
 #: scanner/templates/scanner/calibration.html:202
 msgid "Tester le cirduit"
-msgstr ""
+msgstr "Test for circumference"
 
 #: scanner/templates/scanner/calibration.html:207
 #: scanner/templates/scanner/scanning.html:58
 msgid "ARRET"
-msgstr ""
+msgstr "JUDGMENT"
 
 #: scanner/templates/scanner/images.html:30
 msgid "Exporter l'ensemble des images"
-msgstr ""
+msgstr "Export All Images"
 
 #: scanner/templates/scanner/images.html:48
 msgid "Télécharger"
-msgstr ""
+msgstr "Download"
 
 #: scanner/templates/scanner/replay.html:32
 msgid "Exporter l'ensemble des vidéos"
-msgstr ""
+msgstr "Export all videos"
 
 #: scanner/templates/scanner/scanning.html:14
 msgid "Choix de la session"
-msgstr ""
+msgstr "Selection of session"
 
 #: scanner/templates/scanner/scanning.html:36
 msgid "Recadrer"
-msgstr ""
+msgstr "Reframe"
 
 #: scanner/templates/scanner/scanning.html:43
 msgid "Lancer"
-msgstr ""
+msgstr "Launch"
 
 #: scanner/templates/scanner/scanning.html:43
 #: scanner/templates/scanner/scanning.html:49
 msgid "le balayage"
-msgstr ""
+msgstr "scanning"
 
 #: scanner/templates/scanner/scanning.html:49
 msgid "Simuler"
-msgstr ""
+msgstr "Simulate"
 
 #: scanner/views.py:109
 msgid "Documentation"
-msgstr ""
+msgstr "Documentation"
 
 #: scanner/views.py:230
 msgid "Gestionnaire de vidéos"
-msgstr ""
+msgstr "Video Manager"
 
 #: scanner/views.py:252
 msgid "Images téléchargées"
-msgstr ""
+msgstr "Downloaded images"
 
 #: scanner/views.py:255
 msgid "Vidéos téléchargées"
-msgstr ""
+msgstr "Videos downloaded"
 
 #: scanner/views.py:257
 msgid "Erreur d'exportation"
-msgstr ""
+msgstr "Export error"
 
 #: templates/admin/base_site.html:4
 msgid "Django site admin"
-msgstr ""
+msgstr "Django website admin"
 
 #: templates/admin/base_site.html:10
 msgid "Django administration"
-msgstr ""
+msgstr "Django administration"
