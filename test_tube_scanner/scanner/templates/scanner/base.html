@@ -38,6 +38,10 @@
 	                </a>    		        
                 {% endif %}      
 		        <hr class="w3-bar-item divider w3-grey">
+		        
+                <a href="{% url 'scanner:documentation' 'doc_database' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
+                     <i class="fa-solid fa-book w3-text-green"></i> {% trans "Descriptif des données" %}
+                </a>    		        
 		        <form method="post" action="{% url 'logout' %}">
 		            {% csrf_token %}
 		            <button class="w3-bar-item w3-btn w3-hover-opacity" type="submit">
@@ -98,18 +102,18 @@
                 <a href="{% url 'scanner:session_view' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                     <i class="fa-solid fa-gear w3-text-purple w3-xlarge"></i> {% trans "Création de sessions d'expériences" %}
                 </a>
-                <hr class="w3-bar-item divider w3-grey">     
-                {% if conf.tracking %} 
-                <a href="{% url 'planarian:import-params' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
-                     <i class="fa-solid fa-file-import w3-text-lime w3-xlarge"></i> {% trans "Importer des configurations depuis CSV" %}
-                </a>   
-                {% endif %}         
+                <hr class="w3-bar-item divider w3-grey">          
                 <a href="{% url 'scanner:experiment_view' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                     <i class="fa-solid fa-gear w3-text-pink w3-xlarge"></i> {% trans "Gestions des expériences" %}
                 </a>             
                 <a href="{% url 'scanner:experimentconfig_view' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                     <i class="fa-solid fa-gears w3-text-pink w3-xlarge"></i> {% trans "Configuration des expériences" %}
-                </a>           
+                </a>
+                {% if conf.tracking %} 
+                <a href="{% url 'planarian:import-params' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
+                     <i class="fa-solid fa-file-import w3-text-lime w3-xlarge"></i> {% trans "Importer des configurations depuis CSV" %}
+                </a>   
+                {% endif %}                   
                 <a href="{% url 'scanner:calibration' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                     <i class="fa-solid fa-wrench w3-text-orange w3-xlarge"></i> {% trans "Calibration" %}
                 </a>
@@ -118,7 +122,7 @@
             <a href="{% url 'scanner:scanning' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                 <i class="fa-solid fa-film w3-text-green w3-xlarge""></i> {% trans "Balayage multi-puits" %}
             </a>
-            <div class="w3-bar-item w3-dark-xxlight">{% trans "Résultats " %}</div>
+            <div class="w3-bar-item w3-light-blue">{% trans "Résultats " %}</div>
             {% if conf.tracking %}
             <a href="{% url 'planarian:export-csv' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                 <i class="fa-solid fa-file-export w3-text-lime w3-xlarge"></i> {% trans "Export CSV des expériences" %}

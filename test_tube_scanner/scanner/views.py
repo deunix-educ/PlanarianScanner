@@ -51,6 +51,7 @@ def global_context(request, **ctx):
         **ctx
     )
 
+
 @login_required
 @user_passes_test(is_staff_or_admin)
 def admin_view(request):
@@ -76,7 +77,6 @@ def admin_periodictask_view(request):
 @login_required
 @user_passes_test(is_staff_or_admin)
 def reductstore_view(request):
-    
     return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:8383/'))
 
 @login_required
@@ -103,6 +103,13 @@ def supervisor_worker(request):
 @user_passes_test(is_staff_or_admin)
 def supervisor_scheduler(request):
     return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9001/logtail/test_tube:planification'))
+
+def documentation(request, template=None):
+    ctx = dict(
+        choice_title=_("Documentation")
+    )
+    return render(request, f"docs/{template}.html", context=global_context(request, **ctx))
+
 
 ## Mainboard
 @login_required

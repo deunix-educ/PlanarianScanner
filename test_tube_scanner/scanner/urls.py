@@ -13,6 +13,7 @@ urlpatterns = [
     path('supervisor/', views.supervisor_view, name='supervisor'),
     path('logs/worker', views.supervisor_worker, name='logs_worker'),
     path('logs/scheduler', views.supervisor_scheduler, name='logs_scheduler'),
+    path("doc/<slug:template>/", views.documentation, name="documentation"),
     
     path('session/view', views.admin_session_view, name='session_view'),
     path('experiment/view', views.admin_experiment_view, name='experiment_view'),

@@ -121,7 +121,7 @@ class MultiWell(models.Model):
     row_order = models.CharField(_("Ordre ligne"), help_text=_('Ordre ligne de puit. Lecture en serpentin dans le sens des +- X'), max_length=16, null=True, blank=False, default="D,C,B,A")
     # Balayage
     order = models.PositiveSmallIntegerField(_("Ordre"), help_text=_('Ordre de lecture du multi-puit'), blank=False, default=0)
-    duration = models.PositiveIntegerField(_("Durée"), help_text=_('Durée du film en secondes por la calibration'), blank=False, default=10)
+    duration = models.PositiveIntegerField(_("Durée"), help_text=_('Durée de capture en secondes pour la calibration'), blank=False, default=10)
     xbase = models.FloatField(_("Origine X"), help_text=_('Base origine X en mm'), blank=False, default=50.0)
     ybase = models.FloatField(_("Origine Y"), help_text=_('Base origine Y en mm'), blank=False, default=50.0)
 

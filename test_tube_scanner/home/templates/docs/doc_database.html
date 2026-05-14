@@ -1,0 +1,510 @@
+{% extends 'scanner/base.html' %}
+{% load i18n %}
+
+{% block columns %}{% endblock %}
+
+{% block styles %}
+    {{ block.super }}
+    <link href="/static/css/doc_database.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="doc-wrapper">
+
+    <!-- En-tête de la documentation -->
+    <header class="doc-header">
+        <div class="doc-header-inner">
+            <div class="doc-header-icon">
+                <i class="fas fa-database"></i>
+            </div>
+            <div>
+                <h1 class="doc-title">{% trans "Architecture des bases de données" %}</h1>
+                <p class="doc-subtitle">{% trans "Planarian Scanner — Infrastructure de stockage et modèles de données" %}</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation latérale -->
+    <nav class="doc-sidenav" id="sidenav">
+        <p class="nav-section-label">{% trans "Navigation" %}</p>
+        <a href="#section-reductstore" class="nav-link active">
+            <i class="fas fa-wave-square"></i> ReductStore
+        </a>
+        <a href="#section-mariadb" class="nav-link">
+            <i class="fas fa-server"></i> MariaDB
+        </a>
+        <a href="#section-auth" class="nav-link nav-sub">
+            <i class="fas fa-shield-alt"></i> {% trans "Authentification" %}
+        </a>
+        <a href="#section-planarian" class="nav-link nav-sub">
+            <i class="fas fa-microscope"></i> Planarian
+        </a>
+        <a href="#section-scanner" class="nav-link nav-sub">
+            <i class="fas fa-camera"></i> Scanner
+        </a>
+        <a href="#section-config" class="nav-link nav-sub-2">
+            <i class="fas fa-sliders-h"></i> {% trans "Configuration" %}
+        </a>
+        <a href="#section-wells" class="nav-link nav-sub-2">
+            <i class="fas fa-circle"></i> {% trans "Puits" %}
+        </a>
+        <a href="#section-multiwell" class="nav-link nav-sub-2">
+            <i class="fas fa-th"></i> {% trans "Multi-puits" %}
+        </a>
+        <a href="#section-wellpos" class="nav-link nav-sub-2">
+            <i class="fas fa-map-marker-alt"></i> {% trans "Positions" %}
+        </a>
+        <a href="#section-experiments" class="nav-link nav-sub-2">
+            <i class="fas fa-flask"></i> {% trans "Expériences" %}
+        </a>
+        <a href="#section-sessions" class="nav-link nav-sub-2">
+            <i class="fas fa-play-circle"></i> {% trans "Sessions" %}
+        </a>
+        <a href="#section-celery" class="nav-link nav-sub-2">
+            <i class="fas fa-tasks"></i> Celery Beat
+        </a>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main class="doc-content">
+
+        <!-- ============================================================ -->
+        <!-- SECTION 1 : ReductStore                                       -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-reductstore">
+            <div class="section-header">
+                <span class="section-badge badge-time">{% trans "Séries temporelles" %}</span>
+                <h2><i class="fas fa-wave-square"></i> ReductStore</h2>
+                <p class="section-desc">{% trans "Base de données de séries temporelles pour les images et métriques de l'application." %}</p>
+            </div>
+
+            <div class="info-row">
+                <div class="info-card card-accent-blue">
+                    <div class="card-icon"><i class="fas fa-link"></i></div>
+                    <div class="card-body">
+                        <h4>{% trans "Accès" %}</h4>
+                        <a href="http://192.168.1.200:8383/ui/dashboard" target="_blank" class="access-link">
+                            192.168.1.200:8383/ui/dashboard <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title"><i class="fas fa-bucket"></i> {% trans "Buckets" %}</h3>
+            <div class="info-row">
+                <div class="info-card card-accent-cyan">
+                    <div class="card-icon"><i class="fas fa-images"></i></div>
+                    <div class="card-body">
+                        <h4><code>camera</code></h4>
+                        <p>{% trans "Stockage des images capturées par la caméra." %}</p>
+                        <div class="tag-list">
+                            <span class="tag tag-blue">JPEG</span>
+                            <span class="tag tag-gray">{% trans "Séries temporelles" %}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-card card-accent-cyan">
+                    <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="card-body">
+                        <h4><code>planarian_metrics</code></h4>
+                        <p>{% trans "Métriques de suivi des planaires." %}</p>
+                        <div class="tag-list">
+                            <span class="tag tag-green">JSON</span>
+                            <span class="tag tag-gray">{% trans "Séries temporelles" %}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 2 : MariaDB                                           -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-mariadb">
+            <div class="section-header">
+                <span class="section-badge badge-orange">{% trans "Base relationnelle" %}</span>
+                <h2><i class="fas fa-server"></i> MariaDB</h2>
+                <p class="section-desc">{% trans "Base de données relationnelle principale de l'application Django." %}</p>
+            </div>
+
+            <div class="info-row">
+                <div class="info-card card-accent-orange">
+                    <div class="card-icon"><i class="fas fa-database"></i></div>
+                    <div class="card-body">
+                        <h4>Adminer</h4>
+                        <a href="http://192.168.1.200/adminer/" target="_blank" class="access-link">
+                            192.168.1.200/adminer/ <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="info-card card-accent-orange">
+                    <div class="card-icon"><i class="fas fa-user-shield"></i></div>
+                    <div class="card-body">
+                        <h4>{% trans "Administration Django" %}</h4>
+                        <a href="http://192.168.1.200/admin" target="_blank" class="access-link">
+                            192.168.1.200/admin <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- -------------------------------------------------------- -->
+            <!-- Authentification                                          -->
+            <!-- -------------------------------------------------------- -->
+            <div class="subsection" id="section-auth">
+                <h3 class="subsection-title"><i class="fas fa-shield-alt"></i> {% trans "Authentification & Autorisation" %}</h3>
+
+                <div class="info-row">
+                    <div class="info-card card-accent-purple">
+                        <div class="card-icon"><i class="fas fa-users-cog"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Groupes" %}</h4>
+                            <ul class="doc-list">
+                                <li><i class="fas fa-crown text-gold"></i> Admin</li>
+                                <li><i class="fas fa-user-tie text-blue"></i> Staff</li>
+                                <li><i class="fas fa-user text-gray"></i> {% trans "Staff limité" %}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="info-card card-accent-purple">
+                        <div class="card-icon"><i class="fas fa-user-circle"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Utilisateurs" %}</h4>
+                            <ul class="doc-list">
+                                <li><i class="fas fa-star text-gold"></i> superadmin</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- -------------------------------------------------------- -->
+            <!-- Planarian                                                 -->
+            <!-- -------------------------------------------------------- -->
+            <div class="subsection" id="section-planarian">
+                <h3 class="subsection-title"><i class="fas fa-microscope"></i> {% trans "Application Planarian" %}</h3>
+                <div class="info-row">
+                    <div class="info-card card-accent-green full-width">
+                        <div class="card-icon"><i class="fas fa-vials"></i></div>
+                        <div class="card-body">
+                            <h4><code>planarian_experimentconfig</code></h4>
+                            <p>{% trans "Configurations des expériences de suivi des planaires." %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- -------------------------------------------------------- -->
+            <!-- Scanner                                                   -->
+            <!-- -------------------------------------------------------- -->
+            <div class="subsection" id="section-scanner">
+                <h3 class="subsection-title"><i class="fas fa-camera"></i> {% trans "Application Scanner" %}</h3>
+
+                <!-- Configuration -->
+                <div class="sub-subsection" id="section-config">
+                    <h4 class="table-title">
+                        <i class="fas fa-sliders-h"></i>
+                        <code>scanner_configuration</code>
+                        <span class="table-desc">{% trans "Constantes et valeurs par défaut" %}</span>
+                    </h4>
+                    <div class="info-row">
+                        <div class="info-card card-accent-blue">
+                            <div class="card-icon"><i class="fas fa-camera-retro"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "Caméra" %}</h4>
+                                <ul class="doc-list">
+                                    <li>
+                                        <i class="fas fa-plug"></i>
+                                        {% trans "Capture" %} :
+                                        <div class="tag-list inline">
+                                            <span class="tag tag-blue">Arducam</span>
+                                            <span class="tag tag-gray">Webcam</span>
+                                            <span class="tag tag-gray">{% trans "Fichier vidéo" %}</span>
+                                        </div>
+                                    </li>
+                                    <li><i class="fas fa-film"></i> {% trans "Fréquence vidéos (fps)" %}</li>
+                                    <li><i class="fas fa-arrows-alt-h"></i> {% trans "Largeur de capture vidéo" %}</li>
+                                    <li><i class="fas fa-arrows-alt-v"></i> {% trans "Hauteur de capture vidéo" %}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="info-card card-accent-blue">
+                            <div class="card-icon"><i class="fas fa-crosshairs"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "Suivi / Tracking" %}</h4>
+                                <ul class="doc-list">
+                                    <li><i class="fas fa-cog"></i> {% trans "Valeurs par défaut du tracking" %}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Puits -->
+                <div class="sub-subsection" id="section-wells">
+                    <h4 class="table-title">
+                        <i class="fas fa-circle"></i>
+                        <code>scanner_well</code>
+                        <span class="table-desc">{% trans "Noms des puits" %}</span>
+                    </h4>
+                    <div class="info-row">
+                        <div class="info-card card-accent-teal full-width">
+                            <div class="card-icon"><i class="fas fa-th-large"></i></div>
+                            <div class="card-body">
+                                <p>{% trans "Contient uniquement les noms des puits disponibles." %}</p>
+                                <p class="hint"><i class="fas fa-exchange-alt"></i> {% trans "Lecture en serpentin dans le sens des ±X" %}</p>
+                                <!-- Grille serpentin : D1→D6 / C6←C1 / B1→B6 / A6←A1 -->
+                                <div class="well-grid well-grid--serpentine">
+                                    {# Ligne D : gauche → droite (D1..D6) #}
+                                    <span class="well-chip wc-d">D1</span><span class="well-chip wc-d">D2</span>
+                                    <span class="well-chip wc-d">D3</span><span class="well-chip wc-d">D4</span>
+                                    <span class="well-chip wc-d">D5</span><span class="well-chip wc-d">D6</span>
+                                    {# Ligne C : droite → gauche (C6..C1) #}
+                                    <span class="well-chip wc-c">C6</span><span class="well-chip wc-c">C5</span>
+                                    <span class="well-chip wc-c">C4</span><span class="well-chip wc-c">C3</span>
+                                    <span class="well-chip wc-c">C2</span><span class="well-chip wc-c">C1</span>
+                                    {# Ligne B : gauche → droite (B1..B6) #}
+                                    <span class="well-chip wc-b">B1</span><span class="well-chip wc-b">B2</span>
+                                    <span class="well-chip wc-b">B3</span><span class="well-chip wc-b">B4</span>
+                                    <span class="well-chip wc-b">B5</span><span class="well-chip wc-b">B6</span>
+                                    {# Ligne A : droite → gauche (A6..A1) #}
+                                    <span class="well-chip wc-a">A6</span><span class="well-chip wc-a">A5</span>
+                                    <span class="well-chip wc-a">A4</span><span class="well-chip wc-a">A3</span>
+                                    <span class="well-chip wc-a">A2</span><span class="well-chip wc-a">A1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Multi-puits -->
+                <div class="sub-subsection" id="section-multiwell">
+                    <h4 class="table-title">
+                        <i class="fas fa-th"></i>
+                        <code>scanner_multiwell</code>
+                        <span class="table-desc">{% trans "Géométrie et déplacements" %}</span>
+                    </h4>
+                    <div class="info-row">
+                        <div class="info-card card-accent-indigo">
+                            <div class="card-icon"><i class="fas fa-map"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "Position sur la table" %}</h4>
+                                <div class="position-grid">
+                                    <div class="pos-cell active">HG<br><small>{% trans "Haut gauche" %}</small></div>
+                                    <div class="pos-cell active">HD<br><small>{% trans "Haut droit" %}</small></div>
+                                    <div class="pos-cell active">BG<br><small>{% trans "Bas gauche" %}</small></div>
+                                    <div class="pos-cell active">BD<br><small>{% trans "Bas droit" %}</small></div>
+                                </div>
+                                <p class="hint"><i class="fas fa-info-circle"></i> {% trans "4 positions disponibles sur la table" %}</p>
+                                <p class="hint"><i class="fas fa-info-circle"></i> {% trans "(0, 0) de le CNC est en HD" %}</p>
+                                <p class="hint"><i class="fas fa-info-circle"></i> {% trans "HD --> HG +X" %}</p>
+                                <p class="hint"><i class="fas fa-info-circle"></i> {% trans "HD --> BD +Y" %}</p>
+                            </div>
+                        </div>
+                        <div class="info-card card-accent-indigo">
+                            <div class="card-icon"><i class="fas fa-ruler-combined"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "Géométrie" %}</h4>
+                                <ul class="doc-list">
+                                    <li><i class="fas fa-grip-lines"></i> {% trans "Nombre de lignes" %}</li>
+                                    <li><i class="fas fa-grip-lines-vertical"></i> {% trans "Nombre de colonnes" %}</li>
+                                    <li><i class="fas fa-circle"></i> {% trans "Diamètre des puits" %}</li>
+                                    <li><i class="fas fa-font"></i> {% trans "Définition des lignes (A, B, C, D)" %}</li>
+                                    <li><i class="fas fa-exchange-alt"></i> {% trans "Lecture en serpentin ±X (D→C→B→A)" %}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="info-card card-accent-indigo">
+                            <div class="card-icon"><i class="fas fa-route"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "Déplacements" %}</h4>
+                                <ul class="doc-list">
+                                    <li><i class="fas fa-sort-numeric-down"></i> {% trans "Ordre de lecture" %}</li>
+                                    <li><i class="fas fa-stopwatch"></i> {% trans "Durée de capture (calibration)" %}</li>
+                                    <li>
+                                        <i class="fas fa-location-arrow"></i>
+                                        {% trans "Origine X" %}
+                                        <span class="badge-auto">{% trans "Calibration" %}</span>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-location-arrow fa-rotate-90"></i>
+                                        {% trans "Origine Y" %}
+                                        <span class="badge-auto">{% trans "Calibration" %}</span>
+                                    </li>
+                                    <li><i class="fas fa-arrows-alt-h"></i> {% trans "Pas X mesuré" %}</li>
+                                    <li><i class="fas fa-arrows-alt-v"></i> {% trans "Pas Y mesuré" %}</li>
+                                    <li><i class="fas fa-tachometer-alt"></i> {% trans "Vitesse (mm/mn)" %}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-card card-accent-yellow full-width">
+                            <div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "Positions générées" %}</h4>
+                                <p>{% trans "Si les positions ne sont pas encore générées, le système efface" %} <code>WellPosition</code> {% trans "et recalcule toutes les positions des puits." %}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Position des puits -->
+                <div class="sub-subsection" id="section-wellpos">
+                    <h4 class="table-title">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <code>scanner_wellposition</code>
+                        <span class="table-desc">{% trans "Positions calibrées des puits" %}</span>
+                    </h4>
+                    <div class="info-row">
+                        <div class="info-card card-accent-cyan">
+                            <div class="card-icon"><i class="fas fa-drafting-compass"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "Calibration" %}</h4>
+                                <p>{% trans "Manuelle ou automatique." %}</p>
+                                <ul class="doc-list">
+                                    <li><i class="fas fa-arrows-alt-h"></i> {% trans "Axe X (mm)" %} <span class="badge-auto">{% trans "Calibration" %}</span></li>
+                                    <li><i class="fas fa-arrows-alt-v"></i> {% trans "Axe Y (mm)" %} <span class="badge-auto">{% trans "Calibration" %}</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="info-card card-accent-red">
+                            <div class="card-icon"><i class="fas fa-exclamation-circle"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "Pixels par mm" %} <span class="badge-important">{% trans "IMPORTANT" %}</span></h4>
+                                <p>{% trans "Facteur de calibration optique calculé en fonction de la taille de l'image." %}</p>
+                                <div class="alert-box">
+                                    <i class="fas fa-redo"></i>
+                                    {% trans "Recalibrer si la taille de l'image est modifiée !" %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expériences -->
+                <div class="sub-subsection" id="section-experiments">
+                    <h4 class="table-title">
+                        <i class="fas fa-flask"></i>
+                        <code>scanner_experiment</code> &amp; <code>scanner_experimentwell</code>
+                        <span class="table-desc">{% trans "Expériences et puits associés" %}</span>
+                    </h4>
+                    <div class="info-row">
+                        <div class="info-card card-accent-green">
+                            <div class="card-icon"><i class="fas fa-vial"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "Valeurs importantes" %}</h4>
+                                <ul class="doc-list">
+                                    <li><i class="fas fa-link"></i> {% trans "Multi-puits lié" %}</li>
+                                    <li><i class="fas fa-clock"></i> {% trans "Durée de capture (secondes)" %}</li>
+                                    <li><i class="fas fa-fingerprint"></i> {% trans "Identifiant d'expérience" %}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="info-card card-accent-green">
+                            <div class="card-icon"><i class="fas fa-magic"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "Création automatique" %}</h4>
+                                <p>{% trans "À la création d'une expérience, les puits liés sont automatiquement créés dans" %} <code>scanner_experimentwell</code>.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sessions -->
+                <div class="sub-subsection" id="section-sessions">
+                    <h4 class="table-title">
+                        <i class="fas fa-play-circle"></i>
+                        <code>scanner_session</code> &amp; <code>scanner_sessionexperiment</code>
+                        <span class="table-desc">{% trans "Sessions d'expériences" %}</span>
+                    </h4>
+                    <div class="info-row">
+                        <div class="info-card card-accent-blue">
+                            <div class="card-icon"><i class="fas fa-layer-group"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "Regroupement" %}</h4>
+                                <p>{% trans "Regroupe les expériences lors d'un balayage dans" %} <code>scanner_sessionexperiment</code>.</p>
+                                <div class="tag-list">
+                                    <span class="tag tag-blue">{% trans "4 multi-puits maximum" %}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-card card-accent-blue">
+                            <div class="card-icon"><i class="fas fa-tasks"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "2 tâches Celery créées" %}</h4>
+                                <ul class="doc-list">
+                                    <li>
+                                        <i class="fas fa-play text-green"></i>
+                                        <code>scanning_session</code>
+                                        <p class="task-desc">{% trans "Lancement différé d'un balayage de session." %}</p>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-file-export text-cyan"></i>
+                                        <code>export_session</code>
+                                        <p class="task-desc">
+                                            {% trans "Export images et vidéos :" %}
+                                            <span class="tag tag-gray">{% trans "Local" %}</span>
+                                            <span class="tag tag-gray">{% trans "Support distant" %}</span>
+                                        </p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Celery Beat -->
+                <div class="sub-subsection" id="section-celery">
+                    <h4 class="table-title">
+                        <i class="fas fa-tasks"></i>
+                        <code>django_celery_beat_periodictask</code>
+                        <span class="table-desc">{% trans "Gestion des tâches différées" %}</span>
+                    </h4>
+                    <div class="info-row">
+                        <div class="info-card card-accent-orange full-width">
+                            <div class="card-icon"><i class="fas fa-clock"></i></div>
+                            <div class="card-body">
+                                <p>{% trans "Gère le déclenchement et la planification des tâches Celery différées." %}</p>
+                                <div class="tag-list">
+                                    <span class="tag tag-orange">Celery Beat</span>
+                                    <span class="tag tag-gray">{% trans "Tâches périodiques" %}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- end section-scanner -->
+        </section><!-- end section-mariadb -->
+
+    </main><!-- end doc-content -->
+</div><!-- end doc-wrapper -->
+{% endblock %}
+
+{% block js_footer %}
+    {{ block.super }}
+	<script>
+	/* Mise en évidence du lien actif dans la navigation latérale */
+	(function () {
+	    const links = document.querySelectorAll('.nav-link');
+	    const sections = document.querySelectorAll('.doc-section, .subsection, .sub-subsection');
+	
+	    /* Observer d'intersection pour la navigation active */
+	    const observer = new IntersectionObserver(
+	        (entries) => {
+	            entries.forEach(entry => {
+	                if (entry.isIntersecting) {
+	                    links.forEach(l => l.classList.remove('active'));
+	                    const target = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+	                    if (target) target.classList.add('active');
+	                }
+	            });
+	        },
+	        { rootMargin: '-10% 0px -80% 0px' }
+	    );
+	
+	    sections.forEach(s => { if (s.id) observer.observe(s); });
+	})();
+	</script>
+{% endblock %}
