@@ -1,5 +1,3 @@
-
-#from django.utils.translation import gettext_lazy as _
 """
 Interface abstraite de capture vidéo.
 Définit le contrat que toutes les implémentations doivent respecter.
@@ -103,7 +101,7 @@ class VideoCaptureInterface(abc.ABC):
         try:
             if self.use_tracking and cfg:
                 self._tracker = PlanarianTracker(**cfg)
-                logger.info(f"Tracker de test créé avec conf: {cfg}")
+                logger.info(f"Create test with conf: {cfg}")
         except Exception as e:
             logger.error(f"Error creating tracker with conf {cfg}: {e}")
             self._tracker = None
