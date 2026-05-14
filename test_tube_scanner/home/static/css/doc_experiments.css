@@ -1,0 +1,126 @@
+/* ============================================================
+   doc_experiments.css
+   Styles spécifiques à la page "Démarrer des expériences".
+   Dépend de doc_database.css + doc_calibration.css.
+   ============================================================ */
+
+/* ─── Badges supplémentaires ─── */
+.badge-green {
+    background: rgba(63,185,80,.12);
+    color: var(--accent-green);
+    border: 1px solid rgba(63,185,80,.3);
+}
+.badge-purple {
+    background: rgba(188,140,255,.12);
+    color: var(--accent-purple);
+    border: 1px solid rgba(188,140,255,.3);
+}
+.badge-orange {
+    background: rgba(240,136,62,.12);
+    color: var(--accent-orange);
+    border: 1px solid rgba(240,136,62,.3);
+}
+
+/* ─── Tags supplémentaires ─── */
+.tag-purple {
+    background: rgba(188,140,255,.12);
+    color: var(--accent-purple);
+    border: 1px solid rgba(188,140,255,.2);
+}
+.tag-yellow {
+    background: rgba(227,179,65,.12);
+    color: var(--accent-yellow);
+    border: 1px solid rgba(227,179,65,.2);
+}
+
+/* ─── Étapes numérotées ─── */
+ol.doc-steps {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0;
+    counter-reset: step-counter;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+ol.doc-steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    counter-increment: step-counter;
+    padding: 6px 8px;
+    background: rgba(255,255,255,.02);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    transition: background .12s;
+}
+ol.doc-steps li:hover {
+    background: rgba(255,255,255,.05);
+}
+ol.doc-steps li::before {
+    content: counter(step-counter);
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(88,166,255,.15);
+    color: var(--accent-blue);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+ol.doc-steps li i {
+    width: 16px;
+    text-align: center;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* ─── Alert info (bleu, non critique) ─── */
+.alert-box.alert-info {
+    background: rgba(88,166,255,.08);
+    border-color: rgba(88,166,255,.25);
+    color: var(--accent-blue);
+}
+
+/* ─── Titre de groupe de métriques ─── */
+.metrics-group-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 16px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+.metrics-group-title i {
+    color: var(--text-muted);
+}
+
+/* ─── Cartes métriques : padding réduit ─── */
+.metrics-card {
+    min-width: 180px;
+}
+.metrics-card .card-body h4 {
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+/* ─── Tags métriques : inline compact ─── */
+.metric-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 4px;
+}
+.metric-tags .tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+}

@@ -1,3 +1,5 @@
+
+#from django.utils.translation import gettext_lazy as _
 """
 Interface abstraite de capture vidéo.
 Définit le contrat que toutes les implémentations doivent respecter.

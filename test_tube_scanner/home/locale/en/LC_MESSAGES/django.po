@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-21 23:48+0200\n"
+"POT-Creation-Date: 2026-05-14 15:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,6 +20,1358 @@ msgstr ""
 
 #: home/apps.py:7
 msgid "Scanner de tube à essais"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:21
+msgid "Calibration du scanner"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:22
+msgid "Procédure, organisation de l'écran et commandes disponibles"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:29
+#: home/templates/docs/doc_database.html:29
+#: home/templates/docs/doc_experiment.html:30
+#: home/templates/docs/doc_results.html:32
+#: home/templates/docs/doc_scanning.html:31
+msgid "Navigation"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:30
+#: home/templates/docs/doc_experiment.html:31
+#: home/templates/docs/doc_results.html:33
+#: home/templates/docs/doc_scanning.html:32
+msgid "Présentation"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:31
+msgid "Organisation écran"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:32
+msgid "Panneau gauche"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:33
+msgid "Centre — vidéo live"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:34
+msgid "Panneau droit"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:35
+msgid "Centrage"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:36
+#: home/templates/docs/doc_calibration.html:183
+msgid "Définir la base"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:47
+msgid "Prérequis"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:48
+#: home/templates/docs/doc_database.html:327
+#: home/templates/docs/doc_database.html:332
+#: home/templates/docs/doc_database.html:363
+#: home/templates/docs/doc_database.html:366
+#: home/templates/docs/doc_database.html:367
+#: scanner/templates/scanner/base.html:132 scanner/views.py:131
+msgid "Calibration"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:50
+msgid "La calibration est indispensable au fonctionnement du scanner."
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:51
+msgid "Affichage des logs en bas de page"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:59
+msgid "Objectifs"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:63
+msgid "Pointer l'axe de la caméra dans l'axe du tube."
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:67
+msgid ""
+"Recadrer l'image pour porter l'origine du suivi des planaires au centre du "
+"tube."
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:77
+msgid "Avantage du recadrage"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:81
+msgid "Réduit la taille des images stockées."
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:93
+msgid "IMPORTANT — Avant toute manipulation"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:93
+#: home/templates/docs/doc_calibration.html:184
+#: home/templates/docs/doc_database.html:374
+#: home/templates/docs/doc_experiment.html:216
+msgid "IMPORTANT"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:94
+msgid "Pour tout multi-puits, trouver la base de départ avant de commencer."
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:105
+#: home/templates/docs/doc_scanning.html:73
+msgid "Interface"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:106
+msgid "Organisation de l'écran"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:107
+msgid "L'écran de calibration est divisé en trois zones fonctionnelles."
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:114
+#: home/templates/docs/doc_database.html:320
+msgid "Déplacements"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:118
+msgid "Vidéo live"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:122
+#: home/templates/docs/doc_scanning.html:33
+msgid "Commandes"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:129
+msgid "Panneau gauche — Déplacements caméra"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:137
+msgid "Sélection & vitesse"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:139
+msgid "Changer de multi-puits"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:140
+msgid "Modifier la vitesse (mm/mn)"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:141
+msgid "Modifier le pas de déplacement (mm)"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:150
+msgid "Manœuvre manuelle"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:154 scanner/admin.py:55
+msgid "Déplacement"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:160
+msgid "Sauver la position courante"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:169
+msgid "Navigation puit à puit"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:171
+msgid "Boutons de déplacement puit à puit"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:172
+msgid "Bouton centrage manuel"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:173
+msgid "Bouton calibrage automatique"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:192
+msgid "À la création du multi-puits en base"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:196
+msgid "Fixe la base par défaut en"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:200
+msgid "Calcule et enregistre toutes les positions des puits dans"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:204
+msgid "Permet de gagner du temps au centrage manuel ou automatique."
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:216
+#: home/templates/docs/doc_database.html:345 scanner/admin.py:58
+msgid "Positions générées"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:217
+#: home/templates/docs/doc_calibration.html:260
+#: home/templates/docs/doc_results.html:81
+#: home/templates/docs/doc_scanning.html:105
+msgid "ATTENTION"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:222
+msgid "À la création : donnée fixée à"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:222
+#: home/templates/docs/doc_calibration.html:371
+#: home/templates/docs/doc_calibration.html:379
+#: home/templates/docs/doc_calibration.html:387
+msgid "Oui"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:226
+msgid "Non → efface"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:227
+msgid "et recalcule toutes les positions"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:239
+msgid "Bouton « Définir la base »"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:243
+msgid "Fixe la base aux coordonnées"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:243
+msgid "courantes"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:247
+msgid "Recalcule toutes les positions des puits dans"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:259
+msgid "Centrage manuel / automatique"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:268
+msgid "Conditions requises"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:272
+msgid "Éclairage important des puits — éviter les ombres."
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:276
+msgid "Actif uniquement si Debug"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:276
+msgid "ET"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:276
+msgid "Recadrage activés (commandes à droite)."
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:286
+msgid "Indicateurs visuels de centrage"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:290
+msgid "Cercle rouge"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:291
+msgid "déplacement centre"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:295
+msgid "Cercle jaune"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:296
+msgid "au plus près"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:300
+msgid "Cercle vert"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:301
+msgid "centré"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:313
+msgid "OK"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:325
+msgid "Centre — Vidéo live"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:331
+msgid "Flux vidéo en temps réel"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:332
+msgid ""
+"Affiche le flux caméra en direct, avec ou sans recadrage selon l'état de la "
+"commande."
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:334
+msgid "Recadrage actif"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:335
+msgid "Image pleine"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:345
+msgid "Panneau droit — Commandes"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:353
+msgid "Navigation rapide"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:355
+msgid "Déplacer à l'origine (0, 0)"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:356
+msgid "Aller à la base du multi-puits"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:365
+msgid "Bascules"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:369
+#: scanner/templates/scanner/calibration.html:138
+msgid "Debug"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:372
+#: home/templates/docs/doc_calibration.html:380
+#: home/templates/docs/doc_calibration.html:388
+msgid "Non"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:377
+msgid "Tracer axes"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:385
+msgid "Recadrage"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:401
+msgid "Rayon de recadrage"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:402
+msgid "Ajuster le recadrage en pixels."
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:410
+msgid "Durée entre puits"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:411
+msgid "Durée de pause entre chaque puit lors du test du circuit."
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:419
+msgid "Tester le circuit"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:420
+msgid "Vérifier les déplacements en parcourant automatiquement tous les puits."
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:431
+#: home/templates/docs/doc_scanning.html:104
+msgid "ARRÊT"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:432
+msgid "URGENCE"
+msgstr ""
+
+#: home/templates/docs/doc_calibration.html:436
+msgid "Stoppe immédiatement tout mouvement du scanner."
+msgstr ""
+
+#: home/templates/docs/doc_database.html:21
+msgid "Architecture des bases de données"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:22
+msgid "Planarian Scanner — Infrastructure de stockage et modèles de données"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:37
+msgid "Authentification"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:46 scanner/models.py:90
+msgid "Configuration"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:49
+#: planarian/templates/planarian/export_csv.html:37 scanner/models.py:103
+msgid "Puits"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:52 scanner/models.py:169
+#: scanner/models.py:170 scanner/models.py:180 scanner/models.py:243
+msgid "Multi-puits"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:55 scanner/models.py:132
+msgid "Positions"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:58 scanner/models.py:264
+msgid "Expériences"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:61 scanner/models.py:312
+msgid "Sessions"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:76
+#: home/templates/docs/doc_database.html:102
+#: home/templates/docs/doc_database.html:113
+msgid "Séries temporelles"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:78
+msgid ""
+"Base de données de séries temporelles pour les images et métriques de "
+"l'application."
+msgstr ""
+
+#: home/templates/docs/doc_database.html:85
+msgid "Accès"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:93
+msgid "Buckets"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:99
+msgid "Stockage des images capturées par la caméra."
+msgstr ""
+
+#: home/templates/docs/doc_database.html:110
+msgid "Métriques de suivi des planaires."
+msgstr ""
+
+#: home/templates/docs/doc_database.html:125
+msgid "Base relationnelle"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:127
+msgid "Base de données relationnelle principale de l'application Django."
+msgstr ""
+
+#: home/templates/docs/doc_database.html:143
+#: home/templates/docs/doc_experiment.html:52
+msgid "Administration Django"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:155
+msgid "Authentification & Autorisation"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:161
+msgid "Groupes"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:165
+msgid "Staff limité"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:172
+msgid "Utilisateurs"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:185
+msgid "Application Planarian"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:191
+msgid "Configurations des expériences de suivi des planaires."
+msgstr ""
+
+#: home/templates/docs/doc_database.html:201
+msgid "Application Scanner"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:208
+msgid "Constantes et valeurs par défaut"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:214
+msgid "Caméra"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:218 scanner/models.py:56
+msgid "Capture"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:222
+msgid "Fichier vidéo"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:225 scanner/models.py:60
+msgid "Fréquence vidéos (fps)"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:226 scanner/models.py:61
+msgid "Largeur de capture vidéo"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:227 scanner/models.py:62
+msgid "Hauteur de capture vidéo"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:234
+msgid "Suivi / Tracking"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:236
+msgid "Valeurs par défaut du tracking"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:248
+msgid "Noms des puits"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:254
+msgid "Contient uniquement les noms des puits disponibles."
+msgstr ""
+
+#: home/templates/docs/doc_database.html:255
+msgid "Lecture en serpentin dans le sens des ±X"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:285
+msgid "Géométrie et déplacements"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:291
+msgid "Position sur la table"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:293
+msgid "Haut gauche"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:294
+msgid "Haut droit"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:295
+msgid "Bas gauche"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:296
+msgid "Bas droit"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:298
+msgid "4 positions disponibles sur la table"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:299
+msgid "(0, 0) de le CNC est en HD"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:300
+msgid "HD --> HG +X"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:301
+msgid "HD --> BD +Y"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:307 scanner/admin.py:52
+msgid "Géométrie"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:309 scanner/models.py:118
+msgid "Nombre de lignes"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:310 scanner/models.py:117
+msgid "Nombre de colonnes"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:311
+msgid "Diamètre des puits"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:312
+msgid "Définition des lignes (A, B, C, D)"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:313
+msgid "Lecture en serpentin ±X (D→C→B→A)"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:322
+msgid "Ordre de lecture"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:323
+msgid "Durée de capture (calibration)"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:326 scanner/models.py:125
+msgid "Origine X"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:331 scanner/models.py:126
+msgid "Origine Y"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:334
+msgid "Pas X mesuré"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:335
+msgid "Pas Y mesuré"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:336
+msgid "Vitesse (mm/mn)"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:346
+msgid "Si les positions ne sont pas encore générées, le système efface"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:346
+msgid "et recalcule toutes les positions des puits."
+msgstr ""
+
+#: home/templates/docs/doc_database.html:357
+msgid "Positions calibrées des puits"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:364
+msgid "Manuelle ou automatique."
+msgstr ""
+
+#: home/templates/docs/doc_database.html:366
+msgid "Axe X (mm)"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:367
+msgid "Axe Y (mm)"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:374 planarian/models.py:36
+#: scanner/models.py:185
+msgid "Pixels par mm"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:375
+msgid ""
+"Facteur de calibration optique calculé en fonction de la taille de l'image."
+msgstr ""
+
+#: home/templates/docs/doc_database.html:378
+msgid "Recalibrer si la taille de l'image est modifiée !"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:390
+msgid "Expériences et puits associés"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:396
+msgid "Valeurs importantes"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:398
+msgid "Multi-puits lié"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:399
+msgid "Durée de capture (secondes)"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:400 scanner/models.py:240
+msgid "Identifiant d'expérience"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:407
+#: home/templates/docs/doc_experiment.html:38
+msgid "Création automatique"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:408
+msgid ""
+"À la création d'une expérience, les puits liés sont automatiquement créés "
+"dans"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:419
+msgid "Sessions d'expériences"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:425
+msgid "Regroupement"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:426
+msgid "Regroupe les expériences lors d'un balayage dans"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:428
+msgid "4 multi-puits maximum"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:435
+msgid "2 tâches Celery créées"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:440
+msgid "Lancement différé d'un balayage de session."
+msgstr ""
+
+#: home/templates/docs/doc_database.html:446
+msgid "Export images et vidéos :"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:447
+msgid "Local"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:448
+msgid "Support distant"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:462
+msgid "Gestion des tâches différées"
+msgstr ""
+
+#: home/templates/docs/doc_database.html:468
+msgid "Gère le déclenchement et la planification des tâches Celery différées."
+msgstr ""
+
+#: home/templates/docs/doc_database.html:471
+#: home/templates/docs/doc_experiment.html:35
+msgid "Tâches périodiques"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:22
+#: home/templates/docs/doc_experiment.html:53
+#: scanner/templates/scanner/base.html:47
+msgid "Démarrer des expériences"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:23
+msgid ""
+"Sessions, expériences, configurations et import CSV — interface "
+"Administration Django"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:32
+#: home/templates/docs/doc_experiment.html:86
+msgid "Ordre de création"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:33
+#: home/templates/docs/doc_experiment.html:125
+#: planarian/templates/planarian/base.html:14 scanner/models.py:311
+#: scanner/models.py:380 scanner/templates/scanner/images.html:13
+#: scanner/templates/scanner/replay.html:14
+msgid "Session"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:34
+#: home/templates/docs/doc_experiment.html:37
+#: home/templates/docs/doc_experiment.html:200
+#: home/templates/docs/doc_scanning.html:118
+msgid "Données"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:36
+#: home/templates/docs/doc_experiment.html:195
+#: planarian/templates/planarian/export_csv.html:33 scanner/models.py:263
+#: scanner/models.py:381 scanner/models.py:411
+msgid "Expérience"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:39
+msgid "Métriques"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:40
+msgid "Configuration puits"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:41
+msgid "Import CSV"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:55
+msgid ""
+"C'est l'interface Administration Django qui est chargée de créer les données."
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:63
+msgid "Principe général"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:67
+msgid "Une expérience est toujours affectée à un multi-puits."
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:71
+msgid "Il y a 4 emplacements multi-puits, donc"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:72
+msgid "4 expériences maximum par session."
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:85
+msgid "Workflow"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:87
+msgid "Les deux approches sont équivalentes — au choix."
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:95
+msgid "Option A — Session en premier"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:97
+#: home/templates/docs/doc_experiment.html:111
+msgid "Créer la session"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:98
+msgid "Créer les expériences (4 maxi)"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:99
+msgid "Revenir sur la session et ajouter les expériences"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:108
+msgid "Option B — Expériences en premier"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:110
+msgid "Créer les expériences"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:112
+msgid "Ajouter les expériences à la session"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:131
+msgid "Données importantes"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:137
+#: home/templates/docs/doc_experiment.html:205 planarian/admin.py:21
+#: scanner/admin.py:15 scanner/admin.py:49
+msgid "Identification"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:139
+#: home/templates/docs/doc_experiment.html:207
+msgid "Titre"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:140
+#: home/templates/docs/doc_experiment.html:208
+msgid "Auteur"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:149 scanner/models.py:403
+msgid "Expériences d'une session"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:150
+msgid "Ajouter les expériences à la suite dans l'inline"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:152
+msgid "4 maximum"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:162
+msgid "Options tâches périodiques"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:168 scanner/models.py:281
+msgid "Date d'exportation"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:169
+msgid ""
+"Crée une tâche différée pour exporter automatiquement les images et vidéos à "
+"la date choisie."
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:178 scanner/models.py:282
+msgid "Date du balayage"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:179
+msgid ""
+"Planifie le déclenchement du balayage de la session à une date ultérieure."
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:209 scanner/models.py:239
+msgid "Commentaires"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:216
+msgid "Paramètres critiques"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:220
+msgid "Choix du multi-puits"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:224
+msgid "Durée de la prise de vue (secondes)"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:235
+msgid "Fonctionnement à la création"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:242
+#: home/templates/docs/doc_experiment.html:264
+msgid "Création/MAJ"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:246
+msgid "Création de chaque puit individuel."
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:250
+msgid "Par défaut, tous les puits sont actifs."
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:255
+msgid "Il est possible d'ignorer le balayage d'un ou plusieurs puits au choix."
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:265
+msgid "Paramètres d'une expérience PlanarianScanner."
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:269
+msgid "Créé depuis Django admin"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:273
+msgid "Ou import CSV depuis l'admin"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:277
+msgid "Données descriptives supplémentaires (à définir)"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:289
+msgid "Intégration métriques EthoVision XT + comportementales"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:294
+msgid "Métriques par frame"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:300
+#: home/templates/docs/doc_experiment.html:366
+msgid "Mobilité"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:312
+#: home/templates/docs/doc_experiment.html:377
+msgid "Thigmotaxie"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:322
+#: home/templates/docs/doc_experiment.html:386
+msgid "Phototaxie"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:335
+#: home/templates/docs/doc_experiment.html:399
+msgid "Chimiotaxie"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:347
+#: home/templates/docs/doc_experiment.html:411
+msgid "Social"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:360
+msgid "Métriques résumé (summary)"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:370
+msgid "durations par état"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:429
+msgid "Interface Scanner"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:430
+#: scanner/templates/scanner/base.html:124
+msgid "Configuration des expériences"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:431
+msgid ""
+"Sélectionner l'expérience et le puit à modifier pour compléter la fiche."
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:437
+msgid "Procédure"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:439
+msgid "Sélectionner l'expérience dans la liste"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:440
+msgid "Sélectionner le puit à modifier"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:441
+msgid "Compléter la fiche de configuration"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:453
+msgid "Import"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:454
+#: scanner/templates/scanner/base.html:128
+msgid "Importer des configurations depuis CSV"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:462
+#: home/templates/docs/doc_results.html:34
+#: home/templates/docs/doc_results.html:60
+msgid "Menu gauche"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:464
+#: home/templates/docs/doc_results.html:69
+msgid "Sélectionner la session"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:465
+#: home/templates/docs/doc_results.html:70
+msgid "Cocher l'expérience souhaitée"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:474
+msgid "Zone d'import"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:476
+msgid "Glisser-déposer le fichier CSV"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:477
+msgid "Cliquer sur Importer"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:488
+msgid "Astuce — Générer le template CSV depuis Django admin"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:492
+msgid "Aller dans"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:493
+msgid "Planarian › Configurations des expériences"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:497
+msgid "Cocher le puit de l'expérience ou un groupe d'expériences"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:501
+msgid "Action :"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:501
+msgid "Exporter un template CSV…"
+msgstr ""
+
+#: home/templates/docs/doc_experiment.html:505
+msgid "Vérifier l'emplacement du fichier téléchargé (dossier Download)."
+msgstr ""
+
+#: home/templates/docs/doc_results.html:24
+msgid "Exploiter les résultats"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:25
+msgid "Export CSV des métriques par session, expérience et planaire"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:35
+msgid "Export serveur"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:36
+msgid "Partie droite"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:37
+msgid "Générer le CSV"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:48
+msgid "Export CSV"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:49
+#: scanner/templates/scanner/base.html:53
+msgid "Exploiter les résultats des expériences"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:50
+msgid ""
+"Les métriques de suivi des planaires sont exportables au format CSV depuis "
+"l'interface Scanner."
+msgstr ""
+
+#: home/templates/docs/doc_results.html:59
+#: home/templates/docs/doc_results.html:67
+msgid "Sélection"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:71
+msgid "Cliquer sur Exporter les métriques de l'expérience"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:80
+msgid "Export côté serveur"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:89
+msgid "Durée variable"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:92
+msgid "La procédure peut être longue selon le nombre de planaires à suivre."
+msgstr ""
+
+#: home/templates/docs/doc_results.html:101
+msgid "Tâche de fond"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:102
+msgid "Le service est exécuté en arrière-plan (Celery)."
+msgstr ""
+
+#: home/templates/docs/doc_results.html:115
+msgid "Emplacement des fichiers sur le serveur"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:131
+msgid "Téléchargement"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:132
+msgid "Partie droite — Téléchargement client"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:141
+msgid "Paramètres"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:145
+msgid "Choisir le puit"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:149
+msgid "Choisir l'index du planaire"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:152
+msgid "Le nombre de planaires est défini dans"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:153
+msgid "Paramètres d'une expérience"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:164
+msgid "Bouton Générer"
+msgstr ""
+
+#: home/templates/docs/doc_results.html:165
+msgid "Télécharge le fichier CSV directement sur le poste client."
+msgstr ""
+
+#: home/templates/docs/doc_results.html:168
+msgid "La procédure peut être longue."
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:23
+#: home/templates/docs/doc_scanning.html:49
+#: scanner/templates/scanner/base.html:50
+msgid "Balayage des puits"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:24
+msgid "Lancement, suivi et procédure en cas d'arrêt"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:34
+#: home/templates/docs/doc_scanning.html:80 scanner/models.py:298
+msgid "Lancer le balayage"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:35
+msgid "Arrêt"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:36
+msgid "Procédure après arrêt"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:48
+msgid "Balayage"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:56
+msgid "Recadrage forcé"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:57
+msgid "Le balayage force toujours le recadrage de l'image."
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:58
+msgid "Le balayage est disponible quand la session est marquée ACTIVE"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:61
+msgid ""
+"Les boutons Axes et Recadrer sont affichés à titre indicatif uniquement."
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:74
+msgid "Commandes importantes"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:89
+msgid "Suivi pas à pas de tous les puits de la session."
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:93
+msgid "Les logs s'affichent en bas de l'écran en temps réel."
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:111
+msgid "Images"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:112
+msgid "Les images capturées jusqu'à l'arrêt seront enregistrées."
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:119
+msgid "Les données de suivi ne seront pas enregistrées."
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:131
+msgid "Récupération"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:132
+msgid "Procédure en cas d'arrêt"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:140
+msgid "Réinitialiser la session"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:144
+msgid "Supprimer la session en cours depuis l'administration Django."
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:148
+msgid "Créer une nouvelle session."
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:159
+msgid "Nettoyage ReductStore"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:167
+msgid "Accès ReductStore"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:181
+#: home/templates/docs/doc_scanning.html:201
+msgid "Bucket"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:186
+msgid "Localiser les entrées correspondant aux UUIDs des expériences."
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:190
+msgid "Supprimer les UUIDs des expériences concernées."
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:206
+msgid "Repérer les enregistrements dont le label correspond aux UUIDs."
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:210
+msgid "Supprimer ces enregistrements."
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:225
+msgid "Identifier les UUIDs à supprimer"
+msgstr ""
+
+#: home/templates/docs/doc_scanning.html:226
+msgid ""
+"Les UUIDs des expériences sont visibles dans l'administration Django, dans "
+"la session supprimée ou dans les logs affichés pendant le balayage."
 msgstr ""
 
 #: home/templates/inc/404.html:9
@@ -40,533 +1392,1046 @@ msgid ""
 "administrator."
 msgstr ""
 
-#: scanner/models.py:17
-msgid "Haut gauche"
+#: modules/capture_interface.py:3
+msgid ""
+"\n"
+"Interface abstraite de capture vidéo.\n"
+"Définit le contrat que toutes les implémentations doivent respecter.\n"
+"\n"
+"    4 méthodes @abstractmethod à implémenter : open(), close(), "
+"capture_frame(), is_available()\n"
+"        Boucle de capture dans un thread daemon avec compensation de latence "
+"pour tenir les 5 fps\n"
+"        Callback set_frame_callback(fn) appelé à chaque frame avec (bytes, "
+"datetime)\n"
+"        save_frame() avec horodatage, start()/stop(), gestionnaire de "
+"contexte (with)\n"
+"        CaptureError exception dédiée\n"
 msgstr ""
 
-#: scanner/models.py:18
-msgid "Haut droit"
+#: planarian/admin.py:24
+msgid "Calibration optique:  générée lors de la calibration"
 msgstr ""
 
-#: scanner/models.py:19
-msgid "Bas gauche"
+#: planarian/admin.py:28
+msgid "Seuils de mobilité EthoVision"
 msgstr ""
 
-#: scanner/models.py:20
-msgid "Bas droit"
+#: planarian/admin.py:32
+msgid "Tracker"
 msgstr ""
 
-#: scanner/models.py:21
-msgid "Bas milieu"
+#: planarian/admin.py:36
+msgid "Thigmotactisme"
 msgstr ""
 
-#: scanner/models.py:22
-msgid "Haut milieu"
+#: planarian/admin.py:40
+msgid "Phototactisme"
 msgstr ""
 
-#: scanner/models.py:26 scanner/models.py:31
-msgid "MP4"
+#: planarian/admin.py:44
+msgid "Chimiotactisme"
 msgstr ""
 
-#: scanner/models.py:27
-msgid "XVID"
+#: planarian/admin.py:48
+msgid "Interactions inter-individus"
 msgstr ""
 
-#: scanner/models.py:32
-msgid "AVI"
+#: planarian/admin.py:57
+msgid "Exporter un template CSV de ces configurations"
 msgstr ""
 
-#: scanner/models.py:36
-msgid "Nom de la Configuration"
+#: planarian/models.py:23
+msgid "Identifiant expérience"
 msgstr ""
 
-#: scanner/models.py:36
-msgid "Nom de la configuration"
-msgstr ""
-
-#: scanner/models.py:36
-msgid "Configuration par défaut"
-msgstr ""
-
-#: scanner/models.py:39
-msgid "Barre latérale"
-msgstr ""
-
-#: scanner/models.py:39
-msgid "Largeur barre latérale (css)"
-msgstr ""
-
-#: scanner/models.py:40
-msgid "Colonnes de la grille par défaut"
-msgstr ""
-
-#: scanner/models.py:40
-msgid "Nombre de colonnes de la grille par défaut"
-msgstr ""
-
-#: scanner/models.py:42
-msgid "Fourcc"
-msgstr ""
-
-#: scanner/models.py:42
-msgid "Opencv fourcc format"
-msgstr ""
-
-#: scanner/models.py:43
-msgid "Video type"
-msgstr ""
-
-#: scanner/models.py:43
-msgid "Opencv video type"
-msgstr ""
-
-#: scanner/models.py:45
-msgid "Grbl Xmax"
-msgstr ""
-
-#: scanner/models.py:45
-msgid "CNC Grbl Xmax en mm"
-msgstr ""
-
-#: scanner/models.py:46
-msgid "Grbl Ymax"
-msgstr ""
-
-#: scanner/models.py:46
-msgid "CNC Grbl Ymax en mm"
-msgstr ""
-
-#: scanner/models.py:47
-msgid "Pixel / mm"
-msgstr ""
-
-#: scanner/models.py:47
-msgid "Rapport pixel / déplacement en pixel/mm"
-msgstr ""
-
-#: scanner/models.py:50
-msgid "Utiliser rpicam"
-msgstr ""
-
-#: scanner/models.py:50
-msgid "Par défaaut. Sinon USB webcam"
-msgstr ""
-
-#: scanner/models.py:51
-msgid "Index de la webcam"
-msgstr ""
-
-#: scanner/models.py:51
-msgid "Index de la webcam (0, 1, ...) si présente"
-msgstr ""
-
-#: scanner/models.py:52
-msgid "Qualité JPEG"
-msgstr ""
-
-#: scanner/models.py:52
-msgid "Qualité JPEG (1-100) pour les images exportées"
-msgstr ""
-
-#: scanner/models.py:53
-msgid "Qualité JPEG pour les vidéos"
-msgstr ""
-
-#: scanner/models.py:53
-msgid "Qualité JPEG (1-100) pour les images extraites des vidéos"
-msgstr ""
-
-#: scanner/models.py:54
-msgid "Fréquence vidéos (fps)"
-msgstr ""
-
-#: scanner/models.py:54
-msgid "Fréquence d'extraction des images des vidéos (images par seconde)"
-msgstr ""
-
-#: scanner/models.py:55
-msgid "Largeur de capture vidéo"
-msgstr ""
-
-#: scanner/models.py:55
-msgid "Largeur de capture vidéo en pixels"
-msgstr ""
-
-#: scanner/models.py:56
-msgid "Hauteur de capture vidéo"
-msgstr ""
-
-#: scanner/models.py:56
-msgid "Hauteur de capture vidéo en pixels"
-msgstr ""
-
-#: scanner/models.py:58
-msgid "Rayon de découpe pour la calibration"
-msgstr ""
-
-#: scanner/models.py:58
-msgid "Rayon en pixels pour découper les images de calibration en px"
-msgstr ""
-
-#: scanner/models.py:59
-msgid "Multi-puits de calibration par défaut"
-msgstr ""
-
-#: scanner/models.py:59
-msgid "Position du multi-puits de calibration par défaut"
-msgstr ""
-
-#: scanner/models.py:60
-msgid "Vitesse de calibration"
-msgstr ""
-
-#: scanner/models.py:60
-msgid "Vitesse de déplacement pour la calibration en mm/mn"
-msgstr ""
-
-#: scanner/models.py:61
-msgid "Pas de calibration"
-msgstr ""
-
-#: scanner/models.py:61
-msgid "Pas de déplacement pour la calibration en mm"
-msgstr ""
-
-#: scanner/models.py:62
-msgid "Duruée calibration"
-msgstr ""
-
-#: scanner/models.py:62
-msgid "Durée de pose entre chaque puits en s"
-msgstr ""
-
-#: scanner/models.py:63
-msgid "Actif"
-msgstr ""
-
-#: scanner/models.py:67
-msgid "Configuration"
-msgstr ""
-
-#: scanner/models.py:75
-msgid "Nom"
-msgstr ""
-
-#: scanner/models.py:75
-msgid "Nom du puit: Ai..Di"
-msgstr ""
-
-#: scanner/models.py:79 scanner/models.py:155
+#: planarian/models.py:24 scanner/models.py:102 scanner/models.py:179
+#: scanner/models.py:412
 msgid "Puit"
 msgstr ""
 
-#: scanner/models.py:80
-msgid "Puits"
+#: planarian/models.py:24
+msgid "Nom du puit"
 msgstr ""
 
-#: scanner/models.py:87
-msgid "Label"
+#: planarian/models.py:26 planarian/templates/planarian/import_params.html:100
+#: planarian/templates/planarian/import_params.html:142
+msgid "Description"
 msgstr ""
 
-#: scanner/models.py:87
-msgid "Label du multi-puit"
+#: planarian/models.py:29
+msgid "Créé le"
 msgstr ""
 
-#: scanner/models.py:89
-msgid "Position"
-msgstr ""
-
-#: scanner/models.py:89
-msgid "Position du multi-puits sur la table"
-msgstr ""
-
-#: scanner/models.py:90
-msgid "Par défaut"
-msgstr ""
-
-#: scanner/models.py:90
-msgid "Multi-puit par défaut"
-msgstr ""
-
-#: scanner/models.py:92
-msgid "Colonnes"
-msgstr ""
-
-#: scanner/models.py:92
-msgid "Nombre de colonnes"
-msgstr ""
-
-#: scanner/models.py:93
-msgid "Lignes"
-msgstr ""
-
-#: scanner/models.py:93
-msgid "Nombre de lignes"
-msgstr ""
-
-#: scanner/models.py:94
-msgid "Diamètre"
-msgstr ""
-
-#: scanner/models.py:94
-msgid "Diamètre des tubes en mm"
-msgstr ""
-
-#: scanner/models.py:96
-msgid "Définition"
-msgstr ""
-
-#: scanner/models.py:96
-msgid "Définition des lignes"
-msgstr ""
-
-#: scanner/models.py:97
-msgid "Ordre ligne"
-msgstr ""
-
-#: scanner/models.py:97
-msgid "Ordre ligne de puit. Lecture en serpentin dans le sens des +- X"
-msgstr ""
-
-#: scanner/models.py:99 scanner/models.py:158
-msgid "Ordre"
-msgstr ""
-
-#: scanner/models.py:99
-msgid "Ordre de lecture du multi-puit"
-msgstr ""
-
-#: scanner/models.py:100 scanner/templates/scanner/calibration.html:54
-msgid "Durée"
-msgstr ""
-
-#: scanner/models.py:100
-msgid "Durée du film en secondes"
-msgstr ""
-
-#: scanner/models.py:101
-msgid "Origine X"
-msgstr ""
-
-#: scanner/models.py:101
-msgid "Base origine X en mm"
-msgstr ""
-
-#: scanner/models.py:102
-msgid "Origine Y"
-msgstr ""
-
-#: scanner/models.py:102
-msgid "Base origine Y en mm"
-msgstr ""
-
-#: scanner/models.py:104
-msgid "Pas X"
-msgstr ""
-
-#: scanner/models.py:104
-msgid "Pas ou interval sur X en mm"
-msgstr ""
-
-#: scanner/models.py:105
-msgid "Pas Y"
-msgstr ""
-
-#: scanner/models.py:105
-msgid "Pas ou interval sur Y en mm"
-msgstr ""
-
-#: scanner/models.py:106 scanner/templates/scanner/calibration.html:23
-msgid "Vitesse"
-msgstr ""
-
-#: scanner/models.py:106
-msgid "Vitesse déplacement en mm/mn "
-msgstr ""
-
-#: scanner/models.py:108
-msgid "Positions"
-msgstr ""
-
-#: scanner/models.py:108
-msgid "Positions des puits générées ?"
-msgstr ""
-
-#: scanner/models.py:109 scanner/models.py:246 scanner/models.py:276
+#: planarian/models.py:30 scanner/models.py:133 scanner/models.py:280
+#: scanner/models.py:315 scanner/models.py:413
 msgid "Active"
 msgstr ""
 
-#: scanner/models.py:145 scanner/models.py:146 scanner/models.py:156
-#: scanner/models.py:206
-msgid "Multi-puits"
+#: planarian/models.py:37 scanner/models.py:185
+msgid "Facteur de calibration optique"
 msgstr ""
 
-#: scanner/models.py:158
+#: planarian/models.py:41
+msgid "FPS de capture"
+msgstr ""
+
+#: planarian/models.py:42
+msgid "Image de capture en img/s"
+msgstr ""
+
+#: planarian/models.py:46
+msgid "Rayon du puits"
+msgstr ""
+
+#: planarian/models.py:47
+msgid "En mm"
+msgstr ""
+
+#: planarian/models.py:53
+msgid "Seuil Immobile (mm/s)"
+msgstr ""
+
+#: planarian/models.py:57
+msgid "Seuil Mobile (mm/s)"
+msgstr ""
+
+#: planarian/models.py:64 scanner/models.py:39
+msgid "Vertical"
+msgstr ""
+
+#: planarian/models.py:64 scanner/models.py:40
+msgid "Horizontal"
+msgstr ""
+
+#: planarian/models.py:65 scanner/models.py:74
+msgid "Axe du tube"
+msgstr ""
+
+#: planarian/models.py:69
+msgid "Surface min détection (px²)"
+msgstr ""
+
+#: planarian/models.py:74
+msgid "Surface max contour (fraction de la frame)"
+msgstr ""
+
+#: planarian/models.py:75
+msgid "Ratio de la surface du puits, ex: 0.10 pour 10%"
+msgstr ""
+
+#: planarian/models.py:80
+msgid "Nombre de planaires"
+msgstr ""
+
+#: planarian/models.py:84 scanner/models.py:78
+msgid "Taille du kernel"
+msgstr ""
+
+#: planarian/models.py:85 scanner/models.py:78
+msgid ""
+"taille du kernel elliptique de fusion des fragments (px). Augmenter si "
+"fragments résiduels"
+msgstr ""
+
+#: planarian/models.py:90 scanner/models.py:79
+msgid "Distance <contour>"
+msgstr ""
+
+#: planarian/models.py:91 scanner/models.py:79
+msgid ""
+"Distance min entre deux contours pour les considérer comme individus "
+"distincts. Défaut : 40px. Augmenter si IDs multiples persistent"
+msgstr ""
+
+#: planarian/models.py:98
+msgid "Distance paroi thigmotactisme (mm)"
+msgstr ""
+
+#: planarian/models.py:103
+msgid "Désactivé"
+msgstr ""
+
+#: planarian/models.py:104
+msgid "Source fixe"
+msgstr ""
+
+#: planarian/models.py:105
+msgid "Source sinusoïdale"
+msgstr ""
+
+#: planarian/models.py:106
+msgid "Gradient radial"
+msgstr ""
+
+#: planarian/models.py:112
+msgid "Mode phototactisme"
+msgstr ""
+
+#: planarian/models.py:114
+msgid "Intensité phototactisme"
+msgstr ""
+
+#: planarian/models.py:115
+msgid "Source lumière X (0-1)"
+msgstr ""
+
+#: planarian/models.py:116
+msgid "Source lumière Y (0-1)"
+msgstr ""
+
+#: planarian/models.py:119
+msgid "Intensité chimiotactisme"
+msgstr ""
+
+#: planarian/models.py:120
+msgid "Nourriture X (0-1)"
+msgstr ""
+
+#: planarian/models.py:121
+msgid "Nourriture Y (0-1)"
+msgstr ""
+
+#: planarian/models.py:122
+msgid "Rayon nourriture (mm)"
+msgstr ""
+
+#: planarian/models.py:125
+msgid "Rayon évitement (mm)"
+msgstr ""
+
+#: planarian/models.py:126
+msgid "Rayon agrégation (mm)"
+msgstr ""
+
+#: planarian/models.py:130
+msgid "Configuration d'une expérience"
+msgstr ""
+
+#: planarian/models.py:131
+msgid "Configurations des expériences"
+msgstr ""
+
+#: planarian/templates/planarian/base.html:10
+#: scanner/templates/scanner/images.html:9
+#: scanner/templates/scanner/replay.html:10
+msgid "Retour accueil"
+msgstr ""
+
+#: planarian/templates/planarian/base.html:13
+#: scanner/templates/scanner/images.html:12
+msgid "Ensemble d'expériences"
+msgstr ""
+
+#: planarian/templates/planarian/base.html:30
+msgid "Exporter les metrics de l'expérience"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:11
+msgid ""
+"Sélectionnez l'expérience, le puits et le type d'enregistrement à exporter."
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:12
+msgid ""
+"Le fichier CSV sera généré depuis ReductStore et téléchargé directement."
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:15
+msgid ""
+"Colonnes exportées compatibles EthoVision XT : distance, vitesse, états de "
+"mobilité, thigmotactisme."
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:26
+msgid "Paramètres d'export"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:48
+msgid "Index planaire"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:50
+msgid "Index du planaire dans le puits (commence à 0)"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:55
+msgid "Type d'enregistrement"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:57
+msgid ""
+"Frame par frame : une ligne par image. Résumé : métriques agrégées de la "
+"session."
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:60
+msgid "Frame par frame"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:61
+msgid "Résumé"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:68
+msgid "Plage temporelle"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:70
+msgid "(optionnel — laisser vide pour exporter toute la session)"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:75
+msgid "Début (UTC)"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:79
+msgid "Fin (UTC)"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:91
+msgid "Générer et télécharger le CSV"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:95
+#: planarian/templates/planarian/import_params.html:77
+msgid "Annuler"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:105
+msgid "Colonnes du fichier CSV exporté"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:112
+msgid "Identification / position"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:123
+msgid "Métriques EthoVision XT"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:125
+msgid "vitesse instantanée"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:126
+msgid "distance cumulée"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:128
+msgid "Immobile / Mobile / Highly mobile"
+msgstr ""
+
+#: planarian/templates/planarian/export_csv.html:159
+#: planarian/templates/planarian/import_params.html:268
+msgid "Choisir une session"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:17
+msgid "Fichier CSV à importer"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:21
+msgid "Colonnes obligatoires : well, px_per_mm, fps."
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:22
+msgid "Toutes les autres colonnes sont optionnelles."
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:36
+msgid "Glissez-déposez votre fichier CSV ici"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:38
+msgid "ou cliquez pour sélectionner"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:58
+msgid "Écraser les configurations existantes"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:60
+msgid ""
+"Si décoché, les configurations déjà existantes (même experiment + well) "
+"seront ignorées."
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:73
+msgid "Importer"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:87
+msgid "Format du fichier CSV"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:92
+msgid "Colonnes obligatoires"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:97
+#: planarian/templates/planarian/import_params.html:140
+msgid "Colonne"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:98
+msgid "Type"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:99
+msgid "Exemple"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:106
+#: planarian/templates/planarian/import_params.html:112
+msgid "texte"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:108
+msgid "Identifiant unique de l'expérience"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:114
+msgid "Identifiant du puits"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:118
+#: planarian/templates/planarian/import_params.html:124
+msgid "flottant"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:120
+msgid "Calibration optique (pixels/mm)"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:126
+msgid "Fréquence de capture (images/s)"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:133
+msgid "Colonnes optionnelles"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:134
+msgid "(valeurs par défaut utilisées si absentes)"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:141
+msgid "Défaut"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:146
+msgid "Rayon du puits (mm)"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:147
+msgid "Seuil Immobile EthoVision (mm/s)"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:148
+msgid "Seuil Mobile EthoVision (mm/s)"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:149
+msgid "Axe du tube : vertical | horizontal"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:150
+msgid "Surface min de détection (px²)"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:151
+msgid "Nombre de planaires par puits"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:152
+msgid "Phototactisme : none | fixed | sine | radial"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:153
+msgid "Intensité phototactisme (0-1)"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:154
+msgid "Intensité chimiotactisme (0-1)"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:155
+msgid "Rayon zone nourriture (mm)"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:156
+msgid "Rayon évitement inter-individus (mm)"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:157
+msgid "Rayon agrégation inter-individus (mm)"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:163
+msgid "Exemple minimal"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:238
+msgid "Le fichier doit être au format .csv"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:245
+msgid "Fichier prêt à importer"
+msgstr ""
+
+#: planarian/templates/planarian/import_params.html:268
+msgid "Puis une expérience."
+msgstr ""
+
+#: planarian/views.py:140
+#, python-format
+msgid "Erreur lors de l'export CSV: %(error)s"
+msgstr ""
+
+#: planarian/views.py:157
+msgid "Export vers un fichier CSV depuis ReductStore"
+msgstr ""
+
+#: planarian/views.py:172
+msgid "Aucune donnée trouvée."
+msgstr ""
+
+#: planarian/views.py:209
+#, python-format
+msgid "Import terminé : %(c)d créés, %(u)d mis à jour, %(e)d erreurs."
+msgstr ""
+
+#: planarian/views.py:246
+#, python-format
+msgid "Colonnes manquantes : %(cols)s"
+msgstr ""
+
+#: planarian/views.py:253
+msgid "Importer des configurations depuis un fichier CSV"
+msgstr ""
+
+#: planarian/views.py:295
+msgid "Métriques de tracking d'un planaire"
+msgstr ""
+
+#: scanner/admin.py:18
+msgid "Dashboard"
+msgstr ""
+
+#: scanner/admin.py:21
+msgid "opencv"
+msgstr ""
+
+#: scanner/admin.py:24
+msgid "Grbl"
+msgstr ""
+
+#: scanner/admin.py:28
+msgid "Camera"
+msgstr ""
+
+#: scanner/admin.py:32
+msgid "Calibration / Balayage"
+msgstr ""
+
+#: scanner/admin.py:36
+msgid "Tracking: valeurs par défaut"
+msgstr ""
+
+#: scanner/models.py:16
+msgid "HG-Haut gauche"
+msgstr ""
+
+#: scanner/models.py:17
+msgid "HD-Haut droit"
+msgstr ""
+
+#: scanner/models.py:18
+msgid "BG-Bas gauche"
+msgstr ""
+
+#: scanner/models.py:19
+msgid "BD-Bas droit"
+msgstr ""
+
+#: scanner/models.py:23 scanner/models.py:28
+msgid "MP4"
+msgstr ""
+
+#: scanner/models.py:24
+msgid "XVID"
+msgstr ""
+
+#: scanner/models.py:29
+msgid "AVI"
+msgstr ""
+
+#: scanner/models.py:33
+msgid "Arducam"
+msgstr ""
+
+#: scanner/models.py:34
+msgid "Webcam"
+msgstr ""
+
+#: scanner/models.py:35
+msgid "Fichier vidéo (mp4, avi)"
+msgstr ""
+
+#: scanner/models.py:44
+msgid "Nom de la Configuration"
+msgstr ""
+
+#: scanner/models.py:44
+msgid "Nom de la configuration"
+msgstr ""
+
+#: scanner/models.py:44
+msgid "Configuration par défaut"
+msgstr ""
+
+#: scanner/models.py:47
+msgid "Barre latérale"
+msgstr ""
+
+#: scanner/models.py:47
+msgid "Largeur barre latérale (css)"
+msgstr ""
+
+#: scanner/models.py:48
+msgid "Colonnes de la grille par défaut"
+msgstr ""
+
+#: scanner/models.py:48
+msgid "Nombre de colonnes de la grille par défaut"
+msgstr ""
+
+#: scanner/models.py:50
+msgid "Fourcc"
+msgstr ""
+
+#: scanner/models.py:50
+msgid "Opencv fourcc format"
+msgstr ""
+
+#: scanner/models.py:51
+msgid "Video type"
+msgstr ""
+
+#: scanner/models.py:51
+msgid "Opencv video type"
+msgstr ""
+
+#: scanner/models.py:53
+msgid "Grbl Xmax"
+msgstr ""
+
+#: scanner/models.py:53
+msgid "CNC Grbl Xmax en mm"
+msgstr ""
+
+#: scanner/models.py:54
+msgid "Grbl Ymax"
+msgstr ""
+
+#: scanner/models.py:54
+msgid "CNC Grbl Ymax en mm"
+msgstr ""
+
+#: scanner/models.py:56
+msgid "Type de capture"
+msgstr ""
+
+#: scanner/models.py:57
+msgid "Index de la webcam"
+msgstr ""
+
+#: scanner/models.py:57
+msgid "Index de la webcam (0, 1, ...) si présente"
+msgstr ""
+
+#: scanner/models.py:58
+msgid "Qualité JPEG"
+msgstr ""
+
+#: scanner/models.py:58
+msgid "Qualité JPEG (1-100) pour les images exportées"
+msgstr ""
+
+#: scanner/models.py:59
+msgid "Qualité JPEG pour les vidéos"
+msgstr ""
+
+#: scanner/models.py:59
+msgid "Qualité JPEG (1-100) pour les images extraites des vidéos"
+msgstr ""
+
+#: scanner/models.py:60
+msgid "Fréquence d'extraction des images des vidéos (images par seconde)"
+msgstr ""
+
+#: scanner/models.py:61
+msgid "Largeur de capture vidéo en pixels"
+msgstr ""
+
+#: scanner/models.py:62
+msgid "Hauteur de capture vidéo en pixels"
+msgstr ""
+
+#: scanner/models.py:64
+msgid "Simuler balayage"
+msgstr ""
+
+#: scanner/models.py:64
+msgid "Autorise la simulation du balayage"
+msgstr ""
+
+#: scanner/models.py:65
+msgid "Rayon de découpe pour la calibration"
+msgstr ""
+
+#: scanner/models.py:65
+msgid "Rayon en pixels pour découper les images de calibration en px"
+msgstr ""
+
+#: scanner/models.py:66
+msgid "Multi-puits de calibration par défaut"
+msgstr ""
+
+#: scanner/models.py:66
+msgid "Position du multi-puits de calibration par défaut"
+msgstr ""
+
+#: scanner/models.py:67
+msgid "Vitesse de calibration"
+msgstr ""
+
+#: scanner/models.py:67
+msgid "Vitesse de déplacement pour la calibration en mm/mn"
+msgstr ""
+
+#: scanner/models.py:68
+msgid "Pas de calibration"
+msgstr ""
+
+#: scanner/models.py:68
+msgid "Pas de déplacement pour la calibration en mm"
+msgstr ""
+
+#: scanner/models.py:69
+msgid "Duruée calibration"
+msgstr ""
+
+#: scanner/models.py:69
+msgid "Durée de pose entre chaque puits en s"
+msgstr ""
+
+#: scanner/models.py:71
+msgid "Suivi"
+msgstr ""
+
+#: scanner/models.py:71
+msgid "Suivi et analyse des planaires"
+msgstr ""
+
+#: scanner/models.py:72
+msgid "Réglage dans calibration"
+msgstr ""
+
+#: scanner/models.py:72
+msgid "Autorise le réglage des valeurs par défaut dans la calibration"
+msgstr ""
+
+#: scanner/models.py:74
+msgid "Axe du puit"
+msgstr ""
+
+#: scanner/models.py:75
+msgid "Surface minimale"
+msgstr ""
+
+#: scanner/models.py:75
+msgid "surface minimale d'un contour pour être considéré valide (px²)"
+msgstr ""
+
+#: scanner/models.py:76
+msgid "surface maximale "
+msgstr ""
+
+#: scanner/models.py:76
+msgid "surface maximale d'un contour en fraction de la frame (défaut 10%)"
+msgstr ""
+
+#: scanner/models.py:77
+msgid "Max planaire"
+msgstr ""
+
+#: scanner/models.py:77
+msgid "nombre maximum de planaires à suivre simultanément (1-10)"
+msgstr ""
+
+#: scanner/models.py:81
+msgid "Actif"
+msgstr ""
+
+#: scanner/models.py:98
+msgid "Nom"
+msgstr ""
+
+#: scanner/models.py:98
+msgid "Nom du puit: Ai..Di"
+msgstr ""
+
+#: scanner/models.py:112
+msgid "Label"
+msgstr ""
+
+#: scanner/models.py:112
+msgid "Label du multi-puit"
+msgstr ""
+
+#: scanner/models.py:114
+msgid "Position"
+msgstr ""
+
+#: scanner/models.py:114
+msgid "Position du multi-puits sur la table"
+msgstr ""
+
+#: scanner/models.py:115
+msgid "Par défaut"
+msgstr ""
+
+#: scanner/models.py:115
+msgid "Multi-puit par défaut"
+msgstr ""
+
+#: scanner/models.py:117
+msgid "Colonnes"
+msgstr ""
+
+#: scanner/models.py:118
+msgid "Lignes"
+msgstr ""
+
+#: scanner/models.py:119
+msgid "Diamètre"
+msgstr ""
+
+#: scanner/models.py:119
+msgid "Diamètre des tubes en mm"
+msgstr ""
+
+#: scanner/models.py:120
+msgid "Définition"
+msgstr ""
+
+#: scanner/models.py:120
+msgid "Définition des lignes"
+msgstr ""
+
+#: scanner/models.py:121
+msgid "Ordre ligne"
+msgstr ""
+
+#: scanner/models.py:121
+msgid "Ordre ligne de puit. Lecture en serpentin dans le sens des +- X"
+msgstr ""
+
+#: scanner/models.py:123 scanner/models.py:182
+msgid "Ordre"
+msgstr ""
+
+#: scanner/models.py:123
+msgid "Ordre de lecture du multi-puit"
+msgstr ""
+
+#: scanner/models.py:124 scanner/models.py:244
+#: scanner/templates/scanner/calibration.html:187
+msgid "Durée"
+msgstr ""
+
+#: scanner/models.py:124
+msgid "Durée de capture en secondes pour la calibration"
+msgstr ""
+
+#: scanner/models.py:125
+msgid "Base origine X en mm"
+msgstr ""
+
+#: scanner/models.py:126
+msgid "Base origine Y en mm"
+msgstr ""
+
+#: scanner/models.py:128
+msgid "Pas X"
+msgstr ""
+
+#: scanner/models.py:128
+msgid "Pas ou interval sur X en mm"
+msgstr ""
+
+#: scanner/models.py:129
+msgid "Pas Y"
+msgstr ""
+
+#: scanner/models.py:129
+msgid "Pas ou interval sur Y en mm"
+msgstr ""
+
+#: scanner/models.py:130 scanner/templates/scanner/calibration.html:23
+msgid "Vitesse"
+msgstr ""
+
+#: scanner/models.py:130
+msgid "Vitesse déplacement en mm/mn "
+msgstr ""
+
+#: scanner/models.py:132
+msgid ""
+"Positions des puits générées ?. Non => efface WellPosition et recalcule les "
+"positions"
+msgstr ""
+
+#: scanner/models.py:182
 msgid "Ordre de lecture du puit"
 msgstr ""
 
-#: scanner/models.py:159
+#: scanner/models.py:183
 msgid "X"
 msgstr ""
 
-#: scanner/models.py:159
+#: scanner/models.py:183
 msgid "Axe X en mm"
 msgstr ""
 
-#: scanner/models.py:160
+#: scanner/models.py:184
 msgid "Y"
 msgstr ""
 
-#: scanner/models.py:160
+#: scanner/models.py:184
 msgid "Axe Y en mm"
 msgstr ""
 
-#: scanner/models.py:166
-msgid "Position d'un puit"
+#: scanner/models.py:199
+msgid "Position du puit"
 msgstr ""
 
-#: scanner/models.py:167
+#: scanner/models.py:200
 msgid "Position des puits"
 msgstr ""
 
-#: scanner/models.py:203
-msgid "Titre de l'observation"
-msgstr ""
-
-#: scanner/models.py:204
-msgid "Commentaires"
-msgstr ""
-
-#: scanner/models.py:204
-msgid "Descriptions de l'observations"
-msgstr ""
-
-#: scanner/models.py:207 scanner/models.py:250
-msgid "Date de création"
-msgstr ""
-
-#: scanner/models.py:208
-msgid "Date de début"
-msgstr ""
-
-#: scanner/models.py:209 scanner/models.py:251
-msgid "Date de fin"
-msgstr ""
-
-#: scanner/models.py:213 scanner/models.py:341
-msgid "Observation"
-msgstr ""
-
-#: scanner/models.py:214
-msgid "Observations"
-msgstr ""
-
-#: scanner/models.py:229
-msgid "Observation multi-puits détail"
-msgstr ""
-
-#: scanner/models.py:230
-msgid "Observations multi-puits détails"
+#: scanner/models.py:238
+msgid "Titre de l'expérience"
 msgstr ""
 
 #: scanner/models.py:239
-msgid "En attente"
-msgstr ""
-
-#: scanner/models.py:240
-msgid "En cours"
-msgstr ""
-
-#: scanner/models.py:241
-msgid "Terminé"
-msgstr ""
-
-#: scanner/models.py:242
-msgid "Erreur"
+msgid "Descriptions de l'expérience"
 msgstr ""
 
 #: scanner/models.py:244
-msgid "Nom de la session"
+msgid "Durée de la prise de vue en secondes"
 msgstr ""
 
-#: scanner/models.py:244
-msgid "Session d'observations. 4 Multi-puits maximum"
-msgstr ""
-
-#: scanner/models.py:247
-msgid "Date d'exportation"
+#: scanner/models.py:246 scanner/models.py:284
+msgid "Date de création"
 msgstr ""
 
 #: scanner/models.py:247
-msgid "Date d'exportation prévue"
+msgid "Date de début"
 msgstr ""
 
-#: scanner/models.py:248
-msgid "Date du balayage"
-msgstr ""
-
-#: scanner/models.py:248
-msgid "Date du balayage prévue"
-msgstr ""
-
-#: scanner/models.py:253
-msgid "Status exportation"
-msgstr ""
-
-#: scanner/models.py:256
-msgid "Export médias"
-msgstr ""
-
-#: scanner/models.py:257
-msgid "Programmation de l'exportation des vidéos et images"
-msgstr ""
-
-#: scanner/models.py:259
-msgid "Exportation terminée à"
-msgstr ""
-
-#: scanner/models.py:261
-msgid "Status scanning"
-msgstr ""
-
-#: scanner/models.py:264 scanner/templates/scanner/main.html:35
-msgid "Lancer le balayage"
-msgstr ""
-
-#: scanner/models.py:265
-msgid "Programmation du lancement du balayage"
-msgstr ""
-
-#: scanner/models.py:267
-msgid "Balayage terminé à"
-msgstr ""
-
-#: scanner/models.py:272
-msgid "Session d'observation"
+#: scanner/models.py:248 scanner/models.py:285
+msgid "Date de fin"
 msgstr ""
 
 #: scanner/models.py:273
-msgid "Sessions d'observation"
+msgid "En attente"
+msgstr ""
+
+#: scanner/models.py:274
+msgid "En cours"
+msgstr ""
+
+#: scanner/models.py:275
+msgid "Terminé"
 msgstr ""
 
 #: scanner/models.py:276
+msgid "Erreur"
+msgstr ""
+
+#: scanner/models.py:278
+msgid "Nom de la session"
+msgstr ""
+
+#: scanner/models.py:278
+msgid "Session d'expérience. 4 Multi-puits maximum"
+msgstr ""
+
+#: scanner/models.py:281
+msgid "Date d'exportation prévue"
+msgstr ""
+
+#: scanner/models.py:282
+msgid "Date du balayage prévue"
+msgstr ""
+
+#: scanner/models.py:287
+msgid "Status exportation"
+msgstr ""
+
+#: scanner/models.py:290
+msgid "Export médias"
+msgstr ""
+
+#: scanner/models.py:291
+msgid "Programmation de l'exportation des vidéos et images"
+msgstr ""
+
+#: scanner/models.py:293
+msgid "Exportation terminée à"
+msgstr ""
+
+#: scanner/models.py:295
+msgid "Status scanning"
+msgstr ""
+
+#: scanner/models.py:299
+msgid "Programmation du lancement du balayage"
+msgstr ""
+
+#: scanner/models.py:301
+msgid "Balayage terminé à"
+msgstr ""
+
+#: scanner/models.py:315
 msgid "Terminée"
 msgstr ""
 
-#: scanner/models.py:340
-msgid "Session"
+#: scanner/models.py:402
+msgid "Expérience d'une session"
 msgstr ""
 
-#: scanner/models.py:362
-msgid "Session observations"
+#: scanner/models.py:426
+msgid "Expérience puit"
 msgstr ""
 
-#: scanner/models.py:363
-msgid "Sessions observations"
+#: scanner/models.py:427
+msgid "Expériences puits"
 msgstr ""
 
-#: scanner/process.py:331
+#: scanner/process.py:384
 msgid "La session est nulle!..."
+msgstr ""
+
+#: scanner/process.py:391
+msgid "Balayage démarré..."
+msgstr ""
+
+#: scanner/process.py:394
+msgid "Erreur lors du démarrage du balayage..."
 msgstr ""
 
 #: scanner/templates/scanner/base.html:5
@@ -577,79 +2442,113 @@ msgstr ""
 msgid "Ecran plein"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:25
-msgid "Déconnexion"
+#: scanner/templates/scanner/base.html:19
+msgid "Accès django"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:32
-msgid "Mémoire partagée"
+#: scanner/templates/scanner/base.html:20
+msgid "Base de données"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:33
-msgid "Disque RAM"
+#: scanner/templates/scanner/base.html:22
+#: scanner/templates/scanner/base.html:26
+#: scanner/templates/scanner/base.html:29
+msgid "Accès système"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:34
-msgid "Mémoire RAM"
+#: scanner/templates/scanner/base.html:23
+msgid "Supervision des services"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:35
-msgid "Charge CPU"
-msgstr ""
-
-#: scanner/templates/scanner/base.html:36
-msgid "Disque /"
-msgstr ""
-
-#: scanner/templates/scanner/base.html:42
-msgid "Grille"
-msgstr ""
-
-#: scanner/templates/scanner/base.html:70
-msgid "Administration"
-msgstr ""
-
-#: scanner/templates/scanner/base.html:75
-msgid "Administration base de données"
-msgstr ""
-
-#: scanner/templates/scanner/base.html:78
+#: scanner/templates/scanner/base.html:27
 msgid "Base de données Reductstore"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:81
+#: scanner/templates/scanner/base.html:30
 msgid "Base de données mariadb"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:84
-msgid "Portainer"
-msgstr ""
-
-#: scanner/templates/scanner/base.html:87
-msgid "Supervisor"
-msgstr ""
-
-#: scanner/templates/scanner/base.html:90
+#: scanner/templates/scanner/base.html:33
 msgid "Logs des planifications"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:93
+#: scanner/templates/scanner/base.html:36
 msgid "Logs des services"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:96 scanner/views.py:92
-msgid "Calibration"
+#: scanner/templates/scanner/base.html:39
+msgid "Guides"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:105 scanner/views.py:82
+#: scanner/templates/scanner/base.html:41
+msgid "Descriptif des données"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:44
+msgid "Calibration des multi-puits"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:56
+msgid "Gestionnaires des médias"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:62
+msgid "Déconnexion"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:80
+msgid "Mémoire partagée"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:81
+msgid "Disque RAM"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:82
+msgid "Swap disk"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:83
+msgid "Mémoire RAM"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:84
+msgid "Charge CPU"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:85
+msgid "Disque /"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:91
+msgid "Grille"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:117
+msgid "Création de sessions d'expériences"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:121
+msgid "Gestions des expériences"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:137 scanner/views.py:121
 msgid "Balayage multi-puits"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:108 scanner/views.py:132
+#: scanner/templates/scanner/base.html:139
+msgid "Résultats "
+msgstr ""
+
+#: scanner/templates/scanner/base.html:142
+msgid "Export CSV des expériences"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:146 scanner/views.py:185
 msgid "Gestionnaire d'images"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:111
+#: scanner/templates/scanner/base.html:149
 msgid "Redifusion vidéos"
 msgstr ""
 
@@ -657,117 +2556,206 @@ msgstr ""
 msgid "Position multi-puit"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:36
+#: scanner/templates/scanner/calibration.html:24
+msgid "Vitesse en mm / mn"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:35
 msgid "Pas"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:55
-msgid "Durée entre vidéos"
+#: scanner/templates/scanner/calibration.html:36
+msgid "Pas en mm"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:83
+#: scanner/templates/scanner/calibration.html:56
 msgid "Définir la base (x, y) du multi-puit"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:84
+#: scanner/templates/scanner/calibration.html:57
 msgid "Définir base"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:99
+#: scanner/templates/scanner/calibration.html:72
 msgid "Sauvegarder la position du puit courant"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:120
+#: scanner/templates/scanner/calibration.html:73
+msgid "Sauver"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:92
 msgid "Précéd."
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:124
+#: scanner/templates/scanner/calibration.html:96
 msgid "Centrer manuellement"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:125
+#: scanner/templates/scanner/calibration.html:97
 msgid "Centrer"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:130
+#: scanner/templates/scanner/calibration.html:102
 msgid "Suivant"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:135
+#: scanner/templates/scanner/calibration.html:107
 msgid "Centrage auto et sauvegarde des positions"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:136
+#: scanner/templates/scanner/calibration.html:108
 msgid "Calibrage auto"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:146
+#: scanner/templates/scanner/calibration.html:131
 msgid "Aller à la base"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:151
-msgid "Debug"
+#: scanner/templates/scanner/calibration.html:137
+msgid "Ce mode permet les réglages graphiques"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:156
-#: scanner/templates/scanner/main.html:31
+#: scanner/templates/scanner/calibration.html:143
+#: scanner/templates/scanner/scanning.html:31
 msgid "Axes"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:161
-#: scanner/templates/scanner/main.html:32
-msgid "Recadrer"
+#: scanner/templates/scanner/calibration.html:147
+msgid "Ce mode actionne le pointage graphique"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:165
+#: scanner/templates/scanner/calibration.html:148
+msgid "Recadrer pour calibrer / suivre"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:156
+msgid "surface minimale de contour pour être considéré valide (px carré)"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:156
+msgid "Min contour"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:160
+#, python-format
+msgid "surface maximale de contour en fraction de la frame (défaut 10%%)"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:160
+msgid "Max contour"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:164
+msgid "Taille du kernel elliptique de fusion des fragments (px)"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:164
+msgid "Taille kernel"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:168
+msgid ""
+"Distance min entre deux contours pour les considérer comme individus "
+"distincts. Défaut: 40px"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:168
+msgid "Distance min"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:172
+msgid "Nombre maximum de planaires à suivre simultanément (1-10)"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:172
+msgid "Planaires"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:175
+msgid "Dessiner le contour"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:176
+msgid "Contour"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:182
 msgid "Rayon"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:166
+#: scanner/templates/scanner/calibration.html:183
 msgid "Rayon du recadrement"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:167
+#: scanner/templates/scanner/calibration.html:184
 msgid "Rayon de cadrage"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:171
+#: scanner/templates/scanner/calibration.html:188
+msgid "Durée entre vidéos"
+msgstr ""
+
+#: scanner/templates/scanner/calibration.html:202
 msgid "Tester le cirduit"
 msgstr ""
 
-#: scanner/templates/scanner/calibration.html:174
-#: scanner/templates/scanner/main.html:37
+#: scanner/templates/scanner/calibration.html:207
+#: scanner/templates/scanner/scanning.html:58
 msgid "ARRET"
 msgstr ""
 
-#: scanner/templates/scanner/images.html:9
-#: scanner/templates/scanner/replay.html:10
-msgid "Retour accueil"
-msgstr ""
-
-#: scanner/templates/scanner/images.html:13
-#: scanner/templates/scanner/replay.html:14
-msgid "Session d'observations"
-msgstr ""
-
-#: scanner/templates/scanner/images.html:26
+#: scanner/templates/scanner/images.html:30
 msgid "Exporter l'ensemble des images"
 msgstr ""
 
-#: scanner/templates/scanner/images.html:43
+#: scanner/templates/scanner/images.html:48
 msgid "Télécharger"
 msgstr ""
 
-#: scanner/templates/scanner/main.html:15
-msgid "Choix de la session"
-msgstr ""
-
-#: scanner/templates/scanner/replay.html:27
+#: scanner/templates/scanner/replay.html:32
 msgid "Exporter l'ensemble des vidéos"
 msgstr ""
 
-#: scanner/views.py:174
+#: scanner/templates/scanner/scanning.html:14
+msgid "Choix de la session"
+msgstr ""
+
+#: scanner/templates/scanner/scanning.html:36
+msgid "Recadrer"
+msgstr ""
+
+#: scanner/templates/scanner/scanning.html:43
+msgid "Lancer"
+msgstr ""
+
+#: scanner/templates/scanner/scanning.html:43
+#: scanner/templates/scanner/scanning.html:49
+msgid "le balayage"
+msgstr ""
+
+#: scanner/templates/scanner/scanning.html:49
+msgid "Simuler"
+msgstr ""
+
+#: scanner/views.py:109
+msgid "Documentation"
+msgstr ""
+
+#: scanner/views.py:230
 msgid "Gestionnaire de vidéos"
+msgstr ""
+
+#: scanner/views.py:252
+msgid "Images téléchargées"
+msgstr ""
+
+#: scanner/views.py:255
+msgid "Vidéos téléchargées"
+msgstr ""
+
+#: scanner/views.py:257
+msgid "Erreur d'exportation"
 msgstr ""
 
 #: templates/admin/base_site.html:4

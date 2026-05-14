@@ -149,7 +149,7 @@
 	            </button>               
             </div>
         </div>    
-        {% if conf.tracking %}
+        {% if conf.tracking  and conf.tracking_setting %}
         <div class="w3-row w3-row-padding w3-light-grey w3-padding-small w3-margin-1 w3-round w3-round-large w3-margin-top w3-left-align w3-paddin-top"> 
              <div class="w3-half">
                 <input id="_min_area_px" type="number" min="5" max="100" step="1" class="w3-round" value="{{ conf.min_area_px }}"

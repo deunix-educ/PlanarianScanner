@@ -34,7 +34,7 @@ class ConfigurationAdmin(admin.ModelAdmin):
             "classes": ("collapse",),
         }),
         (_("Tracking: valeurs par défaut"), {
-            "fields": ("tracking", "min_area_px", "max_area_ratio", "max_planarians", "merge_kernel_size", "min_contour_dist_px"),
+            "fields": ("tracking", "tracking_setting", "min_area_px", "max_area_ratio", "max_planarians", "merge_kernel_size", "min_contour_dist_px"),
             "classes": ("collapse",),
         }),
 

@@ -23,15 +23,15 @@
             {% endfor %}       
         </div>
     </form>
-    {% if current_session and current_experiment %}
-    {% url "planarian:api-export-csv"  as url_export %}
-    <a href="#" class="w3-bar-item w3-btn w3-hover-opacity" onclick="export_csv('{{ url_export }}', {{ current_experiment.id }}, 'experiment_csv')">
-        <i class="fa-solid fa-file-export w3-text-red w3-xlarge"></i> {% trans "Exporter les metrics de l'expérience" %}<br>
-        <span class="w3-margin-left-5">&nbsp;$> {{ export_csv_destination }}
-    </a>
-    
-    {% endif %}   
-    
+    {% block export_csv %}
+	    {% if current_session and current_experiment %}
+	    {% url "planarian:api-export-csv"  as url_export %}
+	    <a href="#" class="w3-bar-item w3-btn w3-hover-opacity" onclick="export_csv('{{ url_export }}', {{ current_experiment.id }}, 'experiment_csv')">
+	        <i class="fa-solid fa-file-export w3-text-red w3-xlarge"></i> {% trans "Exporter les metrics de l'expérience" %}<br>
+	        <span class="w3-margin-left-5">&nbsp;$> {{ export_csv_destination }}
+	    </a>
+	    {% endif %}   
+    {% endblock %}
 {% endblock %}
 
 {% block js_footer %}

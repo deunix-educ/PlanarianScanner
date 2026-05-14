@@ -1,0 +1,54 @@
+/* ============================================================
+   doc_scanning.css
+   Styles spécifiques à la page "Balayage des puits".
+   Dépend de doc_database.css + doc_calibration.css
+                              + doc_experiments.css.
+   ============================================================ */
+
+/* ─── Badge indigo ─── */
+.badge-indigo {
+    background: rgba(129,140,248,.12);
+    color: var(--accent-indigo);
+    border: 1px solid rgba(129,140,248,.3);
+}
+
+/* ─── Badge red ─── */
+.badge-red {
+    background: rgba(248,81,73,.12);
+    color: var(--accent-red);
+    border: 1px solid rgba(248,81,73,.3);
+}
+
+/* ─── Badge superadmin ─── */
+.badge-superadmin {
+    font-size: 10px;
+    background: rgba(188,140,255,.15);
+    color: var(--accent-purple);
+    border: 1px solid rgba(188,140,255,.3);
+    padding: 1px 8px;
+    border-radius: 20px;
+    margin-left: 6px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+}
+
+/* ─── Exemple UUID ─── */
+.uuid-example {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(227,179,65,.06);
+    border: 1px dashed rgba(227,179,65,.25);
+    border-radius: var(--radius-sm);
+    color: var(--accent-yellow);
+    font-size: 12.5px;
+}
+.uuid-example code {
+    color: var(--accent-yellow);
+    background: transparent;
+    border: none;
+    font-size: 12.5px;
+    letter-spacing: .04em;
+}

@@ -214,12 +214,11 @@ LOCALE_PATHS = (
 
 STATIC_URL = '/static/'
 STATIC_ROOT = APP_DATAS / 'staticfiles'
-print("Django application STATIC_ROOT:", STATIC_ROOT)
 
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = APP_DATAS / 'media'
-print("Django application MEDIA_ROOT:", MEDIA_ROOT)
+print("Django application MEDIA_ROOT:", MEDIA_ROOT, "\nDjango application STATIC_ROOT:", STATIC_ROOT)
 
 
 """

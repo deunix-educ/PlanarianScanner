@@ -17,8 +17,6 @@ MULTIWELL_POSITION = [
     ('HD', _("HD-Haut droit")),
     ('BG', _("BG-Bas gauche")),
     ('BD', _("BD-Bas droit")),
-    ('BM', _("BM-Bas milieu")),
-    ('HM', _("HM-Haut milieu")),
 ]
 
 FOURCC_FORMAT = [
@@ -71,6 +69,8 @@ class Configuration(models.Model):
     calibration_default_duration = models.FloatField(_("Duruée calibration"), help_text=_("Durée de pose entre chaque puits en s"), default=3.0)
     # tracking
     tracking = models.BooleanField(_("Suivi"), help_text=_("Suivi et analyse des planaires"), default=False)
+    tracking_setting = models.BooleanField(_("Réglage dans calibration"), help_text=_("Autorise le réglage des valeurs par défaut dans la calibration"), default=False)
+    
     tube_axis = models.CharField(_("Axe du puit"), help_text=_("Axe du tube"), default='vertical', max_length=16, choices=TUBE_AXIS_TYPE, null=True, blank=False)
     min_area_px = models.PositiveIntegerField(_("Surface minimale"), help_text=_("surface minimale d'un contour pour être considéré valide (px²)"), default=20)
     max_area_ratio = models.FloatField(_("surface maximale "), help_text=_("surface maximale d'un contour en fraction de la frame (défaut 10%)"), default=0.10)
@@ -399,8 +399,8 @@ class SessionExperiment(models.Model):
     class Meta:
         ordering = ['session',]
         unique_together = ["session", "experiment"]
-        verbose_name = _("Session expérience")
-        verbose_name_plural = _("Sessions expériences")
+        verbose_name = _("Expérience d'une session")
+        verbose_name_plural = _("Expériences d'une session")
 
     def __str__(self):
         return f'{self.session.id}: {self.experiment.title}'

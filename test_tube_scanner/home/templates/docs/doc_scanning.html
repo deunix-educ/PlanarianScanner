@@ -1,0 +1,266 @@
+{% extends 'scanner/base.html' %}
+{% load i18n %}
+{% block columns %}{% endblock %}
+
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="/static/css/doc_database.css">
+    <link rel="stylesheet" href="/static/css/doc_calibration.css>
+    <link rel="stylesheet" href="/static/css/doc_experiments.css">
+    <link rel="stylesheet" href="/static/css/doc_scanning.css">
+{% endblock %}
+
+{% block content %}
+<div class="doc-wrapper">
+
+    <!-- ─── En-tête ─── -->
+    <header class="doc-header">
+        <div class="doc-header-inner">
+            <div class="doc-header-icon" style="background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));">
+                <i class="fas fa-route"></i>
+            </div>
+            <div>
+                <h1 class="doc-title">{% trans "Balayage des puits" %}</h1>
+                <p class="doc-subtitle">{% trans "Lancement, suivi et procédure en cas d'arrêt" %}</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── Navigation latérale ─── -->
+    <nav class="doc-sidenav" id="sidenav">
+        <p class="nav-section-label">{% trans "Navigation" %}</p>
+        <a href="#section-intro"   class="nav-link active"><i class="fas fa-info-circle"></i>  {% trans "Présentation" %}</a>
+        <a href="#section-cmd"     class="nav-link">       <i class="fas fa-gamepad"></i>       {% trans "Commandes" %}</a>
+        <a href="#section-start"   class="nav-link nav-sub"><i class="fas fa-play"></i>        {% trans "Lancer le balayage" %}</a>
+        <a href="#section-stop"    class="nav-link nav-sub"><i class="fas fa-stop"></i>        {% trans "Arrêt" %}</a>
+        <a href="#section-recover" class="nav-link">       <i class="fas fa-undo-alt"></i>      {% trans "Procédure après arrêt" %}</a>
+        <a href="#section-reduct"  class="nav-link nav-sub"><i class="fas fa-database"></i>   ReductStore</a>
+    </nav>
+
+    <!-- ─── Contenu principal ─── -->
+    <main class="doc-content">
+
+        <!-- ============================================================ -->
+        <!-- SECTION 1 : Présentation                                      -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-intro">
+            <div class="section-header">
+                <span class="section-badge badge-indigo">{% trans "Balayage" %}</span>
+                <h2><i class="fas fa-route"></i> {% trans "Balayage des puits" %}</h2>
+            </div>
+
+            <div class="info-row">
+                <div class="info-card card-accent-indigo">
+                    <div class="card-icon"><i class="fas fa-crop-alt"></i></div>
+                    <div class="card-body">
+                        <h4>{% trans "Recadrage forcé" %}</h4>
+                        <p>{% trans "Le balayage force toujours le recadrage de l'image." %}</p>
+                        <p>{% trans "Le balayage est disponible quand la session est marquée ACTIVE" %}</p>
+                        <div class="alert-box alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            {% trans "Les boutons Axes et Recadrer sont affichés à titre indicatif uniquement." %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 2 : Commandes                                         -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-cmd">
+            <div class="section-header">
+                <span class="section-badge badge-blue">{% trans "Interface" %}</span>
+                <h2><i class="fas fa-gamepad"></i> {% trans "Commandes importantes" %}</h2>
+            </div>
+
+            <!-- Lancer le balayage -->
+            <div class="sub-subsection" id="section-start">
+                <h4 class="table-title">
+                    <i class="fas fa-play"></i> {% trans "Lancer le balayage" %}
+                </h4>
+                <div class="info-row">
+                    <div class="info-card card-accent-green full-width">
+                        <div class="card-icon"><i class="fas fa-play-circle"></i></div>
+                        <div class="card-body">
+                            <ul class="doc-list">
+                                <li>
+                                    <i class="fas fa-shoe-prints text-green"></i>
+                                    {% trans "Suivi pas à pas de tous les puits de la session." %}
+                                </li>
+                                <li>
+                                    <i class="fas fa-terminal text-green"></i>
+                                    {% trans "Les logs s'affichent en bas de l'écran en temps réel." %}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ARRÊT -->
+            <div class="sub-subsection" id="section-stop">
+                <h4 class="table-title">
+                    <i class="fas fa-stop"></i> {% trans "ARRÊT" %}
+                    <span class="badge-important">{% trans "ATTENTION" %}</span>
+                </h4>
+                <div class="info-row">
+                    <div class="info-card card-accent-green">
+                        <div class="card-icon"><i class="fas fa-images"></i></div>
+                        <div class="card-body">
+                            <h4><i class="fas fa-check-circle text-green"></i> {% trans "Images" %}</h4>
+                            <p>{% trans "Les images capturées jusqu'à l'arrêt seront enregistrées." %}</p>
+                        </div>
+                    </div>
+                    <div class="info-card card-accent-red">
+                        <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="card-body">
+                            <h4><i class="fas fa-times-circle text-red"></i> {% trans "Données" %}</h4>
+                            <p>{% trans "Les données de suivi ne seront pas enregistrées." %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 3 : Procédure après arrêt                            -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-recover">
+            <div class="section-header">
+                <span class="section-badge badge-red">{% trans "Récupération" %}</span>
+                <h2><i class="fas fa-undo-alt"></i> {% trans "Procédure en cas d'arrêt" %}</h2>
+            </div>
+
+            <!-- Étapes Django -->
+            <div class="info-row">
+                <div class="info-card card-accent-orange full-width">
+                    <div class="card-icon"><i class="fas fa-redo-alt"></i></div>
+                    <div class="card-body">
+                        <h4>{% trans "Réinitialiser la session" %}</h4>
+                        <ol class="doc-steps">
+                            <li>
+                                <i class="fas fa-trash-alt text-red"></i>
+                                {% trans "Supprimer la session en cours depuis l'administration Django." %}
+                            </li>
+                            <li>
+                                <i class="fas fa-plus-circle text-green"></i>
+                                {% trans "Créer une nouvelle session." %}
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ReductStore — superadmin -->
+            <div class="sub-subsection" id="section-reduct">
+                <h4 class="table-title">
+                    <i class="fas fa-database"></i>
+                    {% trans "Nettoyage ReductStore" %}
+                    <span class="badge-superadmin">superadmin</span>
+                </h4>
+
+                <div class="info-row">
+                    <div class="info-card card-accent-red full-width">
+                        <div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Accès ReductStore" %}</h4>
+                            <a href="http://192.168.1.200:8383/ui/dashboard" target="_blank" class="access-link">
+                                192.168.1.200:8383/ui/dashboard <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <!-- Bucket camera -->
+                    <div class="info-card card-accent-cyan">
+                        <div class="card-icon"><i class="fas fa-images"></i></div>
+                        <div class="card-body">
+                            <h4>
+                                {% trans "Bucket" %} <code>camera</code>
+                            </h4>
+                            <ol class="doc-steps">
+                                <li>
+                                    <i class="fas fa-search"></i>
+                                    {% trans "Localiser les entrées correspondant aux UUIDs des expériences." %}
+                                </li>
+                                <li>
+                                    <i class="fas fa-trash-alt text-red"></i>
+                                    {% trans "Supprimer les UUIDs des expériences concernées." %}
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Bucket planarian_metrics -->
+                    <div class="info-card card-accent-green">
+                        <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="card-body">
+                            <h4>
+                                {% trans "Bucket" %} <code>planarian_metrics</code>
+                            </h4>
+                            <ol class="doc-steps">
+                                <li>
+                                    <i class="fas fa-tag"></i>
+                                    {% trans "Repérer les enregistrements dont le label correspond aux UUIDs." %}
+                                </li>
+                                <li>
+                                    <i class="fas fa-trash-alt text-red"></i>
+                                    {% trans "Supprimer ces enregistrements." %}
+                                </li>
+                            </ol>
+                            <div class="tag-list" style="margin-top:10px;">
+                                <span class="tag tag-gray">label: uuid</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Résumé visuel uuid -->
+                <div class="info-row">
+                    <div class="info-card card-accent-yellow full-width">
+                        <div class="card-icon"><i class="fas fa-key"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Identifier les UUIDs à supprimer" %}</h4>
+                            <p>{% trans "Les UUIDs des expériences sont visibles dans l'administration Django, dans la session supprimée ou dans les logs affichés pendant le balayage." %}</p>
+                            <div class="uuid-example">
+                                <i class="fas fa-fingerprint"></i>
+                                <code>3-HD-A4</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+</div>
+{% endblock %}
+
+{% block js_footer %}
+    {{ block.super }}
+	<script>
+	/* Mise en évidence du lien actif dans la navigation latérale */
+	(function () {
+	    const links    = document.querySelectorAll('.nav-link');
+	    const sections = document.querySelectorAll('[id^="section-"]');
+	
+	    const observer = new IntersectionObserver(
+	        (entries) => {
+	            entries.forEach(entry => {
+	                if (entry.isIntersecting) {
+	                    links.forEach(l => l.classList.remove('active'));
+	                    const target = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+	                    if (target) target.classList.add('active');
+	                }
+	            });
+	        },
+	        { rootMargin: '-10% 0px -80% 0px' }
+	    );
+	
+	    sections.forEach(s => observer.observe(s));
+	})();
+	</script>
+{% endblock %}

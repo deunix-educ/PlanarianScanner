@@ -1,0 +1,473 @@
+{% extends 'scanner/base.html' %}
+{% load i18n %}
+{% block columns %}{% endblock %}
+
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="/static/css/doc_database.css">
+    <link rel="stylesheet" href="/static/css/doc_calibration.css">   
+{% endblock %}
+
+{% block content %}
+<div class="doc-wrapper">
+
+    <!-- ─── En-tête ─── -->
+    <header class="doc-header">
+        <div class="doc-header-inner">
+            <div class="doc-header-icon" style="background: linear-gradient(135deg, var(--accent-teal), var(--accent-blue));">
+                <i class="fas fa-crosshairs"></i>
+            </div>
+            <div>
+                <h1 class="doc-title">{% trans "Calibration du scanner" %}</h1>
+                <p class="doc-subtitle">{% trans "Procédure, organisation de l'écran et commandes disponibles" %}</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── Navigation latérale ─── -->
+    <nav class="doc-sidenav" id="sidenav">
+        <p class="nav-section-label">{% trans "Navigation" %}</p>
+        <a href="#section-intro"     class="nav-link active"><i class="fas fa-info-circle"></i>   {% trans "Présentation" %}</a>
+        <a href="#section-screen"    class="nav-link">       <i class="fas fa-desktop"></i>        {% trans "Organisation écran" %}</a>
+        <a href="#section-left"      class="nav-link nav-sub"><i class="fas fa-arrows-alt"></i>   {% trans "Panneau gauche" %}</a>
+        <a href="#section-center"    class="nav-link nav-sub"><i class="fas fa-video"></i>         {% trans "Centre — vidéo live" %}</a>
+        <a href="#section-right"     class="nav-link nav-sub"><i class="fas fa-sliders-h"></i>    {% trans "Panneau droit" %}</a>
+        <a href="#section-centering" class="nav-link nav-sub-2"><i class="fas fa-dot-circle"></i> {% trans "Centrage" %}</a>
+        <a href="#section-base"      class="nav-link nav-sub-2"><i class="fas fa-map-pin"></i>    {% trans "Définir la base" %}</a>
+    </nav>
+
+    <!-- ─── Contenu principal ─── -->
+    <main class="doc-content">
+
+        <!-- ============================================================ -->
+        <!-- SECTION 1 : Présentation                                      -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-intro">
+            <div class="section-header">
+                <span class="section-badge badge-teal">{% trans "Prérequis" %}</span>
+                <h2><i class="fas fa-crosshairs"></i> {% trans "Calibration" %}</h2>
+                <p class="section-desc">
+                    {% trans "La calibration est indispensable au fonctionnement du scanner." %}<br>
+                    <i class="fas fa-exclamation-triangle w3-text-red"></i> {% trans "Affichage des logs en bas de page" %}
+                </p>
+            </div>
+            <div class="info-row">
+                <!-- Pourquoi calibrer -->
+                <div class="info-card card-accent-teal">
+                    <div class="card-icon"><i class="fas fa-bullseye"></i></div>
+                    <div class="card-body">
+                        <h4>{% trans "Objectifs" %}</h4>
+                        <ul class="doc-list">
+                            <li>
+                                <i class="fas fa-camera text-blue"></i>
+                                {% trans "Pointer l'axe de la caméra dans l'axe du tube." %}
+                            </li>
+                            <li>
+                                <i class="fas fa-crop-alt text-cyan"></i>
+                                {% trans "Recadrer l'image pour porter l'origine du suivi des planaires au centre du tube." %}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Avantage recadrage -->
+                <div class="info-card card-accent-green">
+                    <div class="card-icon"><i class="fas fa-compress-arrows-alt"></i></div>
+                    <div class="card-body">
+                        <h4>{% trans "Avantage du recadrage" %}</h4>
+                        <ul class="doc-list">
+                            <li>
+                                <i class="fas fa-hdd text-green"></i>
+                                {% trans "Réduit la taille des images stockées." %}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IMPORTANT : base de départ -->
+            <div class="info-row">
+                <div class="info-card card-accent-red full-width">
+                    <div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="card-body">
+                        <h4>{% trans "IMPORTANT — Avant toute manipulation" %} <span class="badge-important">{% trans "IMPORTANT" %}</span></h4>
+                        <p>{% trans "Pour tout multi-puits, trouver la base de départ avant de commencer." %}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 2 : Organisation de l'écran                          -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-screen">
+            <div class="section-header">
+                <span class="section-badge badge-blue">{% trans "Interface" %}</span>
+                <h2><i class="fas fa-desktop"></i> {% trans "Organisation de l'écran" %}</h2>
+                <p class="section-desc">{% trans "L'écran de calibration est divisé en trois zones fonctionnelles." %}</p>
+            </div>
+
+            <!-- Schéma des 3 zones -->
+            <div class="screen-layout">
+                <div class="screen-zone zone-left">
+                    <i class="fas fa-arrows-alt"></i>
+                    <span>{% trans "Déplacements" %}</span>
+                </div>
+                <div class="screen-zone zone-center">
+                    <i class="fas fa-video"></i>
+                    <span>{% trans "Vidéo live" %}</span>
+                </div>
+                <div class="screen-zone zone-right">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>{% trans "Commandes" %}</span>
+                </div>
+            </div>
+
+            <!-- ─── Panneau GAUCHE ─── -->
+            <div class="subsection" id="section-left">
+                <h3 class="subsection-title">
+                    <i class="fas fa-arrow-left"></i> {% trans "Panneau gauche — Déplacements caméra" %}
+                </h3>
+
+                <div class="info-row">
+                    <!-- Sélection & vitesse -->
+                    <div class="info-card card-accent-indigo">
+                        <div class="card-icon"><i class="fas fa-exchange-alt"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Sélection & vitesse" %}</h4>
+                            <ul class="doc-list">
+                                <li><i class="fas fa-th"></i> {% trans "Changer de multi-puits" %}</li>
+                                <li><i class="fas fa-tachometer-alt"></i> {% trans "Modifier la vitesse (mm/mn)" %}</li>
+                                <li><i class="fas fa-ruler-horizontal"></i> {% trans "Modifier le pas de déplacement (mm)" %}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Manœuvre manuelle -->
+                    <div class="info-card card-accent-blue">
+                        <div class="card-icon"><i class="fas fa-gamepad"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Manœuvre manuelle" %}</h4>
+                            <ul class="doc-list">
+                                <li>
+                                    <i class="fas fa-arrows-alt"></i>
+                                    {% trans "Déplacement" %}
+                                    <div class="tag-list inline">
+                                        <span class="tag tag-blue">±X</span>
+                                        <span class="tag tag-blue">±Y</span>
+                                    </div>
+                                </li>
+                                <li><i class="fas fa-save"></i> {% trans "Sauver la position courante" %}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Déplacement puit à puit -->
+                    <div class="info-card card-accent-cyan">
+                        <div class="card-icon"><i class="fas fa-step-forward"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Navigation puit à puit" %}</h4>
+                            <ul class="doc-list">
+                                <li><i class="fas fa-arrow-right text-cyan"></i> {% trans "Boutons de déplacement puit à puit" %}</li>
+                                <li><i class="fas fa-compress-arrows-alt text-cyan"></i> {% trans "Bouton centrage manuel" %}</li>
+                                <li><i class="fas fa-magic text-cyan"></i> {% trans "Bouton calibrage automatique" %}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sous-section : Définir la base -->
+                <div class="sub-subsection" id="section-base">
+                    <h4 class="table-title">
+                        <i class="fas fa-map-pin"></i>
+                        {% trans "Définir la base" %}
+                        <span class="badge-important">{% trans "IMPORTANT" %}</span>
+                    </h4>
+
+                    <div class="info-row">
+                        <!-- Création en BDD -->
+                        <div class="info-card card-accent-orange">
+                            <div class="card-icon"><i class="fas fa-database"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "À la création du multi-puits en base" %}</h4>
+                                <ul class="doc-list">
+                                    <li>
+                                        <i class="fas fa-map-marker-alt text-orange"></i>
+                                        {% trans "Fixe la base par défaut en" %} <code>(50, 50)</code>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-calculator text-orange"></i>
+                                        {% trans "Calcule et enregistre toutes les positions des puits dans" %}
+                                        <code>scanner.wellposition</code>
+                                        <p class="task-desc">
+                                            <i class="fas fa-bolt text-green"></i>
+                                            {% trans "Permet de gagner du temps au centrage manuel ou automatique." %}
+                                        </p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Donnée positions générées -->
+                        <div class="info-card card-accent-yellow">
+                            <div class="card-icon"><i class="fas fa-sync-alt"></i></div>
+                            <div class="card-body">
+                                <h4>
+                                    {% trans "Positions générées" %} — <code>scanner.multiwell</code>
+                                    <span class="badge-important">{% trans "ATTENTION" %}</span>
+                                </h4>
+                                <ul class="doc-list">
+                                    <li>
+                                        <i class="fas fa-check-circle text-green"></i>
+                                        {% trans "À la création : donnée fixée à" %} <strong>{% trans "Oui" %}</strong>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-times-circle text-red"></i>
+                                        {% trans "Non → efface" %} <code>WellPosition</code>
+                                        {% trans "et recalcule toutes les positions" %}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bouton Définir la base -->
+                    <div class="info-row">
+                        <div class="info-card card-accent-blue full-width">
+                            <div class="card-icon"><i class="fas fa-flag-checkered"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "Bouton « Définir la base »" %}</h4>
+                                <ul class="doc-list">
+                                    <li>
+                                        <i class="fas fa-map-marker text-blue"></i>
+                                        {% trans "Fixe la base aux coordonnées" %} <code>(X, Y)</code> {% trans "courantes" %}
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-redo text-blue"></i>
+                                        {% trans "Recalcule toutes les positions des puits dans" %} <code>scanner.wellposition</code>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sous-section : Centrage -->
+                <div class="sub-subsection" id="section-centering">
+                    <h4 class="table-title">
+                        <i class="fas fa-dot-circle"></i>
+                        {% trans "Centrage manuel / automatique" %}
+                        <span class="badge-important">{% trans "ATTENTION" %}</span>
+                    </h4>
+
+                    <div class="info-row">
+                        <!-- Conditions -->
+                        <div class="info-card card-accent-purple">
+                            <div class="card-icon"><i class="fas fa-lightbulb"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "Conditions requises" %}</h4>
+                                <ul class="doc-list">
+                                    <li>
+                                        <i class="fas fa-sun text-yellow"></i>
+                                        {% trans "Éclairage important des puits — éviter les ombres." %}
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-toggle-on text-blue"></i>
+                                        {% trans "Actif uniquement si Debug" %} <strong>{% trans "ET" %}</strong> {% trans "Recadrage activés (commandes à droite)." %}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Indicateurs visuels -->
+                        <div class="info-card card-accent-indigo">
+                            <div class="card-icon"><i class="fas fa-circle-notch"></i></div>
+                            <div class="card-body">
+                                <h4>{% trans "Indicateurs visuels de centrage" %}</h4>
+                                <ul class="doc-list">
+                                    <li>
+                                        <i class="fas fa-circle" style="color:#f85149;"></i>
+                                        <strong class="text-red">{% trans "Cercle rouge" %}</strong>
+                                        — {% trans "déplacement centre" %} <code>&lt; 20 px</code>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-circle" style="color:#e3b341;"></i>
+                                        <strong style="color:var(--accent-yellow);">{% trans "Cercle jaune" %}</strong>
+                                        — {% trans "au plus près" %} <code>&lt; 5 px</code>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-circle" style="color:#3fb950;"></i>
+                                        <strong class="text-green">{% trans "Cercle vert" %}</strong>
+                                        — {% trans "centré" %}
+                                    </li>
+                                </ul>
+                                <!-- Barre visuelle des seuils -->
+                                <div class="center-bar">
+                                    <div class="cb-seg cb-red">
+                                        <span>&lt; 20 px</span>
+                                    </div>
+                                    <div class="cb-seg cb-yellow">
+                                        <span>&lt; 5 px</span>
+                                    </div>
+                                    <div class="cb-seg cb-green">
+                                        <span>{% trans "OK" %}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── CENTRE ─── -->
+            <div class="subsection" id="section-center">
+                <h3 class="subsection-title">
+                    <i class="fas fa-video"></i> {% trans "Centre — Vidéo live" %}
+                </h3>
+                <div class="info-row">
+                    <div class="info-card card-accent-teal full-width">
+                        <div class="card-icon"><i class="fas fa-film"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Flux vidéo en temps réel" %}</h4>
+                            <p>{% trans "Affiche le flux caméra en direct, avec ou sans recadrage selon l'état de la commande." %}</p>
+                            <div class="tag-list">
+                                <span class="tag tag-teal">{% trans "Recadrage actif" %}</span>
+                                <span class="tag tag-gray">{% trans "Image pleine" %}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── PANNEAU DROIT ─── -->
+            <div class="subsection" id="section-right">
+                <h3 class="subsection-title">
+                    <i class="fas fa-arrow-right"></i> {% trans "Panneau droit — Commandes" %}
+                </h3>
+
+                <div class="info-row">
+                    <!-- Navigation rapide -->
+                    <div class="info-card card-accent-blue">
+                        <div class="card-icon"><i class="fas fa-location-arrow"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Navigation rapide" %}</h4>
+                            <ul class="doc-list">
+                                <li><i class="fas fa-home text-blue"></i> {% trans "Déplacer à l'origine (0, 0)" %}</li>
+                                <li><i class="fas fa-map-pin text-blue"></i> {% trans "Aller à la base du multi-puits" %}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Bascules -->
+                    <div class="info-card card-accent-indigo">
+                        <div class="card-icon"><i class="fas fa-toggle-on"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Bascules" %}</h4>
+                            <ul class="doc-list">
+                                <li>
+                                    <i class="fas fa-bug text-purple"></i>
+                                    {% trans "Debug" %}
+                                    <div class="tag-list inline">
+                                        <span class="tag tag-green">{% trans "Oui" %}</span>
+                                        <span class="tag tag-gray">{% trans "Non" %}</span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fas fa-ruler-combined text-purple"></i>
+                                    {% trans "Tracer axes" %}
+                                    <div class="tag-list inline">
+                                        <span class="tag tag-green">{% trans "Oui" %}</span>
+                                        <span class="tag tag-gray">{% trans "Non" %}</span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fas fa-crop-alt text-purple"></i>
+                                    {% trans "Recadrage" %}
+                                    <div class="tag-list inline">
+                                        <span class="tag tag-green">{% trans "Oui" %}</span>
+                                        <span class="tag tag-gray">{% trans "Non" %}</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <!-- Rayon de recadrage -->
+                    <div class="info-card card-accent-cyan">
+                        <div class="card-icon"><i class="fas fa-circle-notch"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Rayon de recadrage" %}</h4>
+                            <p>{% trans "Ajuster le recadrage en pixels." %}</p>
+                        </div>
+                    </div>
+
+                    <!-- Durée test -->
+                    <div class="info-card card-accent-orange">
+                        <div class="card-icon"><i class="fas fa-stopwatch"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Durée entre puits" %}</h4>
+                            <p>{% trans "Durée de pause entre chaque puit lors du test du circuit." %}</p>
+                        </div>
+                    </div>
+
+                    <!-- Tester le circuit -->
+                    <div class="info-card card-accent-green">
+                        <div class="card-icon"><i class="fas fa-route"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Tester le circuit" %}</h4>
+                            <p>{% trans "Vérifier les déplacements en parcourant automatiquement tous les puits." %}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ARRÊT -->
+                <div class="info-row">
+                    <div class="info-card card-accent-red full-width">
+                        <div class="card-icon"><i class="fas fa-hand-paper"></i></div>
+                        <div class="card-body">
+                            <h4>
+                                {% trans "ARRÊT" %}
+                                <span class="badge-important">{% trans "URGENCE" %}</span>
+                            </h4>
+                            <div class="alert-box">
+                                <i class="fas fa-stop-circle"></i>
+                                {% trans "Stoppe immédiatement tout mouvement du scanner." %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- end section-right -->
+        </section><!-- end section-screen -->
+
+    </main>
+</div>
+{% endblock %}
+
+{% block js_footer %}
+    {{ block.super }}
+	<script>
+	/* Mise en évidence du lien actif dans la navigation latérale */
+	(function () {
+	    const links    = document.querySelectorAll('.nav-link');
+	    const sections = document.querySelectorAll('[id^="section-"]');
+	
+	    const observer = new IntersectionObserver(
+	        (entries) => {
+	            entries.forEach(entry => {
+	                if (entry.isIntersecting) {
+	                    links.forEach(l => l.classList.remove('active'));
+	                    const target = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+	                    if (target) target.classList.add('active');
+	                }
+	            });
+	        },
+	        { rootMargin: '-10% 0px -80% 0px' }
+	    );
+	
+	    sections.forEach(s => observer.observe(s));
+	})();
+	</script> 
+{% endblock %}

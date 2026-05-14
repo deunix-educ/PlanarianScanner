@@ -34,9 +34,6 @@ if not settings.GRBL_SIMULATION:
 else:
     from modules.grbl_simulator import GRBLController  # @Reimport
 
-from . import models
-
-
 @dataclass
 class ProcessData:
     play: bool = True

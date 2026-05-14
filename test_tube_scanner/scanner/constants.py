@@ -29,6 +29,7 @@ class DefaultConfig:
     calibration_default_step: float = 1.0
     calibration_default_duration: float = 3.0
     tracking: bool = False 
+    tracking_setting: bool = False 
     tube_axis: str = 'vertical'
     min_area_px: int = 20
     max_area_ratio: float = 0.10

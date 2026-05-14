@@ -1,0 +1,541 @@
+{% extends 'scanner/base.html' %}
+{% load i18n %}
+{% block columns %}{% endblock %}
+
+{% block styles %}
+    {{ block.super }}
+	<link rel="stylesheet" href="/static/css/doc_database.css">
+	<link rel="stylesheet" href="/static/css/doc_calibration.css>
+	<link rel="stylesheet" href="/static/css/doc_experiments.css">
+{% endblock %}
+
+{% block content %}
+<div class="doc-wrapper">
+
+    <!-- ─── En-tête ─── -->
+    <header class="doc-header">
+        <div class="doc-header-inner">
+            <div class="doc-header-icon" style="background: linear-gradient(135deg, var(--accent-green), var(--accent-teal));">
+                <i class="fas fa-flask"></i>
+            </div>
+            <div>
+                <h1 class="doc-title">{% trans "Démarrer des expériences" %}</h1>
+                <p class="doc-subtitle">{% trans "Sessions, expériences, configurations et import CSV — interface Administration Django" %}</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── Navigation latérale ─── -->
+    <nav class="doc-sidenav" id="sidenav">
+        <p class="nav-section-label">{% trans "Navigation" %}</p>
+        <a href="#section-intro"       class="nav-link active"><i class="fas fa-info-circle"></i>   {% trans "Présentation" %}</a>
+        <a href="#section-workflow"    class="nav-link">       <i class="fas fa-random"></i>         {% trans "Ordre de création" %}</a>
+        <a href="#section-session"     class="nav-link">       <i class="fas fa-play-circle"></i>    {% trans "Session" %}</a>
+        <a href="#section-session-data"  class="nav-link nav-sub"><i class="fas fa-table"></i>      {% trans "Données" %}</a>
+        <a href="#section-session-tasks" class="nav-link nav-sub"><i class="fas fa-clock"></i>      {% trans "Tâches périodiques" %}</a>
+        <a href="#section-experiment"  class="nav-link">       <i class="fas fa-vial"></i>           {% trans "Expérience" %}</a>
+        <a href="#section-exp-data"    class="nav-link nav-sub"><i class="fas fa-table"></i>        {% trans "Données" %}</a>
+        <a href="#section-exp-create"  class="nav-link nav-sub"><i class="fas fa-magic"></i>        {% trans "Création automatique" %}</a>
+        <a href="#section-metrics"     class="nav-link nav-sub"><i class="fas fa-chart-line"></i>   {% trans "Métriques" %}</a>
+        <a href="#section-config"      class="nav-link">       <i class="fas fa-cog"></i>            {% trans "Configuration puits" %}</a>
+        <a href="#section-csv"         class="nav-link">       <i class="fas fa-file-csv"></i>       {% trans "Import CSV" %}</a>
+    </nav>
+
+    <!-- ─── Contenu principal ─── -->
+    <main class="doc-content">
+
+        <!-- ============================================================ -->
+        <!-- SECTION 1 : Présentation                                      -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-intro">
+            <div class="section-header">
+                <span class="section-badge badge-green">{% trans "Administration Django" %}</span>
+                <h2><i class="fas fa-flask"></i> {% trans "Démarrer des expériences" %}</h2>
+                <p class="section-desc">
+                    {% trans "C'est l'interface Administration Django qui est chargée de créer les données." %}
+                </p>
+            </div>
+
+            <div class="info-row">
+                <div class="info-card card-accent-green full-width">
+                    <div class="card-icon"><i class="fas fa-th-large"></i></div>
+                    <div class="card-body">
+                        <h4>{% trans "Principe général" %}</h4>
+                        <ul class="doc-list">
+                            <li>
+                                <i class="fas fa-link text-green"></i>
+                                {% trans "Une expérience est toujours affectée à un multi-puits." %}
+                            </li>
+                            <li>
+                                <i class="fas fa-th text-green"></i>
+                                {% trans "Il y a 4 emplacements multi-puits, donc" %}
+                                <strong>{% trans "4 expériences maximum par session." %}</strong>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 2 : Ordre de création                                 -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-workflow">
+            <div class="section-header">
+                <span class="section-badge badge-blue">{% trans "Workflow" %}</span>
+                <h2><i class="fas fa-random"></i> {% trans "Ordre de création" %}</h2>
+                <p class="section-desc">{% trans "Les deux approches sont équivalentes — au choix." %}</p>
+            </div>
+
+            <div class="info-row">
+                <!-- Option A -->
+                <div class="info-card card-accent-indigo">
+                    <div class="card-icon"><i class="fas fa-list-ol"></i></div>
+                    <div class="card-body">
+                        <h4><i class="fas fa-play-circle text-indigo"></i> {% trans "Option A — Session en premier" %}</h4>
+                        <ol class="doc-steps">
+                            <li><i class="fas fa-plus-circle"></i> {% trans "Créer la session" %}</li>
+                            <li><i class="fas fa-vial"></i> {% trans "Créer les expériences (4 maxi)" %}</li>
+                            <li><i class="fas fa-link"></i> {% trans "Revenir sur la session et ajouter les expériences" %}</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Option B -->
+                <div class="info-card card-accent-blue">
+                    <div class="card-icon"><i class="fas fa-list-ol"></i></div>
+                    <div class="card-body">
+                        <h4><i class="fas fa-vial text-blue"></i> {% trans "Option B — Expériences en premier" %}</h4>
+                        <ol class="doc-steps">
+                            <li><i class="fas fa-vial"></i> {% trans "Créer les expériences" %}</li>
+                            <li><i class="fas fa-plus-circle"></i> {% trans "Créer la session" %}</li>
+                            <li><i class="fas fa-link"></i> {% trans "Ajouter les expériences à la session" %}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 3 : Session                                           -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-session">
+            <div class="section-header">
+                <span class="section-badge badge-purple">scanner_session</span>
+                <h2><i class="fas fa-play-circle"></i> {% trans "Session" %}</h2>
+            </div>
+
+            <!-- Données importantes -->
+            <div class="sub-subsection" id="section-session-data">
+                <h4 class="table-title">
+                    <i class="fas fa-table"></i> {% trans "Données importantes" %}
+                </h4>
+                <div class="info-row">
+                    <div class="info-card card-accent-purple">
+                        <div class="card-icon"><i class="fas fa-id-card"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Identification" %}</h4>
+                            <ul class="doc-list">
+                                <li><i class="fas fa-heading text-purple"></i> {% trans "Titre" %}</li>
+                                <li><i class="fas fa-user text-purple"></i> {% trans "Auteur" %}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Expériences de la session -->
+                    <div class="info-card card-accent-indigo">
+                        <div class="card-icon"><i class="fas fa-layer-group"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Expériences d'une session" %}</h4>
+                            <p>{% trans "Ajouter les expériences à la suite dans l'inline" %} <code>scanner_sessionexperiment</code>.</p>
+                            <div class="tag-list">
+                                <span class="tag tag-blue">{% trans "4 maximum" %}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tâches périodiques -->
+            <div class="sub-subsection" id="section-session-tasks">
+                <h4 class="table-title">
+                    <i class="fas fa-clock"></i> {% trans "Options tâches périodiques" %}
+                </h4>
+                <div class="info-row">
+                    <div class="info-card card-accent-orange">
+                        <div class="card-icon"><i class="fas fa-file-export"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Date d'exportation" %}</h4>
+                            <p>{% trans "Crée une tâche différée pour exporter automatiquement les images et vidéos à la date choisie." %}</p>
+                            <div class="tag-list">
+                                <span class="tag tag-orange">export_session</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-card card-accent-teal">
+                        <div class="card-icon"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Date du balayage" %}</h4>
+                            <p>{% trans "Planifie le déclenchement du balayage de la session à une date ultérieure." %}</p>
+                            <div class="tag-list">
+                                <span class="tag tag-teal">scanning_session</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 4 : Expérience                                        -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-experiment">
+            <div class="section-header">
+                <span class="section-badge badge-green">scanner_experiment</span>
+                <h2><i class="fas fa-vial"></i> {% trans "Expérience" %}</h2>
+            </div>
+
+            <!-- Données -->
+            <div class="sub-subsection" id="section-exp-data">
+                <h4 class="table-title"><i class="fas fa-table"></i> {% trans "Données" %}</h4>
+                <div class="info-row">
+                    <div class="info-card card-accent-green">
+                        <div class="card-icon"><i class="fas fa-id-card"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Identification" %}</h4>
+                            <ul class="doc-list">
+                                <li><i class="fas fa-heading text-green"></i> {% trans "Titre" %}</li>
+                                <li><i class="fas fa-user text-green"></i> {% trans "Auteur" %}</li>
+                                <li><i class="fas fa-comment-alt text-green"></i> {% trans "Commentaires" %}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="info-card card-accent-red">
+                        <div class="card-icon"><i class="fas fa-exclamation-circle"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Paramètres critiques" %} <span class="badge-important">{% trans "IMPORTANT" %}</span></h4>
+                            <ul class="doc-list">
+                                <li>
+                                    <i class="fas fa-th text-red"></i>
+                                    {% trans "Choix du multi-puits" %}
+                                </li>
+                                <li>
+                                    <i class="fas fa-stopwatch text-red"></i>
+                                    {% trans "Durée de la prise de vue (secondes)" %}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Création automatique -->
+            <div class="sub-subsection" id="section-exp-create">
+                <h4 class="table-title">
+                    <i class="fas fa-magic"></i> {% trans "Fonctionnement à la création" %}
+                </h4>
+                <div class="info-row">
+                    <!-- experimentwell -->
+                    <div class="info-card card-accent-blue">
+                        <div class="card-icon"><i class="fas fa-circle-notch"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Création/MAJ" %} <code>scanner.experimentwell</code></h4>
+                            <ul class="doc-list">
+                                <li>
+                                    <i class="fas fa-plus text-blue"></i>
+                                    {% trans "Création de chaque puit individuel." %}
+                                </li>
+                                <li>
+                                    <i class="fas fa-check-circle text-green"></i>
+                                    {% trans "Par défaut, tous les puits sont actifs." %}
+                                </li>
+                            </ul>
+                            <div class="alert-box alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                {% trans "Il est possible d'ignorer le balayage d'un ou plusieurs puits au choix." %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- experimentconfig -->
+                    <div class="info-card card-accent-cyan">
+                        <div class="card-icon"><i class="fas fa-sliders-h"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Création/MAJ" %} <code>planarian.experimentconfig</code></h4>
+                            <p>{% trans "Paramètres d'une expérience PlanarianScanner." %}</p>
+                            <ul class="doc-list">
+                                <li>
+                                    <i class="fas fa-user-cog text-cyan"></i>
+                                    {% trans "Créé depuis Django admin" %}
+                                </li>
+                                <li>
+                                    <i class="fas fa-file-csv text-cyan"></i>
+                                    {% trans "Ou import CSV depuis l'admin" %}
+                                </li>
+                                <li>
+                                    <i class="fas fa-pencil-alt text-muted"></i>
+                                    <em>{% trans "Données descriptives supplémentaires (à définir)" %}</em>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Métriques -->
+            <div class="sub-subsection" id="section-metrics">
+                <h4 class="table-title">
+                    <i class="fas fa-chart-line"></i>
+                    {% trans "Intégration métriques EthoVision XT + comportementales" %}
+                </h4>
+
+                <!-- Métriques par frame -->
+                <h5 class="metrics-group-title">
+                    <i class="fas fa-film"></i> {% trans "Métriques par frame" %}
+                </h5>
+                <div class="info-row">
+                    <div class="info-card card-accent-blue metrics-card">
+                        <div class="card-icon"><i class="fas fa-running"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Mobilité" %}</h4>
+                            <div class="metric-tags">
+                                <span class="tag tag-blue">velocity</span>
+                                <span class="tag tag-blue">distance</span>
+                                <span class="tag tag-blue">moving</span>
+                                <span class="tag tag-blue">mobility_state</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-card card-accent-orange metrics-card">
+                        <div class="card-icon"><i class="fas fa-border-style"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Thigmotaxie" %}</h4>
+                            <div class="metric-tags">
+                                <span class="tag tag-orange">dist_to_wall_mm</span>
+                                <span class="tag tag-orange">near_wall</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-card card-accent-yellow metrics-card">
+                        <div class="card-icon"><i class="fas fa-sun"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Phototaxie" %}</h4>
+                            <div class="metric-tags">
+                                <span class="tag tag-yellow">dist_to_light_mm</span>
+                                <span class="tag tag-yellow">heading_to_light_deg</span>
+                                <span class="tag tag-yellow">fleeing_light</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-card card-accent-green metrics-card">
+                        <div class="card-icon"><i class="fas fa-utensils"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Chimiotaxie" %}</h4>
+                            <div class="metric-tags">
+                                <span class="tag tag-green">dist_to_food_mm</span>
+                                <span class="tag tag-green">heading_to_food_deg</span>
+                                <span class="tag tag-green">approaching_food</span>
+                                <span class="tag tag-green">in_food_zone</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-card card-accent-purple metrics-card">
+                        <div class="card-icon"><i class="fas fa-users"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Social" %}</h4>
+                            <div class="metric-tags">
+                                <span class="tag tag-purple">nearest_neighbour_mm</span>
+                                <span class="tag tag-purple">in_avoid_zone</span>
+                                <span class="tag tag-purple">in_aggreg_zone</span>
+                                <span class="tag tag-purple">chem_repulsion_level</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Métriques résumé -->
+                <h5 class="metrics-group-title" style="margin-top:20px;">
+                    <i class="fas fa-clipboard-list"></i> {% trans "Métriques résumé (summary)" %}
+                </h5>
+                <div class="info-row">
+                    <div class="info-card card-accent-blue metrics-card">
+                        <div class="card-icon"><i class="fas fa-running"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Mobilité" %}</h4>
+                            <div class="metric-tags">
+                                <span class="tag tag-blue">movedCenter_pointTotal_mm</span>
+                                <span class="tag tag-blue">velocity_mean_mm_s</span>
+                                <span class="tag tag-blue">{% trans "durations par état" %}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-card card-accent-orange metrics-card">
+                        <div class="card-icon"><i class="fas fa-border-style"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Thigmotaxie" %}</h4>
+                            <div class="metric-tags">
+                                <span class="tag tag-orange">thigmotaxis_pct_time_near_wall</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-card card-accent-yellow metrics-card">
+                        <div class="card-icon"><i class="fas fa-sun"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Phototaxie" %}</h4>
+                            <div class="metric-tags">
+                                <span class="tag tag-yellow">photo_pct_time_fleeing</span>
+                                <span class="tag tag-yellow">photo_mean_dist_mm</span>
+                                <span class="tag tag-yellow">photo_latency_s</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-card card-accent-green metrics-card">
+                        <div class="card-icon"><i class="fas fa-utensils"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Chimiotaxie" %}</h4>
+                            <div class="metric-tags">
+                                <span class="tag tag-green">chemo_pct_time_approaching</span>
+                                <span class="tag tag-green">chemo_pct_time_in_zone</span>
+                                <span class="tag tag-green">chemo_latency_s</span>
+                                <span class="tag tag-green">chemo_mean_dist_mm</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-card card-accent-purple metrics-card">
+                        <div class="card-icon"><i class="fas fa-users"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Social" %}</h4>
+                            <div class="metric-tags">
+                                <span class="tag tag-purple">social_pct_time_avoiding</span>
+                                <span class="tag tag-purple">social_pct_time_aggregating</span>
+                                <span class="tag tag-purple">social_mean_nn_mm</span>
+                                <span class="tag tag-purple">social_contact_events</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 5 : Configuration des puits                           -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-config">
+            <div class="section-header">
+                <span class="section-badge badge-teal">{% trans "Interface Scanner" %}</span>
+                <h2><i class="fas fa-cog"></i> {% trans "Configuration des expériences" %}</h2>
+                <p class="section-desc">{% trans "Sélectionner l'expérience et le puit à modifier pour compléter la fiche." %}</p>
+            </div>
+            <div class="info-row">
+                <div class="info-card card-accent-teal full-width">
+                    <div class="card-icon"><i class="fas fa-edit"></i></div>
+                    <div class="card-body">
+                        <h4>{% trans "Procédure" %}</h4>
+                        <ol class="doc-steps">
+                            <li><i class="fas fa-mouse-pointer"></i> {% trans "Sélectionner l'expérience dans la liste" %}</li>
+                            <li><i class="fas fa-circle"></i> {% trans "Sélectionner le puit à modifier" %}</li>
+                            <li><i class="fas fa-pen"></i> {% trans "Compléter la fiche de configuration" %}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 6 : Import CSV                                        -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-csv">
+            <div class="section-header">
+                <span class="section-badge badge-orange">{% trans "Import" %}</span>
+                <h2><i class="fas fa-file-csv"></i> {% trans "Importer des configurations depuis CSV" %}</h2>
+            </div>
+
+            <div class="info-row">
+                <!-- Menu gauche -->
+                <div class="info-card card-accent-indigo">
+                    <div class="card-icon"><i class="fas fa-bars"></i></div>
+                    <div class="card-body">
+                        <h4>{% trans "Menu gauche" %}</h4>
+                        <ol class="doc-steps">
+                            <li><i class="fas fa-play-circle"></i> {% trans "Sélectionner la session" %}</li>
+                            <li><i class="fas fa-check-square"></i> {% trans "Cocher l'expérience souhaitée" %}</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Zone de dépôt -->
+                <div class="info-card card-accent-blue">
+                    <div class="card-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <div class="card-body">
+                        <h4>{% trans "Zone d'import" %}</h4>
+                        <ol class="doc-steps">
+                            <li><i class="fas fa-file-csv"></i> {% trans "Glisser-déposer le fichier CSV" %}</li>
+                            <li><i class="fas fa-upload"></i> {% trans "Cliquer sur Importer" %}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Astuce CSV -->
+            <div class="info-row">
+                <div class="info-card card-accent-yellow full-width">
+                    <div class="card-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="card-body">
+                        <h4>{% trans "Astuce — Générer le template CSV depuis Django admin" %}</h4>
+                        <ol class="doc-steps">
+                            <li>
+                                <i class="fas fa-th-list"></i>
+                                {% trans "Aller dans" %}
+                                <strong>{% trans "Planarian › Configurations des expériences" %}</strong>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-square"></i>
+                                {% trans "Cocher le puit de l'expérience ou un groupe d'expériences" %}
+                            </li>
+                            <li>
+                                <i class="fas fa-bolt"></i>
+                                {% trans "Action :" %} <strong>{% trans "Exporter un template CSV…" %}</strong>
+                            </li>
+                            <li>
+                                <i class="fas fa-download"></i>
+                                {% trans "Vérifier l'emplacement du fichier téléchargé (dossier Download)." %}
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+{% endblock %}
+
+{% block js_footer %}
+    {{ block.super }}
+    <script>
+	/* Mise en évidence du lien actif dans la navigation latérale */
+	(function () {
+	    const links    = document.querySelectorAll('.nav-link');
+	    const sections = document.querySelectorAll('[id^="section-"]');
+	
+	    const observer = new IntersectionObserver(
+	        (entries) => {
+	            entries.forEach(entry => {
+	                if (entry.isIntersecting) {
+	                    links.forEach(l => l.classList.remove('active'));
+	                    const target = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+	                    if (target) target.classList.add('active');
+	                }
+	            });
+	        },
+	        { rootMargin: '-10% 0px -80% 0px' }
+	    );
+	
+	    sections.forEach(s => observer.observe(s));
+	})();
+	</script>
+{% endblock %}

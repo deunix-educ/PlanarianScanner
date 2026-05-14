@@ -1,0 +1,204 @@
+{% extends 'scanner/base.html' %}
+{% load i18n %}
+{% block columns %}{% endblock %}
+
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="/static/css/doc_database.css">
+    <link rel="stylesheet" href="/static/css/doc_calibration.css>
+    <link rel="stylesheet" href="/static/css/doc_experiments.css">
+    <link rel="stylesheet" href="/static/css/doc_scanning.css"> 
+    <link rel="stylesheet" href="/static/css/doc_results.css">       
+{% endblock %}
+
+{% block content %}
+<div class="doc-wrapper">
+
+    <!-- ─── En-tête ─── -->
+    <header class="doc-header">
+        <div class="doc-header-inner">
+            <div class="doc-header-icon" style="background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <div>
+                <h1 class="doc-title">{% trans "Exploiter les résultats" %}</h1>
+                <p class="doc-subtitle">{% trans "Export CSV des métriques par session, expérience et planaire" %}</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── Navigation latérale ─── -->
+    <nav class="doc-sidenav" id="sidenav">
+        <p class="nav-section-label">{% trans "Navigation" %}</p>
+        <a href="#section-intro"    class="nav-link active"><i class="fas fa-info-circle"></i>  {% trans "Présentation" %}</a>
+        <a href="#section-left"     class="nav-link">       <i class="fas fa-bars"></i>          {% trans "Menu gauche" %}</a>
+        <a href="#section-export"   class="nav-link nav-sub"><i class="fas fa-server"></i>      {% trans "Export serveur" %}</a>
+        <a href="#section-right"    class="nav-link">       <i class="fas fa-download"></i>      {% trans "Partie droite" %}</a>
+        <a href="#section-generate" class="nav-link nav-sub"><i class="fas fa-file-csv"></i>    {% trans "Générer le CSV" %}</a>
+    </nav>
+
+    <!-- ─── Contenu principal ─── -->
+    <main class="doc-content">
+
+        <!-- ============================================================ -->
+        <!-- SECTION 1 : Présentation                                      -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-intro">
+            <div class="section-header">
+                <span class="section-badge badge-green">{% trans "Export CSV" %}</span>
+                <h2><i class="fas fa-chart-bar"></i> {% trans "Exploiter les résultats des expériences" %}</h2>
+                <p class="section-desc">{% trans "Les métriques de suivi des planaires sont exportables au format CSV depuis l'interface Scanner." %}</p>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 2 : Menu gauche                                       -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-left">
+            <div class="section-header">
+                <span class="section-badge badge-blue">{% trans "Sélection" %}</span>
+                <h2><i class="fas fa-bars"></i> {% trans "Menu gauche" %}</h2>
+            </div>
+
+            <div class="info-row">
+                <div class="info-card card-accent-indigo">
+                    <div class="card-icon"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="card-body">
+                        <h4>{% trans "Sélection" %}</h4>
+                        <ol class="doc-steps">
+                            <li><i class="fas fa-play-circle"></i> {% trans "Sélectionner la session" %}</li>
+                            <li><i class="fas fa-check-square"></i> {% trans "Cocher l'expérience souhaitée" %}</li>
+                            <li><i class="fas fa-file-export"></i> {% trans "Cliquer sur Exporter les métriques de l'expérience" %}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export serveur -->
+            <div class="sub-subsection" id="section-export">
+                <h4 class="table-title">
+                    <i class="fas fa-server"></i> {% trans "Export côté serveur" %}
+                    <span class="badge-important">{% trans "ATTENTION" %}</span>
+                </h4>
+
+                <div class="info-row">
+                    <!-- Durée -->
+                    <div class="info-card card-accent-orange">
+                        <div class="card-icon"><i class="fas fa-hourglass-half"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Durée variable" %}</h4>
+                            <div class="alert-box" style="margin-bottom:0;">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {% trans "La procédure peut être longue selon le nombre de planaires à suivre." %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tâche de fond -->
+                    <div class="info-card card-accent-blue">
+                        <div class="card-icon"><i class="fas fa-cogs"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Tâche de fond" %}</h4>
+                            <p>{% trans "Le service est exécuté en arrière-plan (Celery)." %}</p>
+                            <div class="tag-list">
+                                <span class="tag tag-blue">export_session</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emplacement fichiers -->
+                <div class="info-row">
+                    <div class="info-card card-accent-teal full-width">
+                        <div class="card-icon"><i class="fas fa-folder-open"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Emplacement des fichiers sur le serveur" %}</h4>
+                            <div class="path-block">
+                                <i class="fas fa-hdd"></i>
+                                <code>/home/rpi4/export/csv/*.csv</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 3 : Partie droite — téléchargement client            -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-right">
+            <div class="section-header">
+                <span class="section-badge badge-green">{% trans "Téléchargement" %}</span>
+                <h2><i class="fas fa-download"></i> {% trans "Partie droite — Téléchargement client" %}</h2>
+            </div>
+
+            <div class="sub-subsection" id="section-generate">
+                <div class="info-row">
+                    <!-- Sélections -->
+                    <div class="info-card card-accent-indigo">
+                        <div class="card-icon"><i class="fas fa-sliders-h"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Paramètres" %}</h4>
+                            <ul class="doc-list">
+                                <li>
+                                    <i class="fas fa-circle text-teal"></i>
+                                    {% trans "Choisir le puit" %}
+                                </li>
+                                <li>
+                                    <i class="fas fa-hashtag text-indigo"></i>
+                                    {% trans "Choisir l'index du planaire" %}
+                                    <p class="task-desc">
+                                        <i class="fas fa-info-circle"></i>
+                                        {% trans "Le nombre de planaires est défini dans" %}
+                                        <em>{% trans "Paramètres d'une expérience" %}</em>.
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Bouton Générer -->
+                    <div class="info-card card-accent-green">
+                        <div class="card-icon"><i class="fas fa-file-download"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Bouton Générer" %}</h4>
+                            <p>{% trans "Télécharge le fichier CSV directement sur le poste client." %}</p>
+                            <div class="alert-box alert-info">
+                                <i class="fas fa-hourglass-half"></i>
+                                {% trans "La procédure peut être longue." %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+{% endblock %}
+
+{% block js_footer %}
+    {{ block.super }}
+	<script>
+	/* Mise en évidence du lien actif dans la navigation latérale */
+	(function () {
+	    const links    = document.querySelectorAll('.nav-link');
+	    const sections = document.querySelectorAll('[id^="section-"]');
+	
+	    const observer = new IntersectionObserver(
+	        (entries) => {
+	            entries.forEach(entry => {
+	                if (entry.isIntersecting) {
+	                    links.forEach(l => l.classList.remove('active'));
+	                    const target = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+	                    if (target) target.classList.add('active');
+	                }
+	            });
+	        },
+	        { rootMargin: '-10% 0px -80% 0px' }
+	    );
+	
+	    sections.forEach(s => observer.observe(s));
+	})();
+	</script>    
+{% endblock %}

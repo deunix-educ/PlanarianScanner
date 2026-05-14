@@ -29,7 +29,6 @@
 	                <a href="{% url 'scanner:adminer' %}"  class="w3-bar-item w3-btn w3-hover-opacity" target="_blank" title="{% trans "Accès système" %}">
 	                    <img class="w3-no-padding" src="/static/img/adminer.png" style="width: 28px"> {% trans "Base de données mariadb" %}
 	                </a>
-
 	                <a href="{% url 'scanner:logs_scheduler' %}"  class="w3-bar-item w3-btn w3-hover-opacity" target="_blank">
 	                     <i class="fa-regular fa-file-lines w3-text-orange"></i> {% trans "Logs des planifications" %}
 	                </a>   
@@ -37,11 +36,26 @@
 	                     <i class="fa-regular fa-file-lines w3-text-amber"></i> {% trans "Logs des services" %}
 	                </a>    		        
                 {% endif %}      
-		        <hr class="w3-bar-item divider w3-grey">
-		        
+		        <div class="w3-bar-item w3-blue-grey"><i class="fa-solid fa-circle-question w3-text-amber"></i> {% trans "Guides" %}</div>
                 <a href="{% url 'scanner:documentation' 'doc_database' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                      <i class="fa-solid fa-book w3-text-green"></i> {% trans "Descriptif des données" %}
-                </a>    		        
+                </a>             
+                <a href="{% url 'scanner:documentation' 'doc_calibration' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
+                     <i class="fa-solid fa-book w3-text-pink"></i> {% trans "Calibration des multi-puits" %}
+                </a>   
+                <a href="{% url 'scanner:documentation' 'doc_experiment' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
+                     <i class="fa-solid fa-book w3-text-khaki"></i> {% trans "Démarrer des expériences" %}
+                </a> 
+                 <a href="{% url 'scanner:documentation' 'doc_scanning' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
+                     <i class="fa-solid fa-book w3-text-orange"></i> {% trans "Balayage des puits" %}
+                </a>                               
+                <a href="{% url 'scanner:documentation' 'doc_results' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
+                     <i class="fa-solid fa-book w3-text-amber"></i> {% trans "Exploiter les résultats des expériences" %}
+                </a>         
+                 <a href="{% url 'scanner:documentation' 'doc_medias' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
+                     <i class="fa-solid fa-photo-film w3-text-purple"></i> {% trans "Gestionnaires des médias" %}
+                </a>                             
+                <hr class="w3-bar-item divider w3-grey">       	        
 		        <form method="post" action="{% url 'logout' %}">
 		            {% csrf_token %}
 		            <button class="w3-bar-item w3-btn w3-hover-opacity" type="submit">
@@ -122,7 +136,7 @@
             <a href="{% url 'scanner:scanning' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                 <i class="fa-solid fa-film w3-text-green w3-xlarge""></i> {% trans "Balayage multi-puits" %}
             </a>
-            <div class="w3-bar-item w3-light-blue">{% trans "Résultats " %}</div>
+            <div class="w3-bar-item w3-blue-grey"><i class="fa-solid fa-square-poll-vertical w3-text-amber"></i> {% trans "Résultats " %}</div>
             {% if conf.tracking %}
             <a href="{% url 'planarian:export-csv' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                 <i class="fa-solid fa-file-export w3-text-lime w3-xlarge"></i> {% trans "Export CSV des expériences" %}
