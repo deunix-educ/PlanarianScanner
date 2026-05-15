@@ -31,6 +31,7 @@
 {% endblock %}
 
 {% block content %}
+{% if current_session and current_experiment %}
     <div id="image-grid">
     {% if images %}
         {% for img in images %}
@@ -50,6 +51,11 @@
         {% endfor %}
     {% endif %}
     </div>
+{% else %}
+<div class="w3-container w3-padding-64" style="max-width:760px; margin:auto;">
+    <h3 class="w3-panel w3-blue w3-round-xlarge w3-padding-64 w3-center"> {% trans "Choisir une session" %}</h3>
+</div>
+{% endif %}
 {% endblock %}
 {% block modal %}
     {% include "scanner/image-preview.html" %}
