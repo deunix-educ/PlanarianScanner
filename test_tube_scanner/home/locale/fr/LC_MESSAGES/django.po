@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-14 17:29+0200\n"
+"POT-Creation-Date: 2026-05-15 15:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
 #: home/apps.py:7
 msgid "Scanner de tube à essais"
 msgstr ""
@@ -79,7 +80,7 @@ msgstr ""
 #: home/templates/docs/doc_database.html:363
 #: home/templates/docs/doc_database.html:366
 #: home/templates/docs/doc_database.html:367
-#: scanner/templates/scanner/base.html:132 scanner/views.py:131
+#: scanner/templates/scanner/base.html:132 scanner/views.py:133
 msgid "Calibration"
 msgstr ""
 
@@ -1605,7 +1606,7 @@ msgstr ""
 msgid "Ensemble d'expériences"
 msgstr ""
 
-#: planarian/templates/planarian/base.html:30
+#: planarian/templates/planarian/base.html:27
 msgid "Exporter les metrics de l'expérience"
 msgstr ""
 
@@ -2416,6 +2417,14 @@ msgstr ""
 msgid "Erreur lors du démarrage du balayage..."
 msgstr ""
 
+#: scanner/tasks.py:21
+msgid "Scanner démarré."
+msgstr ""
+
+#: scanner/tasks.py:27
+msgid "Replay démarré."
+msgstr ""
+
 #: scanner/templates/scanner/base.html:5
 msgid "Barre de côté"
 msgstr ""
@@ -2514,7 +2523,7 @@ msgstr ""
 msgid "Gestions des expériences"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:137 scanner/views.py:121
+#: scanner/templates/scanner/base.html:137 scanner/views.py:123
 msgid "Balayage multi-puits"
 msgstr ""
 
@@ -2526,7 +2535,7 @@ msgstr ""
 msgid "Export CSV des expériences"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:146 scanner/views.py:185
+#: scanner/templates/scanner/base.html:146 scanner/views.py:187
 msgid "Gestionnaire d'images"
 msgstr ""
 
@@ -2683,20 +2692,32 @@ msgid "Tester le cirduit"
 msgstr ""
 
 #: scanner/templates/scanner/calibration.html:207
-#: scanner/templates/scanner/scanning.html:58
+#: scanner/templates/scanner/scanning.html:59
 msgid "ARRET"
 msgstr ""
 
-#: scanner/templates/scanner/images.html:30
-msgid "Exporter l'ensemble des images"
+#: scanner/templates/scanner/images.html:27
+msgid "Exporter l'ensemble des images de la session"
 msgstr ""
 
-#: scanner/templates/scanner/images.html:48
+#: scanner/templates/scanner/images.html:45
 msgid "Télécharger"
 msgstr ""
 
-#: scanner/templates/scanner/replay.html:32
+#: scanner/templates/scanner/images.html:65
+msgid "Confirmer l'export des images."
+msgstr ""
+
+#: scanner/templates/scanner/images.html:66
+msgid "ATTENTION le processus peut être long!"
+msgstr ""
+
+#: scanner/templates/scanner/replay.html:29
 msgid "Exporter l'ensemble des vidéos"
+msgstr ""
+
+#: scanner/templates/scanner/replay.html:78
+msgid "Confirmer l'export des vidéos. ATTENTION le processus peut être long!"
 msgstr ""
 
 #: scanner/templates/scanner/scanning.html:14
@@ -2720,24 +2741,24 @@ msgstr ""
 msgid "Simuler"
 msgstr ""
 
-#: scanner/views.py:109
+#: scanner/views.py:111
 msgid "Documentation"
 msgstr ""
 
-#: scanner/views.py:230
+#: scanner/views.py:222 scanner/views.py:273
+msgid "Erreur d'exportation"
+msgstr ""
+
+#: scanner/views.py:246
 msgid "Gestionnaire de vidéos"
 msgstr ""
 
-#: scanner/views.py:252
+#: scanner/views.py:268
 msgid "Images téléchargées"
 msgstr ""
 
-#: scanner/views.py:255
+#: scanner/views.py:271
 msgid "Vidéos téléchargées"
-msgstr ""
-
-#: scanner/views.py:257
-msgid "Erreur d'exportation"
 msgstr ""
 
 #: templates/admin/base_site.html:4
