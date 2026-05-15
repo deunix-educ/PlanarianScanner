@@ -8,15 +8,280 @@
     <link rel="stylesheet" href="/static/css/doc_calibration.css>
     <link rel="stylesheet" href="/static/css/doc_experiments.css">
     <link rel="stylesheet" href="/static/css/doc_scanning.css"> 
-    <link rel="stylesheet" href="/static/css/doc_results.css">       
+    <link rel="stylesheet" href="/static/css/doc_results.css">     
+    <link rel="stylesheet" href="/static/css/doc_media.css">
 {% endblock %}
 
 {% block content %}
+<div class="doc-wrapper">
 
+    <!-- ─── En-tête ─── -->
+    <header class="doc-header">
+        <div class="doc-header-inner">
+            <div class="doc-header-icon" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));">
+                <i class="fas fa-photo-video"></i>
+            </div>
+            <div>
+                <h1 class="doc-title">{% trans "Gestionnaire de médias" %}</h1>
+                <p class="doc-subtitle">{% trans "Consultation, rediffusion et export des images et vidéos" %}</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── Navigation latérale ─── -->
+    <nav class="doc-sidenav" id="sidenav">
+        <p class="nav-section-label">{% trans "Navigation" %}</p>
+        <a href="#section-grid"    class="nav-link active"><i class="fas fa-th"></i>            {% trans "Grille d'affichage" %}</a>
+        <a href="#section-images"  class="nav-link">       <i class="fas fa-images"></i>        {% trans "Gestionnaire d'images" %}</a>
+        <a href="#section-img-nav" class="nav-link nav-sub"><i class="fas fa-bars"></i>        {% trans "Menu gauche" %}</a>
+        <a href="#section-img-view"class="nav-link nav-sub"><i class="fas fa-eye"></i>         {% trans "Affichage & export" %}</a>
+        <a href="#section-videos"  class="nav-link">       <i class="fas fa-film"></i>          {% trans "Rediffusion vidéos" %}</a>
+        <a href="#section-vid-nav" class="nav-link nav-sub"><i class="fas fa-bars"></i>        {% trans "Menu gauche" %}</a>
+        <a href="#section-vid-view"class="nav-link nav-sub"><i class="fas fa-play-circle"></i> {% trans "Lecteur & export" %}</a>
+    </nav>
+
+    <!-- ─── Contenu principal ─── -->
+    <main class="doc-content">
+
+        <!-- ============================================================ -->
+        <!-- SECTION 1 : Grille d'affichage                                -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-grid">
+            <div class="section-header">
+                <span class="section-badge badge-purple">{% trans "Affichage" %}</span>
+                <h2><i class="fas fa-th"></i> {% trans "Grille d'affichage" %}</h2>
+                <p class="section-desc">{% trans "Contrôle situé en haut à gauche de l'interface." %}</p>
+            </div>
+            <div class="info-row">
+                <div class="info-card card-accent-purple full-width">
+                    <div class="card-icon"><i class="fas fa-columns"></i></div>
+                    <div class="card-body">
+                        <h4>{% trans "Nombre de colonnes" %}</h4>
+                        <p>{% trans "Réduire ou augmenter dynamiquement le nombre de colonnes d'affichage des médias." %}</p>
+                        <!-- Visualisation colonnes -->
+                        <div class="grid-preview">
+                            <div class="gp-col"><i class="fas fa-minus"></i></div>
+                            <div class="gp-demo gp-2">
+                                <span></span><span></span>
+                            </div>
+                            <div class="gp-demo gp-3">
+                                <span></span><span></span><span></span>
+                            </div>
+                            <div class="gp-demo gp-4">
+                                <span></span><span></span><span></span><span></span>
+                            </div>
+                            <div class="gp-col"><i class="fas fa-plus"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 2 : Gestionnaire d'images                             -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-images">
+            <div class="section-header">
+                <span class="section-badge badge-blue">{% trans "Images" %}</span>
+                <h2><i class="fas fa-images"></i> {% trans "Gestionnaire d'images" %}</h2>
+            </div>
+
+            <!-- Menu gauche -->
+            <div class="sub-subsection" id="section-img-nav">
+                <h4 class="table-title"><i class="fas fa-bars"></i> {% trans "Menu gauche — Sélection" %}</h4>
+                <div class="info-row">
+                    <div class="info-card card-accent-indigo full-width">
+                        <div class="card-icon"><i class="fas fa-mouse-pointer"></i></div>
+                        <div class="card-body">
+                            <ol class="doc-steps">
+                                <li><i class="fas fa-play-circle"></i> {% trans "Sélectionner la session" %}</li>
+                                <li><i class="fas fa-check-square"></i> {% trans "Cocher l'expérience" %}</li>
+                                <li><i class="fas fa-circle"></i> {% trans "Choisir le puit" %}</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Affichage & export -->
+            <div class="sub-subsection" id="section-img-view">
+                <h4 class="table-title"><i class="fas fa-eye"></i> {% trans "Affichage des images & export" %}</h4>
+                <div class="info-row">
+                    <!-- Téléchargement unitaire -->
+                    <div class="info-card card-accent-blue">
+                        <div class="card-icon"><i class="fas fa-download"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Téléchargement unitaire" %}</h4>
+                            <p>{% trans "Chaque image affichée dispose d'un bouton de téléchargement individuel." %}</p>
+                        </div>
+                    </div>
+
+                    <!-- Export global images -->
+                    <div class="info-card card-accent-orange">
+                        <div class="card-icon"><i class="fas fa-file-archive"></i></div>
+                        <div class="card-body">
+                            <h4>
+                                {% trans "Exporter l'ensemble des images" %}
+                                <span class="badge-important">{% trans "ATTENTION" %}</span>
+                            </h4>
+                            <ul class="doc-list">
+                                <li>
+                                    <i class="fas fa-hourglass-half text-orange"></i>
+                                    {% trans "La procédure peut être longue." %}
+                                </li>
+                                <li>
+                                    <i class="fas fa-clock text-orange"></i>
+                                    {% trans "Préférer l'export différé." %}
+                                </li>
+                            </ul>
+                            <div class="deferred-badge">
+                                <i class="fas fa-calendar-alt"></i>
+                                {% trans "Export différé recommandé" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 3 : Rediffusion de vidéos                            -->
+        <!-- ============================================================ -->
+        <section class="doc-section" id="section-videos">
+            <div class="section-header">
+                <span class="section-badge badge-teal">{% trans "Vidéos" %}</span>
+                <h2><i class="fas fa-film"></i> {% trans "Rediffusion de vidéos" %}</h2>
+            </div>
+
+            <!-- Menu gauche -->
+            <div class="sub-subsection" id="section-vid-nav">
+                <h4 class="table-title"><i class="fas fa-bars"></i> {% trans "Menu gauche — Sélection" %}</h4>
+                <div class="info-row">
+                    <div class="info-card card-accent-indigo full-width">
+                        <div class="card-icon"><i class="fas fa-mouse-pointer"></i></div>
+                        <div class="card-body">
+                            <ol class="doc-steps">
+                                <li><i class="fas fa-play-circle"></i> {% trans "Sélectionner la session" %}</li>
+                                <li><i class="fas fa-check-square"></i> {% trans "Cocher l'expérience" %}</li>
+                                <li><i class="fas fa-circle"></i> {% trans "Choisir le puit" %}</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lecteur & export -->
+            <div class="sub-subsection" id="section-vid-view">
+                <h4 class="table-title"><i class="fas fa-play-circle"></i> {% trans "Lecteur vidéo & export" %}</h4>
+                <div class="info-row">
+                    <!-- Contrôles lecture -->
+                    <div class="info-card card-accent-teal">
+                        <div class="card-icon"><i class="fas fa-gamepad"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Contrôles de lecture" %}</h4>
+                            <!-- Boutons transport -->
+                            <div class="player-controls">
+                                <div class="player-btn btn-play">
+                                    <i class="fas fa-play"></i>
+                                    <span>{% trans "Marche" %}</span>
+                                </div>
+                                <div class="player-btn btn-pause">
+                                    <i class="fas fa-pause"></i>
+                                    <span>{% trans "Pause" %}</span>
+                                </div>
+                                <div class="player-btn btn-stop">
+                                    <i class="fas fa-stop"></i>
+                                    <span>{% trans "Arrêt" %}</span>
+                                </div>
+                            </div>
+                            <!-- Sliders -->
+                            <ul class="doc-list" style="margin-top:12px;">
+                                <li>
+                                    <i class="fas fa-tachometer-alt text-teal"></i>
+                                    {% trans "Slider vitesse de lecture" %}
+                                </li>
+                                <li>
+                                    <i class="fas fa-stream text-teal"></i>
+                                    {% trans "Slider timeline (position dans la vidéo)" %}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Téléchargements -->
+                    <div class="info-card card-accent-blue">
+                        <div class="card-icon"><i class="fas fa-download"></i></div>
+                        <div class="card-body">
+                            <h4>{% trans "Téléchargements" %}</h4>
+                            <ul class="doc-list">
+                                <li>
+                                    <i class="fas fa-image text-blue"></i>
+                                    {% trans "Télécharger l'image courante" %}
+                                </li>
+                                <li>
+                                    <i class="fas fa-film text-blue"></i>
+                                    {% trans "Télécharger la vidéo complète" %}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export global vidéos -->
+                <div class="info-row">
+                    <div class="info-card card-accent-orange full-width">
+                        <div class="card-icon"><i class="fas fa-file-video"></i></div>
+                        <div class="card-body">
+                            <h4>
+                                {% trans "Exporter l'ensemble des vidéos" %}
+                                <span class="badge-important">{% trans "ATTENTION" %}</span>
+                            </h4>
+                            <ul class="doc-list">
+                                <li>
+                                    <i class="fas fa-hourglass-half text-orange"></i>
+                                    {% trans "La procédure peut être longue." %}
+                                </li>
+                                <li>
+                                    <i class="fas fa-clock text-orange"></i>
+                                    {% trans "Préférer l'export différé." %}
+                                </li>
+                            </ul>
+                            <div class="deferred-badge">
+                                <i class="fas fa-calendar-alt"></i>
+                                {% trans "Export différé recommandé" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
 {% endblock %}
 
 {% block js_footer %}
     {{ block.super }}
-
-	</script>    
+	<script>
+	/* Mise en évidence du lien actif dans la navigation latérale */
+	(function () {
+	    const links    = document.querySelectorAll('.nav-link');
+	    const sections = document.querySelectorAll('[id^="section-"]');
+	
+	    const observer = new IntersectionObserver(
+	        (entries) => {
+	            entries.forEach(entry => {
+	                if (entry.isIntersecting) {
+	                    links.forEach(l => l.classList.remove('active'));
+	                    const target = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+	                    if (target) target.classList.add('active');
+	                }
+	            });
+	        },
+	        { rootMargin: '-10% 0px -80% 0px' }
+	    );
+	
+	    sections.forEach(s => observer.observe(s));
+	})();
+	</script> 
 {% endblock %}

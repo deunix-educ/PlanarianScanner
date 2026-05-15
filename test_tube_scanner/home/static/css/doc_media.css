@@ -1,0 +1,114 @@
+/* ============================================================
+   doc_media.css
+   Styles spécifiques à la page "Gestionnaire de médias".
+   Dépend de doc_database.css + doc_calibration.css
+                              + doc_experiments.css
+                              + doc_scanning.css
+                              + doc_results.css.
+   ============================================================ */
+
+/* ─── Badge purple ─── */
+.badge-purple {
+    background: rgba(188,140,255,.12);
+    color: var(--accent-purple);
+    border: 1px solid rgba(188,140,255,.3);
+}
+
+/* ─── Prévisualisation grille ─── */
+.grid-preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+}
+
+.gp-col {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(188,140,255,.12);
+    border: 1px solid rgba(188,140,255,.25);
+    color: var(--accent-purple);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    cursor: default;
+}
+
+/* Chaque démo de grille */
+.gp-demo {
+    display: grid;
+    gap: 3px;
+    flex: 1;
+    min-width: 60px;
+    max-width: 120px;
+}
+.gp-demo span {
+    height: 22px;
+    border-radius: 3px;
+    background: rgba(188,140,255,.15);
+    border: 1px solid rgba(188,140,255,.2);
+}
+.gp-2 { grid-template-columns: repeat(2, 1fr); }
+.gp-3 { grid-template-columns: repeat(3, 1fr); }
+.gp-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* ─── Contrôles lecteur vidéo ─── */
+.player-controls {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.player-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 600;
+    flex: 1;
+    min-width: 60px;
+    border: 1px solid var(--border);
+    transition: background .15s;
+}
+.player-btn i { font-size: 16px; }
+.player-btn span { color: var(--text-secondary); }
+
+.btn-play {
+    background: rgba(63,185,80,.08);
+    border-color: rgba(63,185,80,.25);
+    color: var(--accent-green);
+}
+.btn-play:hover  { background: rgba(63,185,80,.16); }
+
+.btn-pause {
+    background: rgba(227,179,65,.08);
+    border-color: rgba(227,179,65,.25);
+    color: var(--accent-yellow);
+}
+.btn-pause:hover { background: rgba(227,179,65,.16); }
+
+.btn-stop {
+    background: rgba(248,81,73,.08);
+    border-color: rgba(248,81,73,.25);
+    color: var(--accent-red);
+}
+.btn-stop:hover  { background: rgba(248,81,73,.16); }
+
+/* ─── Badge export différé ─── */
+.deferred-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    background: rgba(45,212,191,.08);
+    border: 1px solid rgba(45,212,191,.25);
+    color: var(--accent-teal);
+}
