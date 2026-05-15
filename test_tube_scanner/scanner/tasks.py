@@ -5,7 +5,7 @@ import requests
 from celery import shared_task, group, chord, chain
 from celery.utils.log import get_task_logger
 from django.utils import timezone
-
+from django.utils.translation import gettext_lazy as _
 from .process import ScannerProcess, ReplayProcess, redisDB
 from .export_tasks import shm_download_video, export_images_zip, export_video_mp4
 from .constants import ScannerConstants
@@ -18,21 +18,35 @@ logger = get_task_logger(__name__)
 def scanner_start():
     scanner = ScannerProcess()        
     scanner.start()     
-    return f"Scanner démarré."
+    return str(_("Scanner démarré."))
 
 @shared_task
 def replay_start():
     replay = ReplayProcess(latency=5.0)
     replay.start()    
-    return f"Replay démarré."
+    return str(_("Replay démarré."))
 
-@shared_task
-def download_video(uuid, start_ts, end_ts, frame_rate=10, opencv_fourcc_format='mp4v', opencv_video_type='mp4'):
-    try:
-        return asyncio.run(shm_download_video(uuid, start_ts, end_ts, frame_rate, opencv_fourcc_format, opencv_video_type))
+
+@shared_task(bind=True)
+def download_video(self, uuid, start_ts, end_ts, frame_rate=5, opencv_fourcc_format='mp4v', opencv_video_type='mp4'):
+    """
+    Exécuter directement la fonction async DANS la tâche Celery.
+    Sans passer par une wrapper.
+    """
+    try:       
+        logger.info(f"Task {self.request.id}: Processing {uuid} from {start_ts} to {end_ts}")
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            result = loop.run_until_complete(
+                shm_download_video(uuid, start_ts, end_ts, frame_rate, opencv_fourcc_format, opencv_video_type) )
+            return result
+        finally:
+            loop.close()
     except Exception as e:
-        logger.error(f"download_video: {e}")
-
+        logger.error(f"shm_download_video_task error: {e}", exc_info=True)
+        return { 'status': 'error', 'error': str(e), 'uuid': uuid}        
+        
 @shared_task
 def export_images(
         uuid: str, 
@@ -46,7 +60,8 @@ def export_images(
         return asyncio.run(export_images_zip(uuid, start_ts, end_ts, jpeg_quality, max_zip_size_mb, max_image_width, max_image_height))
     except Exception as e:
         logger.error(f"export_images: {e}")
-        
+ 
+
 @shared_task
 def export_all_images(session_id=None):
     try:
@@ -72,13 +87,11 @@ def export_all_images(session_id=None):
         
         return job_zip
     except Exception as e:
-        logger.error(f"export_images: {e}")       
+        logger.error(f"export_images: {e}")
+
 
 @shared_task
-def export_videos(uuid: str, 
-        start_ts: float | None = None, 
-        end_ts: float | None = None, 
-        frame_rate: int = 5,
+def export_videos(uuid: str, start_ts: float | None = None, end_ts: float | None = None, frame_rate: int = 5,
         opencv_fourcc_format='mp4v', 
         opencv_video_type='mp4',
         max_video_size_mb: int = 0, 
@@ -88,6 +101,7 @@ def export_videos(uuid: str,
         return asyncio.run(export_video_mp4(uuid, start_ts, end_ts, frame_rate, opencv_fourcc_format, opencv_video_type, max_video_size_mb, max_width, max_height))
     except Exception as e:
         logger.error(f"export_videos: {e}")
+        return {"success": False, "error": str(e)}
 
 
 @shared_task

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-14 17:29+0200\n"
+"POT-Creation-Date: 2026-05-15 15:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,7 +80,7 @@ msgstr "Prerequisite"
 #: home/templates/docs/doc_database.html:363
 #: home/templates/docs/doc_database.html:366
 #: home/templates/docs/doc_database.html:367
-#: scanner/templates/scanner/base.html:132 scanner/views.py:131
+#: scanner/templates/scanner/base.html:132 scanner/views.py:133
 msgid "Calibration"
 msgstr "Calibration"
 
@@ -409,8 +409,7 @@ msgid "Tester le circuit"
 msgstr "Test circuit"
 
 #: home/templates/docs/doc_calibration.html:420
-msgid ""
-"Vérifier les déplacements en parcourant automatiquement tous les puits."
+msgid "Vérifier les déplacements en parcourant automatiquement tous les puits."
 msgstr "Check movements by automatically browsing all wells."
 
 #: home/templates/docs/doc_calibration.html:431
@@ -803,8 +802,8 @@ msgid ""
 "Sessions, expériences, configurations et import CSV — interface "
 "Administration Django"
 msgstr ""
-"Sessions, experiments, configurations and import CSV — Django Administration"
-" interface"
+"Sessions, experiments, configurations and import CSV — Django Administration "
+"interface"
 
 #: home/templates/docs/doc_experiment.html:32
 #: home/templates/docs/doc_experiment.html:86
@@ -847,8 +846,7 @@ msgstr "CSV import"
 
 #: home/templates/docs/doc_experiment.html:55
 msgid ""
-"C'est l'interface Administration Django qui est chargée de créer les "
-"données."
+"C'est l'interface Administration Django qui est chargée de créer les données."
 msgstr ""
 "The Django Administration interface is responsible for creating the data."
 
@@ -947,8 +945,8 @@ msgstr "Date of export"
 
 #: home/templates/docs/doc_experiment.html:169
 msgid ""
-"Crée une tâche différée pour exporter automatiquement les images et vidéos à"
-" la date choisie."
+"Crée une tâche différée pour exporter automatiquement les images et vidéos à "
+"la date choisie."
 msgstr ""
 "Creates a delayed task to automatically export images and videos to the "
 "selected date."
@@ -996,8 +994,7 @@ msgid "Par défaut, tous les puits sont actifs."
 msgstr "By default, all wells are active."
 
 #: home/templates/docs/doc_experiment.html:255
-msgid ""
-"Il est possible d'ignorer le balayage d'un ou plusieurs puits au choix."
+msgid "Il est possible d'ignorer le balayage d'un ou plusieurs puits au choix."
 msgstr "It is possible to ignore the scanning of one or more wells of choice."
 
 #: home/templates/docs/doc_experiment.html:265
@@ -1630,7 +1627,7 @@ msgstr "Back home"
 msgid "Ensemble d'expériences"
 msgstr "Set of experiments"
 
-#: planarian/templates/planarian/base.html:30
+#: planarian/templates/planarian/base.html:27
 msgid "Exporter les metrics de l'expérience"
 msgstr "Export the metrics of the experience"
 
@@ -2450,6 +2447,14 @@ msgstr "Scanning started..."
 msgid "Erreur lors du démarrage du balayage..."
 msgstr "Error starting scanning..."
 
+#: scanner/tasks.py:21
+msgid "Balayage démarré."
+msgstr "Scanning started..."
+
+#: scanner/tasks.py:27
+msgid "Replay démarré."
+msgstr "Replay started..."
+
 #: scanner/templates/scanner/base.html:5
 msgid "Barre de côté"
 msgstr "Side bar"
@@ -2548,7 +2553,7 @@ msgstr "Creation of experience sessions"
 msgid "Gestions des expériences"
 msgstr "Experience management"
 
-#: scanner/templates/scanner/base.html:137 scanner/views.py:121
+#: scanner/templates/scanner/base.html:137 scanner/views.py:123
 msgid "Balayage multi-puits"
 msgstr "Multi-well sweeping"
 
@@ -2560,7 +2565,7 @@ msgstr "Results"
 msgid "Export CSV des expériences"
 msgstr "CSV export of experiments"
 
-#: scanner/templates/scanner/base.html:146 scanner/views.py:185
+#: scanner/templates/scanner/base.html:146 scanner/views.py:187
 msgid "Gestionnaire d'images"
 msgstr "Image Manager"
 
@@ -2719,21 +2724,33 @@ msgid "Tester le cirduit"
 msgstr "Test for circumference"
 
 #: scanner/templates/scanner/calibration.html:207
-#: scanner/templates/scanner/scanning.html:58
+#: scanner/templates/scanner/scanning.html:59
 msgid "ARRET"
 msgstr "JUDGMENT"
 
-#: scanner/templates/scanner/images.html:30
-msgid "Exporter l'ensemble des images"
-msgstr "Export All Images"
+#: scanner/templates/scanner/images.html:27
+msgid "Exporter l'ensemble des images de la session"
+msgstr "Export All Images for that session"
 
-#: scanner/templates/scanner/images.html:48
+#: scanner/templates/scanner/images.html:45
 msgid "Télécharger"
 msgstr "Download"
 
-#: scanner/templates/scanner/replay.html:32
+#: scanner/templates/scanner/images.html:65
+msgid "Confirmer l'export des images."
+msgstr "Export must be confirmed."
+
+#: scanner/templates/scanner/images.html:66
+msgid "ATTENTION le processus peut être long!"
+msgstr "BEWARE The procedure can be lengthy."
+
+#: scanner/templates/scanner/replay.html:29
 msgid "Exporter l'ensemble des vidéos"
 msgstr "Export all videos"
+
+#: scanner/templates/scanner/replay.html:78
+msgid "Confirmer l'export des vidéos. ATTENTION le processus peut être long!."
+msgstr "Confirm videos exportation. BEWARE the procedure can be lengthy."
 
 #: scanner/templates/scanner/scanning.html:14
 msgid "Choix de la session"
@@ -2756,25 +2773,25 @@ msgstr "scanning"
 msgid "Simuler"
 msgstr "Simulate"
 
-#: scanner/views.py:109
+#: scanner/views.py:111
 msgid "Documentation"
 msgstr "Documentation"
 
-#: scanner/views.py:230
+#: scanner/views.py:222 scanner/views.py:273
+msgid "Erreur d'exportation"
+msgstr "Export error"
+
+#: scanner/views.py:246
 msgid "Gestionnaire de vidéos"
 msgstr "Video Manager"
 
-#: scanner/views.py:252
+#: scanner/views.py:268
 msgid "Images téléchargées"
 msgstr "Downloaded images"
 
-#: scanner/views.py:255
+#: scanner/views.py:271
 msgid "Vidéos téléchargées"
 msgstr "Videos downloaded"
-
-#: scanner/views.py:257
-msgid "Erreur d'exportation"
-msgstr "Export error"
 
 #: templates/admin/base_site.html:4
 msgid "Django site admin"

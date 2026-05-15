@@ -42,7 +42,7 @@ TUBE_AXIS_TYPE = [
     
 class Configuration(models.Model):
     name = models.CharField(_("Nom de la Configuration"), help_text=_("Nom de la configuration"), max_length=100, null=True, blank=False, default=_("Configuration par défaut"))
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name="Auteur", null=True, blank=True)
     # Dashboard configuration
     sidebar_width = models.CharField(_("Barre latérale"), help_text=_("Largeur barre latérale (css)"), max_length=32, null=True, blank=False, default="350px")
     default_grid_columns = models.PositiveSmallIntegerField(_("Colonnes de la grille par défaut"), help_text=_("Nombre de colonnes de la grille par défaut"), blank=False, default=3)
@@ -94,7 +94,7 @@ class Configuration(models.Model):
         return f'{self.name}'
 
 class Well(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name="Auteur", null=True, blank=True)
     name =  models.CharField(_("Nom"), help_text=_("Nom du puit: Ai..Di"), unique=True, max_length=4, null=True, blank=True)
 
     class Meta:
@@ -110,7 +110,7 @@ class Well(models.Model):
 class MultiWell(models.Model):
     # Identification
     label =  models.CharField(_("Label"), help_text=_("Label du multi-puit"), max_length=100, null=True, blank=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name="Auteur", null=True, blank=True)
     position = models.CharField(_("Position"), help_text=_('Position du multi-puits sur la table'), unique=True, max_length=8, choices=MULTIWELL_POSITION, null=True, blank=False)
     default = models.BooleanField(_("Par défaut"), help_text=_('Multi-puit par défaut'), default=False)
     # Configuration   
@@ -175,7 +175,7 @@ class MultiWell(models.Model):
 
 
 class WellPosition(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name="Auteur", null=True, blank=True)
     well = models.ForeignKey(Well, verbose_name=_("Puit"), on_delete=models.SET_NULL, null=True, blank=True)
     multiwell = models.ForeignKey(MultiWell, verbose_name=_("Multi-puits"), on_delete=models.SET_NULL, null=True, blank=True)
     
@@ -239,7 +239,7 @@ class Experiment(models.Model):
     comment =  models.TextField(_("Commentaires"), help_text=_("Descriptions de l'expérience"), null=True, blank=True)
     identifier = models.CharField(_("Identifiant d'expérience"), unique=True, max_length=100, null=True, blank=False )
 
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name="Auteur", null=True, blank=True)
     multiwell = models.ForeignKey(MultiWell, verbose_name=_("Multi-puits"), on_delete=models.SET_NULL, null=True, blank=True)   
     duration = models.PositiveIntegerField(_("Durée"), help_text=_('Durée de la prise de vue en secondes'), blank=False, default=120)
     
@@ -249,7 +249,7 @@ class Experiment(models.Model):
     
     
     def save(self, *args, **kwargs):
-        self.identifier = f'{self.id}-{self.multiwell.position}_{self.created.isoformat()[:19]}'
+        self.identifier = f'{self.multiwell.position}_{self.created.isoformat()[:19]}'
         super().save(*args, **kwargs)
 
 
@@ -264,7 +264,7 @@ class Experiment(models.Model):
         verbose_name_plural = _("Expériences")
 
     def __str__(self):
-        return f'{self.identifier}'
+        return f'{self.identifier} [ {self.title} ]'
 
 
 class Session(models.Model):
@@ -276,7 +276,7 @@ class Session(models.Model):
         ERROR     = "error",     _("Erreur")    
     
     name = models.CharField(_("Nom de la session"), help_text=_("Session d'expérience. 4 Multi-puits maximum"), max_length=100, null=True, blank=False)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name="Auteur", null=True, blank=True)
     active = models.BooleanField(_("Active"), default=True)
     expected_export  = models.DateTimeField(_("Date d'exportation"), help_text=_("Date d'exportation prévue"), null=True, blank=True)
     expected_scanning  = models.DateTimeField(_("Date du balayage"), help_text=_("Date du balayage prévue"), null=True, blank=True)    
@@ -313,7 +313,7 @@ class Session(models.Model):
 
     def __str__(self):
         state = _("Terminée") if not self.active else _("Active")
-        return f'{self.id}: {self.name} {state}'
+        return f'[ {self.id} ] {self.name} ({state})'
     
 
 @receiver(post_save, sender=Session)
@@ -376,9 +376,9 @@ def delete_periodic_task(sender, instance, **kwargs):
     
     
 class SessionExperiment(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
-    session = models.ForeignKey(Session, verbose_name=_("Session"), on_delete=models.SET_NULL, null=True, blank=True)
-    experiment = models.ForeignKey(Experiment, verbose_name=_("Expérience"), on_delete=models.SET_NULL, null=True, blank=True, related_name="session_experiments")
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name="Auteur", null=True, blank=True)
+    session = models.ForeignKey(Session, verbose_name=_("Session"), on_delete=models.CASCADE, null=True, blank=True)
+    experiment = models.ForeignKey(Experiment, verbose_name=_("Expérience"), on_delete=models.CASCADE, null=True, blank=True, related_name="session_experiments")
 
     @classmethod
     def experiment_by_session(cls, session_id, active=True):
@@ -407,8 +407,8 @@ class SessionExperiment(models.Model):
 
 
 class ExperimentWell(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur", null=True, blank=True)
-    experiment = models.ForeignKey(Experiment, verbose_name=_("Expérience"), on_delete=models.SET_NULL, null=True, blank=True, related_name="experimentwell")
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name="Auteur", null=True, blank=True)
+    experiment = models.ForeignKey(Experiment, verbose_name=_("Expérience"), on_delete=models.CASCADE, null=True, blank=True, related_name="experimentwell")
     well = models.ForeignKey(Well, verbose_name=_("Puit"), on_delete=models.SET_NULL, null=True, blank=True, related_name="wellexperiment")
     active = models.BooleanField(_("Active"), default=True)
  

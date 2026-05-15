@@ -9,11 +9,11 @@ from .models import ExperimentConfig
 class ExperimentConfigAdmin(admin.ModelAdmin):
     """Admin Django pour les configurations d'expérience."""
     readonly_fields = ('experiment', 'px_per_mm',  'fps', 'well_radius_mm',)
-    list_display  = ("experiment_key", "well", "active", "px_per_mm", "fps",
+    list_display  = ("experiment_key", "well", "active", "planarian_count", "px_per_mm", "fps",
                      "thresh_immobile", "thresh_mobile",
                      "photo_mode", "chemo_strength", "created_at", )
     
-    list_filter   = ("experiment_key", "photo_mode", "tube_axis")
+    list_filter   = ("experiment_key__session_experiments__session", "experiment_key", "photo_mode", "thigmotaxis_wall_dist_mm", "planarian_count")
     search_fields = ("experiment_key", "well_name", "description")
     ordering      = ("-created_at",)
 

@@ -25,6 +25,7 @@ class ScannerManager {
         this.scan_state   = options.scan_state;
         this.sim_bt       = options.simulate || null;
         this.well_btn     = options.well_btn;  
+        this.well_state   = options.well_state;  
     }
 
     init_controls() {
@@ -56,7 +57,8 @@ class ScannerManager {
             }
             if (payload.ts)     { this.ts.textContent = timestampToLocalISOString(payload.ts); }
             if (payload.scan_state) { this.scan_state.textContent=payload.scan_state;}
-            
+            if (payload.well_state) { this.well_state.textContent=payload.well_state;}
+                        
             if (payload.buttons) { 
                 this.well_btn.innerHTML = payload.buttons; 
                 const span = this.crop.querySelector("span.crop"); span.style.color = '#f0f';
@@ -66,9 +68,7 @@ class ScannerManager {
                     if (btn.value==payload.current) { btn.classList.add('w3-green'); return; }
                     btn.classList.remove('w3-green'); 
                 });
-            }
-           
-                                
+            }                          
         } catch(e) { console.log(e); }
     }
 

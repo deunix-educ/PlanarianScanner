@@ -17,10 +17,7 @@
             {% endfor %}
         </select>
         <div class="w3-margin-left w3-margin-bottom">
-            {% for ss in experiments %}
-            <input class="" type="radio" name="_expid" value="{{ ss.id }}" {% if ss.id == current_experiment.id %}checked{% endif %} onchange="this.form.submit()" >
-            <label>{{ ss }}</label>
-            {% endfor %}       
+            {% include "scanner/experiment-inc.html" %} 
         </div>
     </form>
     {% block export_csv %}

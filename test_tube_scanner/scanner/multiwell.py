@@ -151,7 +151,7 @@ class MultiWellManager:
             multiwell = experiment.multiwell
             
             if self.process.use_tracking:               
-                cfg = ExperimentConfig.objects.filter(experiment_id=experiment.id, well_id=well.id).first()
+                cfg = ExperimentConfig.objects.filter(experiment_key_id=experiment.id, well=well.name).first()
                 if not cfg:
                     raise Exception(f"Configuration d'expérience introuvable pour {experiment} / {well}")
                 # reset PlanarianTracker => on_well_change
@@ -159,14 +159,16 @@ class MultiWellManager:
 
             ## create uuid for this capture
             uuid = f'{self.process.data.session}-{multiwell.position}-{well.name}'
-            
+              
             ## start recording   
             self.process.data.uuid = uuid
             if not simulate:
                 self.process.data.record = True
             self.process._send(current=well_position.order)
             
-            logger.info(f"Starting capture for {uuid} ordre: {well_position.order}")
+            msg = f"Starting capture for {uuid} ordre: {well_position.order}"
+            logger.info(msg)
+            self.process._send(well_state=msg)
             
             start = time.monotonic()
             while not self.stop_playing.is_set():
@@ -249,7 +251,9 @@ class MultiWellManager:
             started = timezone.now()
             for obs in experiments:
                 
-                logger.warning(f"Starting scan for {obs} (well {pos}/{len(experiments)})")
+                msg = f"Starting scan for {obs} (well {pos}/{len(experiments)})"
+                logger.warning(msg)
+                self.process._send(well_state=msg)
                 
                 if self.stop_playing.is_set():
                     break

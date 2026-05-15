@@ -17,10 +17,7 @@
             {% endfor %}
         </select>
         <div class="w3-margin-left w3-margin-bottom">
-            {% for ss in experiments %}
-            <input class="" type="radio" name="_expid" value="{{ ss.id }}" {% if ss.id == current_experiment.id %}checked{% endif %} onchange="this.form.submit()" >
-            <label>{{ ss.multiwell }}</label>
-            {% endfor %}       
+            {% include "scanner/experiment-inc.html" %} 
         </div>        
         
         {% if current_session.id and current_experiment %}
@@ -28,7 +25,7 @@
         {% endif %}
     </form>
     {% if current_session.id %}
-    <a href="#" class="w3-bar-item w3-btn w3-hover-opacity" onclick="download_all_videos()">
+    <a href="#" class="w3-bar-item w3-btn w3-hover-opacity" onclick="download_all_videos({{ current_session.id }})">
         <i class="fa-solid fa-file-export w3-text-red w3-xlarge"></i> {% trans "Exporter l'ensemble des vidéos" %}<br>
         <span class="w3-margin-left">{{ export_destination }}</span>
     </a>     
@@ -78,9 +75,12 @@
     const ws_route = "{{ ws_route }}";
     const uuid_btn = sId("btn-" + "{{ uuid }}");
     const image_endpoint = "{% url 'scanner:export_api' %}";
-    const sid = parseInt("{{ cursid }}");
+    const export_msg = "{% trans "Confirmer l'export des vidéos. ATTENTION le processus peut être long!" %}";
 
-    function download_all_videos() {
+
+    function download_all_videos(sid) {
+        const ok = confirm(export_msg);
+        if (!ok) return false;    
         fetch(image_endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

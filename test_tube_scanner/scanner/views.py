@@ -1,13 +1,15 @@
 #
+import os
 from asgiref.sync import async_to_sync
 import base64, json
 from django.shortcuts import render #, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
+
 from reduct.time import unix_timestamp_to_iso
 from modules.system_stats import get_cached_stats, start_background_updater
 from modules import reductstore
@@ -198,13 +200,28 @@ def images_view(request):
 @csrf_exempt
 def download_api(request):
     data = json.loads(request.body.decode() or "{}")
-    action = data.get("action")
-    if action=='download':
-        uuid, dt_start, dt_stop, frame_rate = data.get("uuid"), data.get("dt_start"), data.get("dt_stop"), data.get("fps")
-        return download_video.delay(uuid, dt_start, dt_stop, frame_rate=frame_rate)  # @UndefinedVariable
-    else:
-        return JsonResponse({"state":  False})
+    try:
+        action = data.get("action")
+        if action=='download':
+            uuid, dt_start, dt_stop, frame_rate = data.get("uuid"), data.get("dt_start"), data.get("dt_stop"), data.get("fps")
+            task = download_video.delay(uuid, dt_start, dt_stop, frame_rate=frame_rate)  # @UndefinedVariable
+            result = task.get(timeout=300)
+
+            if result.get('success'):
+                video_path = result.get('video_path')
+                if not os.path.exists(video_path):
+                    raise Exception(f"File not created: {video_path}")           
     
+                response = FileResponse(open(video_path, 'rb'), content_type='video/mp4')
+                response['Content-Disposition'] = f'attachment; filename="{video_path}"'
+                response['Content-Length'] = os.path.getsize(video_path)
+                os.remove(video_path)
+                return response
+            return JsonResponse(result)
+    except Exception as e:
+        print("download_api error",  e)
+    return JsonResponse({"state":  False, "success":  False, "msg": str(_("Erreur d'exportation")), })
+
     
 def get_video(uuid):
     oldest, latest = async_to_sync(reductstore.old_last_dates)(cameraDB, entry_name=uuid)
@@ -246,14 +263,13 @@ def export_api(request):
     data = json.loads(request.body.decode() or "{}")
     session_id = data.get("sid")
     action = data.get("action")
-    
-    if action == 'export_images':
-        export_all_images(session_id)
-        return JsonResponse({"success":  True,  "msg": str(_("Images téléchargées"))})
-    elif action == 'export_videos':
-        export_all_videos(session_id)
-        return JsonResponse({"success":  True, "msg": str(_("Vidéos téléchargées"))})
-    else:
-        return JsonResponse({"success":  False, "msg": str(_("Erreur d'exportation"))})    
-
+    try:
+        if action == 'export_images':
+            export_all_images(session_id)
+            return JsonResponse({"success":  True,  "msg": str(_("Images téléchargées"))})
+        elif action == 'export_videos':
+            export_all_videos(session_id)
+            return JsonResponse({"success":  True, "msg": str(_("Vidéos téléchargées"))})
+    except:
+        return JsonResponse({"state":  False, "success":  False, "msg": str(_("Erreur d'exportation")), })
 

@@ -7,7 +7,7 @@ import posix_ipc
 import mmap
 import cv2
 import numpy as np
-from django.http import JsonResponse, HttpResponse
+#from django.http import JsonResponse, HttpResponse
 from django.conf import settings
 from reduct.time import unix_timestamp_to_iso
 
@@ -38,15 +38,10 @@ async def remove_video_by_uuid(uuid, start_ts=None, end_ts=None, when=None):
 
 
 async def remove_video(uuid, start_ts, end_ts, when=None):
-    try:
-        await remove_video_by_uuid(uuid, start_ts, end_ts, when=when)
-        return JsonResponse({'state': 'ok'}, status=200)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
-
+    await remove_video_by_uuid(uuid, start_ts, end_ts, when=when)
 
 async def shm_download_video(uuid, start_ts, end_ts, frame_rate=5, opencv_fourcc_format='mp4v', opencv_video_type='mp4'):
-    try:
+    try:        
         record_manager = CameraRecordManager(cameraDB)
         total_size = await record_manager.size(uuid, start_ts, end_ts)
 
@@ -79,7 +74,8 @@ async def shm_download_video(uuid, start_ts, end_ts, frame_rate=5, opencv_fourcc
             total += 1
 
         if not frame_sizes:
-            return JsonResponse({'error': 'Aucune frame trouvée'}, status=404)
+            raise Exception("No frame found!")
+            #return JsonResponse({'error': 'Aucune frame trouvée'}, status=404)
 
         video_path = os.path.join(settings.MEDIA_ROOT, f"output.{opencv_video_type}")
         fourcc = cv2.VideoWriter_fourcc(* opencv_fourcc_format)
@@ -97,36 +93,16 @@ async def shm_download_video(uuid, start_ts, end_ts, frame_rate=5, opencv_fourcc
             video.write(frame)
             current_offset += size
             
-            progress_bar(i + 1, total, prefix=f'Progression {uuid}:', suffix='Terminé', length=30)
-            i+=1             
-            
+            progress_bar(i + 1, total, prefix=f'Progress {uuid}:', suffix='Ended', length=30)
+            i+=1                         
         video.release()
 
         # Nettoie la mémoire partagée
         shm.unlink()
-
-        # Vérifier que le fichier existe
-        if not os.path.exists(video_path):
-            logger.error(f"Fichier non créé: {video_path}")
-            return JsonResponse({'error': 'Erreur création vidéo'}, status=500)
-
-        # Lit le fichier vidéo généré
-        with open(video_path, 'rb') as f:
-            video_bytes = f.read()
-
-        # Retourne la vidéo en réponse
-        response = HttpResponse(video_bytes, content_type='video/mp4')
-        response['Content-Disposition'] = f'attachment; filename="{video_path}"'
-        response['Content-Length'] = os.path.getsize(video_path)
-
-
-        # Supprime le fichier temporaire
-        os.remove(video_path)
-        return response
-
+            
+        return { "status": 404, "success": True, "video_path": video_path}        
     except Exception as e:
-        logger.error(f"shm_download_video: {e}")
-        return JsonResponse({'error': str(e)}, status=500)
+        return {"status": 500, "success": False, "video_path": video_path, "error": str(e)}
 
 # ─────────────────────────────────────────────
 ##
@@ -247,7 +223,7 @@ async def export_images_zip(
             total += 1
 
         if not frame_sizes:
-            return {"status": "error", "message": "Aucune frame trouvée"}
+            return {"status": "error", "message": "No frame found!..."}
 
         # --- Génération du ZIP ---
         max_zip_bytes = max_zip_size_mb * 1024 * 1024 if max_zip_size_mb > 0 else 0
@@ -297,7 +273,7 @@ async def export_images_zip(
                     zf.writestr(f"{uuid}_{ts_iso}.jpg", buf.tobytes())
                     written += 1
                     
-                progress_bar(i + 1, total, prefix=f'Progression {uuid}:', suffix='Terminé', length=30)
+                progress_bar(i + 1, total, prefix=f'Progress {uuid}:', suffix='Ended', length=30)
                 i+=1                   
                 current_offset += size
         
@@ -402,7 +378,7 @@ async def export_video_mp4(
             total +=1
 
         if not frame_sizes:
-            return {"status": "error", "message": "Aucune frame trouvée"}
+            return {"status": "error", "message": "No frame found!..."}
 
 
         # --- Génération du MP4 ---
@@ -458,14 +434,14 @@ async def export_video_mp4(
             written += 1
             current_offset += size
 
-            progress_bar(i + 1, total, prefix=f'Progression {uuid}:', suffix='Terminé', length=30)
+            progress_bar(i + 1, total, prefix=f'Progress {uuid}:', suffix='Ended', length=30)
             i+=1
 
         if video:
             video.release()
 
         if not os.path.exists(video_path):
-            return {"status": "error", "message": f"Fichier {opencv_video_type} non créé"}
+            return {"status": "error", "message": f"File {opencv_video_type} not created!..."}
         
         ## Copie vers les destinations (local + Samba)
         filename = os.path.basename(video_path)
