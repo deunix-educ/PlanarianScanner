@@ -9,6 +9,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
+from django.utils import timezone
 
 from reduct.time import unix_timestamp_to_iso
 from modules.system_stats import get_cached_stats, start_background_updater
@@ -195,6 +196,34 @@ def images_view(request):
     )
     return render(request, "scanner/images.html", context=global_context(request, **ctx))
 
+@login_required
+def export_medias(request):
+    cursid = 0    
+    if request.method == 'POST':
+        cursid = request.POST.get('_sid')
+        valid = request.POST.get('valid')
+        if valid == 'ok':
+            try:
+                session = models.Session.objects.get(pk=cursid)
+                session.expected_export = timezone.now()
+                if not session.export_status == "running":
+                    session.export_status = "running"
+                    if session.export_task:
+                        session.export_task.enabled = True
+                        session.export_task.save()
+                    session.save()
+
+            except Exception as e:
+                print("export_medias error", e)
+        
+    current_session = models.Session.get_session(cursid)
+    ctx = dict(
+        choice_title=_("Exporter les fichiers médias"),
+        sessions=models.Session.objects.filter(active=False).all(),
+        current_session=current_session,
+        url=f'http://{settings.LOCAL_IP_SERVER}:9001/logtail/test_tube:services',
+    )
+    return render(request, "scanner/export_medias.html", context=global_context(request, **ctx))
 
 @require_POST
 @csrf_exempt

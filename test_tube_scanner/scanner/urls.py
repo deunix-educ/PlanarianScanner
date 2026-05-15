@@ -23,6 +23,8 @@ urlpatterns = [
     path('scanning/', views.scanning_view, name='scanning'),
     path('images/', views.images_view, name='images'),
     path('replay/', views.replay_view, name='replay'),
+    path('export/medias/', views.export_medias, name='export_medias'),
+    
     path('api/stats/', views.stats_view, name='api_stats'),
     path('api/video/', views.download_api, name='download_api'),
     path('api/export/', views.export_api, name='export_api'),

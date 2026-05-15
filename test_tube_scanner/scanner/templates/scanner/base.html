@@ -145,9 +145,13 @@
             <a href="{% url 'scanner:images' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                  <i class="fa-regular fa-images w3-text-cyan w3-xlarge" w3-xlarge""></i> {% trans "Gestionnaire d'images" %}
             </a>
-             <a href="{% url 'scanner:replay' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
+            <a href="{% url 'scanner:replay' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
                 <i class="fa-solid fa-podcast w3-text-amber w3-xlarge"r"></i>  {% trans "Redifusion vidéos" %}
             </a>
+            <a href="{% url 'scanner:export_medias' %}"  class="w3-bar-item w3-btn w3-hover-opacity">
+                <i class="fa-solid fa-file-export w3-text-pink w3-xlarge"></i> {% trans "Exporter les fichiers multimédias" %}
+            </a>            
+            
         {% endblock %}
 	</div>
 	{% endblock %}

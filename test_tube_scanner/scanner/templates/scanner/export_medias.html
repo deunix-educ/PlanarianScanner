@@ -1,0 +1,68 @@
+{% extends 'scanner/base.html' %}
+{% load i18n %}
+{% block columns %}{% endblock %}
+{% block sidebar_list %}
+    <a href="/"  class="w3-bar-item w3-btn w3-hover-opacity"><i class="fa-solid fa-house w3-text-orange w3-xlarge"></i> {% trans "Retour accueil" %}</a>
+    <form method="post" class="w3-bar-item" action="">
+        {% csrf_token %}
+	    <select id="_sid" name="_sid" class="w3-select w3-margin-bottom" onchange="this.form.submit()" title="{% trans "Ensemble d'expériences" %}">
+	        <option value="0">---- {% trans "Session" %}</option>
+	        {% for s in sessions %}
+	        <option value="{{ s.id }}" {% if s.id == current_session.id %}selected{% endif %}>{{ s }}</option>
+	        {% endfor %}
+	    </select>
+    </form>
+{% endblock %}
+
+{% block content %}
+	<div class="w3-container w50 w3-div-center w3-border w3-round w3-round-xlarge w3-margin-top">
+	    <div class="w3-panel w3-pale-blue w3-round w3-round-xlarge w3-margin-bottom">
+	        <p>
+	            {% trans "L'explortation des fichiers multimédia peut durer plusieurs heures." %} 
+	            {% trans "Préférer l'exportation différée." %}
+	        </p>
+	    </div>
+	    
+        {% if current_session %}	    
+	    <form method="post" novalidate class="w3-row w3-row-padding">
+	        {% csrf_token %}
+	        <input type="hidden" name="_sid" value="{{ current_session.id }}">
+            <div class="w3-col w3-margin-bottom">
+                <label class="w3-text-blue-grey">{% trans "Auteur" %}</label> {{ current_session.author }}
+                
+            </div>	    
+            <div class="w3-col w3-margin-bottom">
+                <label class="w3-text-blue-grey">{% trans "Session" %}</label> {{ current_session }}
+                
+            </div>
+            <div class="w3-col w3-margin-bottom">
+                <label class="w3-text-blue-grey">{% trans "Date de création" %}</label> {{ current_session.created }}
+            </div>           
+            <div class="w3-col w3-margin-bottom">
+                <label class="w3-text-blue-grey">{% trans "Status" %}</label> {{ current_session.export_status }}
+            </div>  	    
+
+	        <div class="w3-col w3-margin-top">
+	            <button type="submit" name="valid" class="w3-button w3-blue w3-round w3-round-large w3-large w3-padding w3-margin-bottom" value="ok">
+	                <i class="fa-solid fa-file-export w3-text-red w3-xlarge"></i> {% trans "Exporter" %}
+	            </button>
+                <a href="/" class="w3-button w3-light-grey w3-round w3-round-large w3-large w3-padding w3-margin-left w3-margin-bottom">
+                   <span class="w3-xlarge">✖</span>{% trans "Annuler" %}
+                </a>	        
+	        </div>
+	    </form>
+        {% else %}
+			<div class="w3-container w3-padding-64 w3-margin" style="max-width:760px; margin:auto;">
+			    <h3 class="w3-panel w3-blue w3-round-xlarge w3-padding-64 w3-center"> {% trans "Choisir une session" %}</h3>
+			</div>
+        {% endif %}
+    </div>
+    {% if current_session and current_session.export_status == 'running' %}   
+    <div class="w3-padding w3-margin-top">
+       <iframe width="100%" src="{{ url }}" style="border:none; height:30vh;display:block;"></iframe>
+    </div> 
+    {% endif %}
+{% endblock %}
+
+
+

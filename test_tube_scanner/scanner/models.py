@@ -278,8 +278,8 @@ class Session(models.Model):
     name = models.CharField(_("Nom de la session"), help_text=_("Session d'expérience. 4 Multi-puits maximum"), max_length=100, null=True, blank=False)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name="Auteur", null=True, blank=True)
     active = models.BooleanField(_("Active"), default=True)
-    expected_export  = models.DateTimeField(_("Date d'exportation"), help_text=_("Date d'exportation prévue"), null=True, blank=True)
-    expected_scanning  = models.DateTimeField(_("Date du balayage"), help_text=_("Date du balayage prévue"), null=True, blank=True)    
+    expected_export = models.DateTimeField(_("Date d'exportation"), help_text=_("Date d'exportation prévue"), null=True, blank=True)
+    expected_scanning = models.DateTimeField(_("Date du balayage"), help_text=_("Date du balayage prévue"), null=True, blank=True)    
     
     created = models.DateTimeField(_("Date de création"), default=timezone.now)
     finished = models.DateTimeField (_("Date de fin"), null=True, blank=True)
@@ -340,8 +340,8 @@ def create_periodic_task(sender, instance, created, **kwargs):
             )
             # Sauvegarde sans re-déclencher le signal
             Session.objects.filter(pk=instance.pk).update(export_task=export_task)
-        except:
-            pass
+        except Exception as e:
+            print("create_periodic_task error", e)
         
     if instance.expected_scanning:
         try:

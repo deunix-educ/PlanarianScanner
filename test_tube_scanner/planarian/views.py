@@ -67,10 +67,7 @@ def global_context(request, **ctx):
 def get_active_experiments(session, expid=None):
     if session:
         experiments = models.SessionExperiment.experiment_by_session(session.id, active=True) or []
-        eid = [str(e.id) for e in experiments]
-        
-        print(f"Found {eid} active experiments for session {session.id}")
-        
+        eid = [str(e.id) for e in experiments]        
         if experiments and not expid or expid not in eid:
             return experiments, experiments[0]
         
