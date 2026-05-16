@@ -108,6 +108,20 @@ class VideoCaptureInterface(abc.ABC):
             logger.error(f"Error creating tracker with conf {cfg}: {e}")
             self._tracker = None
     
+    def _flush_current_well(self, uuid=""):
+        """Stocke les résumés du puits courant — appelé avant tout changement."""
+        if not self._metrics or not self._params:
+            return
+        for pid, m in enumerate(self._metrics):
+            async_to_sync(self._client.store_summary)(
+                summary    = m.summary(),
+                experiment = self._params.experiment,
+                well       = self._params.well,
+                planarian  = pid,
+                uuid       = uuid,
+            )
+        self._metrics_.clear()    
+
 
     def on_well_change(self, cfg, uuid="", draw_contours=False):
         """
@@ -119,18 +133,10 @@ class VideoCaptureInterface(abc.ABC):
             return
         
         # 1. Sauvegarder les résumés du puits qu'on quitte
-        if self._metrics and self._params:
-            for pid, m in enumerate(self._metrics):               
-                async_to_sync(self._clientDB.store_summary)(
-                    summary    = m.summary(),
-                    experiment = self._params.experiment,
-                    well       = self._params.well,
-                    planarian  = pid,
-                    uuid       = uuid,
-                )      
+        self._flush_current_well(uuid)          # ← ferme le puits courant
         
-        # 2. Reconstruire pour le nouveau puits
-        params = cfg.to_params_dict()        
+        # 2. Reconstruire pour le nouveau puit _metrics_list
+        params = cfg.to_params_dict()
         self._params = ExperimentParams(params)        
         self._metrics = [self._params.build_metrics() for _ in range(self._params.planarian_count)]
         
@@ -143,6 +149,10 @@ class VideoCaptureInterface(abc.ABC):
             min_contour_dist_px = self._params.min_contour_dist_px,
             draw_contours = draw_contours,
         )
+
+    def on_scan_complete(self):
+        if self.use_tracking:
+            self._flush_current_well()          # ← ferme le dernier puits
 
     def set_draw_contours(self, draw: bool = True):
         if self._tracker:

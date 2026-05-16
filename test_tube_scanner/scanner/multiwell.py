@@ -146,19 +146,20 @@ class MultiWellManager:
         
     #def _grid_scanning_capture(self, uuid, duration):
     def _grid_scanning_capture(self, experiment, well_position, simulate=False):
+        uuid = None
         try:
             well = well_position.well
             multiwell = experiment.multiwell
+            
+            ## create uuid for this capture
+            uuid = f'{self.process.data.session}-{multiwell.position}-{well.name}'
             
             if self.process.use_tracking:               
                 cfg = ExperimentConfig.objects.filter(experiment_key_id=experiment.id, well=well.name).first()
                 if not cfg:
                     raise Exception(f"Configuration d'expérience introuvable pour {experiment} / {well}")
                 # reset PlanarianTracker => on_well_change
-                self.process.cam.on_well_change(cfg, draw_contours=False)
-
-            ## create uuid for this capture
-            uuid = f'{self.process.data.session}-{multiwell.position}-{well.name}'
+                self.process.cam.on_well_change(cfg, uuid=uuid, raw_contours=False)
               
             ## start recording   
             self.process.data.uuid = uuid
@@ -176,14 +177,18 @@ class MultiWellManager:
                 if time.monotonic() - start > experiment.duration:
                     break
                 self.cnc_controller.wait_for(0.1)
-                
+            
+            self.process.cam._flush_current_well(uuid)
+            
             self.process.data.record = False
             self.process.data.uuid = None
-            
+
             msg = f"{uuid}: capture done..."
         except Exception as e:
             msg = f"error during capture - {e}"
             logger.error(msg)
+        finally:
+            self.process.cam._flush_current_well(uuid)
 
         logger.info(msg)
         self.process._send(scan_state=msg)               
