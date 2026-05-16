@@ -18,11 +18,23 @@ Métriques résumé (summary) :
                   chemo_latency_s, chemo_mean_dist_mm
     Social      : social_pct_time_avoiding, social_pct_time_aggregating,
                   social_mean_nn_mm, social_contact_events
+                  
+  Architecture :
+    PlanarianTracker.process()   → dict brut (cx, cy, speed_px_s, ...)
+    EthoVisionMetrics.update()   → enrichit avec métriques EthoVision
+    ReductStoreClient.store()    → stocke dans ReductStore avec labels
+    ReductStoreClient.export_csv() → exporte vers CSV
 
+  Schéma des labels ReductStore :
+    experiment  : identifiant de l'expérience (ex: "exp_2026_04_25")
+    well        : identifiant du puits (ex: "A1", "B3")
+    planarian   : index du planaire dans le puits (ex: "0", "1")
+    bucket      : nom du bucket (ex: "planarian_metrics")                  
+                  
 Created on 25 avr. 2026
 @author: denis
 """
-
+#import asyncio
 import csv
 import io
 import json
@@ -30,8 +42,8 @@ import logging
 import math
 import os
 import time
-
 from datetime import datetime, timezone
+
 from typing import Optional
 
 logger = logging.getLogger(__name__)
@@ -606,7 +618,7 @@ class ExperimentParams:
     def from_csv_file(cls, filepath: str) -> list:
         """Charge toutes les expériences d'un fichier CSV."""
         results = []
-        with open(filepath, newline="", encoding="utf-8") as f:
+        with open(filepath, newline="", encoding="utf-8-sig") as f:
             for row in csv.DictReader(f):
                 try:
                     results.append(cls.from_csv_row(row))
@@ -654,11 +666,12 @@ class ReductStoreClient:
         self.token        = token
         self.bucket_name  = bucket
         self.quota_type = quota_type
-        self.quota_size = quota_size 
-        self._client      = None
-        self._bucket      = None
+        self.quota_size = quota_size
+        self.entry_name   = "metrics"
+        self._client = None
+        self._bucket = None
         
-        
+
     async def _create_bucket(self):
         from reduct import Client, BucketSettings
         self._client = Client(self.url, api_token=self.token)
@@ -668,24 +681,12 @@ class ReductStoreClient:
             exist_ok=True,
         )
         return await self._client.create_bucket(self.bucket_name, settings, exist_ok=True)
-    
+
+
     async def connect(self):
         """Initialise la connexion et crée le bucket si nécessaire."""
         self._bucket = await self._create_bucket()
         logger.info(f"ReductStore connecté : {self.url} / {self.bucket_name}")
-        
-    '''
-    async def connect(self):
-        """Initialise la connexion et crée le bucket si nécessaire."""
-        from reduct import Client, BucketSettings, QuotaType
-        self._client = Client(self.url, api_token=self.token)
-        self._bucket = await self._client.create_bucket(
-            self.bucket_name,
-            BucketSettings(quota_type=QuotaType.NONE),
-            exist_ok=True,
-        )
-        logger.info(f"ReductStore connecté : {self.url} / {self.bucket_name}")
-    '''
         
     async def store_metric(
         self,
@@ -703,99 +704,47 @@ class ReductStoreClient:
         Le timestamp est rendu unique par planaire en ajoutant l'index
         du planaire comme offset sub-microseconde — évite le 409 Conflict
         quand plusieurs planaires du même puits écrivent dans la même frame.
-
-        Args:
-            record      : dict de métriques (issu de EthoVisionMetrics.update())
-            experiment  : identifiant de l'expérience
-            well        : identifiant du puits
-            planarian   : index du planaire (défaut 0)
-            record_type : "frame" ou "summary"
-            uuid        : identifiant unique de session (permet de filtrer
-                          plusieurs sessions d'un même puits/expérience)
-            ts_us       : timestamp en microsecondes (défaut : maintenant)
         """
         if self._bucket is None:
             await self.connect()
         # ts_us de base + offset planaire (0, 1, 2…) pour unicité garantie
-        base_ts   = ts_us or int(time.time() * 1_000_000)
+        base_ts = ts_us or int(time.time() * 1_000_000)
         unique_ts = base_ts + planarian
-        labels    = {
-            "experiment":  experiment,
-            "well":        well,
-            "planarian":   str(planarian),
-            "record_type": record_type,
-        }
-        if uuid:
-            labels["uuid"] = uuid
+        
         await self._bucket.write(
             entry_name   = "metrics",
             data         = json.dumps(record).encode("utf-8"),
             timestamp    = unique_ts,
-            labels       = labels,
+            labels       = {
+                "experiment":  experiment,
+                "well":        well,
+                "planarian":   str(planarian),
+                "record_type": record_type,
+                "uuid": uuid,
+            },
             content_type = "application/json",
         )
 
-    async def store_summary(
-        self,
-        summary:    dict,
-        experiment: str,
-        well:       str,
-        planarian:  int = 0,
-        uuid:       str = "",
-    ):
-        """
-        Stocke le résumé de fin de session dans ReductStore.
-
-        Args:
-            summary    : dict issu de EthoVisionMetrics.summary()
-            experiment : identifiant de l'expérience
-            well       : identifiant du puits
-            planarian  : index du planaire
-            uuid       : identifiant unique de session (même valeur que
-                         celle utilisée dans store_metric pour cette session)
-        """
-        await self.store_metric(
-            record      = summary,
-            experiment  = experiment,
-            well        = well,
-            planarian   = planarian,
-            record_type = "summary",
-            uuid        = uuid,
-        )
+    async def store_summary(self, summary: dict, experiment: str, well: str, planarian: int = 0):
+        """Stocke le résumé de fin de session."""
+        await self.store_metric(summary, experiment, well, planarian, "summary")
 
     async def get_tracking_data(
         self,
         experiment:  str,
         well:        str,
         planarian:   int = 0,
-        record_type: str = "frame",
-        uuid:        str = "",
+        record_type: str = "metrics",
         start:       Optional[datetime] = None,
         stop:        Optional[datetime] = None,
     ) -> list:
-        """
-        Récupère les enregistrements filtrés par labels.
-
-        Args:
-            experiment  : identifiant de l'expérience
-            well        : identifiant du puits
-            planarian   : index du planaire
-            record_type : "frame" | "summary"
-            uuid        : filtre sur une session spécifique (optionnel —
-                          si vide, retourne toutes les sessions)
-            start, stop : plage temporelle (datetime UTC, optionnel)
-        """
+        """Récupère les enregistrements filtrés par labels."""
         if self._bucket is None:
             await self.connect()
-        labels = {
-            "experiment":  experiment,
-            "well":        well,
-            "planarian":   str(planarian),
-            "record_type": record_type,
-        }
-        if uuid:
-            labels["uuid"] = uuid
-        kwargs = {"include": labels}
+        kwargs = {"include": {
+            "experiment": experiment, "well": well,
+            "planarian": str(planarian), "record_type": record_type,
+        }}
         if start:
             kwargs["start"] = int(start.timestamp() * 1_000_000)
         if stop:
@@ -862,8 +811,7 @@ class ReductStoreClient:
         experiment:  str,
         well:        str,
         planarian:   int = 0,
-        record_type: str = "frame",
-        uuid:        str = "",
+        record_type: str = "metrics",
         output_dir:  str = ".",
         start:       Optional[datetime] = None,
         stop:        Optional[datetime] = None,
@@ -879,15 +827,13 @@ class ReductStoreClient:
             planarian   : index du planaire
             record_type : "frame" | "summary"
             output_dir  : répertoire de sortie (défaut : répertoire courant)
-            uuid        : filtre sur une session spécifique (optionnel —
-                          si vide, retourne toutes les sessions)
             start, stop : plage temporelle (datetime UTC, optionnel)
 
         Returns:
             tuple (filepath, nb_lignes)
         """
         records = await self.get_tracking_data(
-            experiment, well, planarian, record_type, uuid, start, stop)
+            experiment, well, planarian, record_type, start, stop)
         if not records:
             logger.warning(f"Aucune donnée pour {experiment}/{well}/{planarian}")
             return "", 0
@@ -910,8 +856,7 @@ class ReductStoreClient:
         experiment:  str,
         well:        str,
         planarian:   int = 0,
-        record_type: str = "frame",
-        uuid:        str = "",
+        record_type: str = "metrics",
         start:       Optional[datetime] = None,
         stop:        Optional[datetime] = None,
     ) -> tuple:
@@ -923,7 +868,7 @@ class ReductStoreClient:
             tuple (contenu_csv_str, nb_lignes)
         """
         records = await self.get_tracking_data(
-            experiment, well, planarian, record_type, uuid, start, stop)
+            experiment, well, planarian, record_type, start, stop)
         if not records:
             return "", 0
         records    = self._convert_timestamps(records)
@@ -942,4 +887,5 @@ class ReductStoreClient:
         """
         self._client = None
         self._bucket = None
-        logger.info("ReductStore déconnecté")
+        logger.info("ReductStore déconnecté")        
+        

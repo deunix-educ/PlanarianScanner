@@ -21,6 +21,7 @@ import logging
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, Callable, TYPE_CHECKING
+from asgiref.sync import async_to_sync
 
 from django.conf import settings
 from modules.planarian_tracker import PlanarianTracker
@@ -85,6 +86,7 @@ class VideoCaptureInterface(abc.ABC):
         self._tracker = None
         self._metrics = None
         self._params = None
+        self._clientDB = self.parent.metricDB
 
         # Tracker générique, pour simulation
         self.on_test_well_change(**self.DEFAULT_TRACKER_CONFIG)
@@ -105,8 +107,9 @@ class VideoCaptureInterface(abc.ABC):
         except Exception as e:
             logger.error(f"Error creating tracker with conf {cfg}: {e}")
             self._tracker = None
+    
 
-    def on_well_change(self, cfg, draw_contours=False):
+    def on_well_change(self, cfg, uuid="", draw_contours=False):
         """
         Appelé par la CNC lors du changement de puits.
         Réinitialise le fond appris et l'état inter-frame du tracker.
@@ -115,10 +118,20 @@ class VideoCaptureInterface(abc.ABC):
         if not self.use_tracking or not cfg:
             return
         
-        params = cfg.to_params_dict()        
-        self._params = ExperimentParams(params)
-        #self._metrics = self._params.build_metrics()
+        # 1. Sauvegarder les résumés du puits qu'on quitte
+        if self._metrics and self._params:
+            for pid, m in enumerate(self._metrics):               
+                async_to_sync(self._clientDB.store_summary)(
+                    summary    = m.summary(),
+                    experiment = self._params.experiment,
+                    well       = self._params.well,
+                    planarian  = pid,
+                    uuid       = uuid,
+                )      
         
+        # 2. Reconstruire pour le nouveau puits
+        params = cfg.to_params_dict()        
+        self._params = ExperimentParams(params)        
         self._metrics = [self._params.build_metrics() for _ in range(self._params.planarian_count)]
         
         self._tracker = PlanarianTracker(

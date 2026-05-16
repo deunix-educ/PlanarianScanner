@@ -160,27 +160,37 @@ class ScannerProcess(Task):
         self.data = ProcessData()
         self.manager = None
         self.recordDB = CameraRecordManager(cameraDB)
+        self.metricDB = planarianDB
 
     def __call__(self, *args, **kwargs):
         return self.start(*args, **kwargs)
     
     def set_crop_radius(self, radius):
         return CircularCrop(radius=radius, strategy=CropStrategy.CROP_JPEG, jpeg_quality=self.image_quality)
+    
+    def get_config(self):
+        '''
+        Constants:
+            reset si besoin les constantes vidéo
+        '''
+        self.conf = ScannerConstants().get()
+        self.use_tracking = self.conf.tracking
+        
+        self.video_quality = self.conf.video_jpeg_quality
+        self.image_quality = self.conf.image_quality
+        self.video_fps = self.conf.video_frame_rate
+        self.video_width = self.conf.video_width_capture
+        self.video_height = self.conf.video_height_capture    
+        self.crop_radius = self.conf.calibration_crop_radius
+
+        self.video_jpg_quality = [int(cv2.IMWRITE_JPEG_QUALITY), self.video_quality]
+        self.image_jpg_quality = [int(cv2.IMWRITE_JPEG_QUALITY), self.image_quality]
+        return self.conf
+    
 
     def start(self, *args, **kwargs):
         try:            
-            self.conf = ScannerConstants().get()
-            self.use_tracking = self.conf.tracking
-            
-            self.video_quality = self.conf.video_jpeg_quality
-            self.image_quality = self.conf.image_quality
-            self.video_fps = self.conf.video_frame_rate
-            self.video_width = self.conf.video_width_capture
-            self.video_height = self.conf.video_height_capture    
-            self.crop_radius = self.conf.calibration_crop_radius
-
-            self.video_jpg_quality = [int(cv2.IMWRITE_JPEG_QUALITY), self.video_quality]
-            self.image_jpg_quality = [int(cv2.IMWRITE_JPEG_QUALITY), self.image_quality]
+            self.get_config()
             self.grbl_xmax = self.conf.grbl_xmax
             self.grbl_ymax = self.conf.grbl_ymax
                     

@@ -53,7 +53,8 @@ class Configuration(models.Model):
     grbl_xmax = models.FloatField(_("Grbl Xmax"), help_text=_("CNC Grbl Xmax en mm"), blank=False, default=350.0)
     grbl_ymax = models.FloatField(_("Grbl Ymax"), help_text=_("CNC Grbl Ymax en mm"), blank=False, default=250.0)
     # camera configuration
-    capture_type = models.CharField(_("Capture"), help_text=_("Type de capture"), default='rpi', max_length=8, choices=CAPTURE_TYPE, null=True, blank=False)
+    capture_type = models.CharField(_("Capture"), help_text=_("Type de capture. Nécessite un redémarrage en cas de modification à chaud!"), default='rpi', max_length=8, choices=CAPTURE_TYPE, null=True, blank=False)
+    
     webcam_device_index = models.PositiveSmallIntegerField(_("Index de la webcam"), help_text=_("Index de la webcam (0, 1, ...) si présente"), default=2)
     image_quality = models.PositiveSmallIntegerField(_("Qualité JPEG"), help_text=_("Qualité JPEG (1-100) pour les images exportées"), default=90)
     video_jpeg_quality = models.PositiveSmallIntegerField(_("Qualité JPEG pour les vidéos"), help_text=_("Qualité JPEG (1-100) pour les images extraites des vidéos"), default=90)
@@ -278,8 +279,8 @@ class Session(models.Model):
     name = models.CharField(_("Nom de la session"), help_text=_("Session d'expérience. 4 Multi-puits maximum"), max_length=100, null=True, blank=False)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name="Auteur", null=True, blank=True)
     active = models.BooleanField(_("Active"), default=True)
-    expected_export = models.DateTimeField(_("Date d'exportation"), help_text=_("Date d'exportation prévue"), null=True, blank=True)
-    expected_scanning = models.DateTimeField(_("Date du balayage"), help_text=_("Date du balayage prévue"), null=True, blank=True)    
+    expected_export = models.DateTimeField(_("Exportation auto"), help_text=_("Date d'exportation prévue"), null=True, blank=True)
+    expected_scanning = models.DateTimeField(_("Bbalayage auto"), help_text=_("Date du balayage prévue"), null=True, blank=True)    
     
     created = models.DateTimeField(_("Date de création"), default=timezone.now)
     finished = models.DateTimeField (_("Date de fin"), null=True, blank=True)

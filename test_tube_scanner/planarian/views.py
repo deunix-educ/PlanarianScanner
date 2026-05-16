@@ -21,7 +21,7 @@ from modules.planarian_metrics import ExperimentParams, ReductStoreClient
 from modules.system_stats import get_cached_stats, start_background_updater
 from scanner.constants import ScannerConstants
 from .tasks import export_experiment_metrics, export_session_metrics
-from scanner import models
+from scanner import models, views as scanner_views
 from .models import ExperimentConfig
 
 
@@ -64,30 +64,17 @@ def global_context(request, **ctx):
     )
 
 
-def get_active_experiments(session, expid=None):
-    if session:
-        experiments = models.SessionExperiment.experiment_by_session(session.id, active=True) or []
-        eid = [str(e.id) for e in experiments]        
-        if experiments and not expid or expid not in eid:
-            return experiments, experiments[0]
-        
-        for e in experiments:
-            if expid == str(e.id):
-                return experiments, e
-    return [], None
-
-
 def get_active_session(request, session_id=None, experiment_id=None):
     cursid = session_id or request.POST.get('_sid')
     expid = experiment_id or request.POST.get('_expid')
 
     current_session = models.Session.get_session(cursid)
-    experiments, current_experiment = get_active_experiments(current_session, expid) 
+    experiments, current_experiment = scanner_views.get_not_active_experiments(current_session, expid) 
     context = dict(
         current_session = current_session,
         current_experiment = current_experiment,
         experiments=experiments or [],
-        sessions=models.Session.objects.filter(active=True).all(),
+        sessions=models.Session.objects.filter(active=False).all(),
         well_choices=models.Well.objects.order_by('name').all(),
     )
     return context    
@@ -118,6 +105,8 @@ def export_metrics(request):
 def export_csv(request):
     d = request.POST
     
+    print("export_csv===========", d)
+    
     @async_to_sync
     async def _do_export():
         client = _get_reduct_client()
@@ -141,7 +130,7 @@ def export_csv(request):
     csv_content, n = _do_export()
     logger.info(f"Export CSV: {n} lignes, content size={len(csv_content)}")
     filename = (
-        f"{d['experiment']}_{d['well']}-planaire{d['planarian']}"
+        f"{d['experiment']}_{d['well']}-planaire-{d['planarian']}"
         f"_{d['record_type']}.csv"
     )
     return csv_content, filename

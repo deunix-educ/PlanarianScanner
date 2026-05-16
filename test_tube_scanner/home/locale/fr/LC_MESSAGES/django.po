@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-15 15:08+0200\n"
+"POT-Creation-Date: 2026-05-16 09:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,6 +33,7 @@ msgstr ""
 #: home/templates/docs/doc_calibration.html:29
 #: home/templates/docs/doc_database.html:29
 #: home/templates/docs/doc_experiment.html:30
+#: home/templates/docs/doc_medias.html:33
 #: home/templates/docs/doc_results.html:32
 #: home/templates/docs/doc_scanning.html:31
 msgid "Navigation"
@@ -80,7 +81,7 @@ msgstr ""
 #: home/templates/docs/doc_database.html:363
 #: home/templates/docs/doc_database.html:366
 #: home/templates/docs/doc_database.html:367
-#: scanner/templates/scanner/base.html:132 scanner/views.py:133
+#: scanner/templates/scanner/base.html:132 scanner/views.py:134
 msgid "Calibration"
 msgstr ""
 
@@ -227,6 +228,8 @@ msgstr ""
 
 #: home/templates/docs/doc_calibration.html:217
 #: home/templates/docs/doc_calibration.html:260
+#: home/templates/docs/doc_medias.html:125
+#: home/templates/docs/doc_medias.html:237
 #: home/templates/docs/doc_results.html:81
 #: home/templates/docs/doc_scanning.html:105
 msgid "ATTENTION"
@@ -433,29 +436,29 @@ msgstr ""
 msgid "Authentification"
 msgstr ""
 
-#: home/templates/docs/doc_database.html:46 scanner/models.py:90
+#: home/templates/docs/doc_database.html:46 scanner/models.py:91
 msgid "Configuration"
 msgstr ""
 
 #: home/templates/docs/doc_database.html:49
-#: planarian/templates/planarian/export_csv.html:37 scanner/models.py:103
+#: planarian/templates/planarian/export_csv.html:37 scanner/models.py:104
 msgid "Puits"
 msgstr ""
 
-#: home/templates/docs/doc_database.html:52 scanner/models.py:169
-#: scanner/models.py:170 scanner/models.py:180 scanner/models.py:243
+#: home/templates/docs/doc_database.html:52 scanner/models.py:170
+#: scanner/models.py:171 scanner/models.py:181 scanner/models.py:244
 msgid "Multi-puits"
 msgstr ""
 
-#: home/templates/docs/doc_database.html:55 scanner/models.py:132
+#: home/templates/docs/doc_database.html:55 scanner/models.py:133
 msgid "Positions"
 msgstr ""
 
-#: home/templates/docs/doc_database.html:58 scanner/models.py:264
+#: home/templates/docs/doc_database.html:58 scanner/models.py:265
 msgid "Expériences"
 msgstr ""
 
-#: home/templates/docs/doc_database.html:61 scanner/models.py:312
+#: home/templates/docs/doc_database.html:61 scanner/models.py:313
 msgid "Sessions"
 msgstr ""
 
@@ -544,15 +547,15 @@ msgstr ""
 msgid "Fichier vidéo"
 msgstr ""
 
-#: home/templates/docs/doc_database.html:225 scanner/models.py:60
+#: home/templates/docs/doc_database.html:225 scanner/models.py:61
 msgid "Fréquence vidéos (fps)"
 msgstr ""
 
-#: home/templates/docs/doc_database.html:226 scanner/models.py:61
+#: home/templates/docs/doc_database.html:226 scanner/models.py:62
 msgid "Largeur de capture vidéo"
 msgstr ""
 
-#: home/templates/docs/doc_database.html:227 scanner/models.py:62
+#: home/templates/docs/doc_database.html:227 scanner/models.py:63
 msgid "Hauteur de capture vidéo"
 msgstr ""
 
@@ -620,11 +623,12 @@ msgstr ""
 msgid "Géométrie"
 msgstr ""
 
-#: home/templates/docs/doc_database.html:309 scanner/models.py:118
+#: home/templates/docs/doc_database.html:309 scanner/models.py:119
 msgid "Nombre de lignes"
 msgstr ""
 
-#: home/templates/docs/doc_database.html:310 scanner/models.py:117
+#: home/templates/docs/doc_database.html:310
+#: home/templates/docs/doc_medias.html:59 scanner/models.py:118
 msgid "Nombre de colonnes"
 msgstr ""
 
@@ -648,11 +652,11 @@ msgstr ""
 msgid "Durée de capture (calibration)"
 msgstr ""
 
-#: home/templates/docs/doc_database.html:326 scanner/models.py:125
+#: home/templates/docs/doc_database.html:326 scanner/models.py:126
 msgid "Origine X"
 msgstr ""
 
-#: home/templates/docs/doc_database.html:331 scanner/models.py:126
+#: home/templates/docs/doc_database.html:331 scanner/models.py:127
 msgid "Origine Y"
 msgstr ""
 
@@ -693,7 +697,7 @@ msgid "Axe Y (mm)"
 msgstr ""
 
 #: home/templates/docs/doc_database.html:374 planarian/models.py:36
-#: scanner/models.py:185
+#: scanner/models.py:186
 msgid "Pixels par mm"
 msgstr ""
 
@@ -722,7 +726,7 @@ msgstr ""
 msgid "Durée de capture (secondes)"
 msgstr ""
 
-#: home/templates/docs/doc_database.html:400 scanner/models.py:240
+#: home/templates/docs/doc_database.html:400 scanner/models.py:241
 msgid "Identifiant d'expérience"
 msgstr ""
 
@@ -805,8 +809,10 @@ msgstr ""
 
 #: home/templates/docs/doc_experiment.html:33
 #: home/templates/docs/doc_experiment.html:125
-#: planarian/templates/planarian/base.html:14 scanner/models.py:311
-#: scanner/models.py:380 scanner/templates/scanner/images.html:13
+#: planarian/templates/planarian/base.html:14 scanner/models.py:312
+#: scanner/models.py:381 scanner/templates/scanner/export_medias.html:9
+#: scanner/templates/scanner/export_medias.html:35
+#: scanner/templates/scanner/images.html:13
 #: scanner/templates/scanner/replay.html:14
 msgid "Session"
 msgstr ""
@@ -820,8 +826,8 @@ msgstr ""
 
 #: home/templates/docs/doc_experiment.html:36
 #: home/templates/docs/doc_experiment.html:195
-#: planarian/templates/planarian/export_csv.html:33 scanner/models.py:263
-#: scanner/models.py:381 scanner/models.py:411
+#: planarian/templates/planarian/export_csv.html:33 scanner/models.py:264
+#: scanner/models.py:382 scanner/models.py:412
 msgid "Expérience"
 msgstr ""
 
@@ -912,10 +918,11 @@ msgstr ""
 
 #: home/templates/docs/doc_experiment.html:140
 #: home/templates/docs/doc_experiment.html:208
+#: scanner/templates/scanner/export_medias.html:31
 msgid "Auteur"
 msgstr ""
 
-#: home/templates/docs/doc_experiment.html:149 scanner/models.py:403
+#: home/templates/docs/doc_experiment.html:149 scanner/models.py:404
 msgid "Expériences d'une session"
 msgstr ""
 
@@ -931,7 +938,7 @@ msgstr ""
 msgid "Options tâches périodiques"
 msgstr ""
 
-#: home/templates/docs/doc_experiment.html:168 scanner/models.py:281
+#: home/templates/docs/doc_experiment.html:168
 msgid "Date d'exportation"
 msgstr ""
 
@@ -941,7 +948,7 @@ msgid ""
 "la date choisie."
 msgstr ""
 
-#: home/templates/docs/doc_experiment.html:178 scanner/models.py:282
+#: home/templates/docs/doc_experiment.html:178
 msgid "Date du balayage"
 msgstr ""
 
@@ -950,7 +957,7 @@ msgid ""
 "Planifie le déclenchement du balayage de la session à une date ultérieure."
 msgstr ""
 
-#: home/templates/docs/doc_experiment.html:209 scanner/models.py:239
+#: home/templates/docs/doc_experiment.html:209 scanner/models.py:240
 msgid "Commentaires"
 msgstr ""
 
@@ -1084,12 +1091,16 @@ msgid "Importer des configurations depuis CSV"
 msgstr ""
 
 #: home/templates/docs/doc_experiment.html:462
+#: home/templates/docs/doc_medias.html:36
+#: home/templates/docs/doc_medias.html:39
 #: home/templates/docs/doc_results.html:34
 #: home/templates/docs/doc_results.html:60
 msgid "Menu gauche"
 msgstr ""
 
 #: home/templates/docs/doc_experiment.html:464
+#: home/templates/docs/doc_medias.html:97
+#: home/templates/docs/doc_medias.html:164
 #: home/templates/docs/doc_results.html:69
 msgid "Sélectionner la session"
 msgstr ""
@@ -1137,6 +1148,158 @@ msgstr ""
 
 #: home/templates/docs/doc_experiment.html:505
 msgid "Vérifier l'emplacement du fichier téléchargé (dossier Download)."
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:25
+msgid "Gestionnaire de médias"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:26
+msgid "Consultation, rediffusion et export des images et vidéos"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:34
+#: home/templates/docs/doc_medias.html:52
+msgid "Grille d'affichage"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:35
+#: home/templates/docs/doc_medias.html:86
+#: scanner/templates/scanner/base.html:146 scanner/views.py:188
+msgid "Gestionnaire d'images"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:37
+msgid "Affichage & export"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:38
+msgid "Rediffusion vidéos"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:40
+msgid "Lecteur & export"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:51
+msgid "Affichage"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:53
+msgid "Contrôle situé en haut à gauche de l'interface."
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:60
+msgid ""
+"Réduire ou augmenter dynamiquement le nombre de colonnes d'affichage des "
+"médias."
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:85
+#: home/templates/docs/doc_scanning.html:111
+msgid "Images"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:91
+#: home/templates/docs/doc_medias.html:158
+msgid "Menu gauche — Sélection"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:98
+#: home/templates/docs/doc_medias.html:165
+msgid "Cocher l'expérience"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:99
+#: home/templates/docs/doc_medias.html:166
+#: home/templates/docs/doc_results.html:145
+msgid "Choisir le puit"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:108
+msgid "Affichage des images & export"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:114
+msgid "Téléchargement unitaire"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:115
+msgid "Chaque image affichée dispose d'un bouton de téléchargement individuel."
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:124
+msgid "Exporter l'ensemble des images"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:130
+#: home/templates/docs/doc_medias.html:242
+#: home/templates/docs/doc_results.html:168
+msgid "La procédure peut être longue."
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:134
+#: home/templates/docs/doc_medias.html:246
+msgid "Préférer l'export différé."
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:139
+#: home/templates/docs/doc_medias.html:251
+msgid "Export différé recommandé"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:152
+msgid "Vidéos"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:153
+msgid "Rediffusion de vidéos"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:175
+msgid "Lecteur vidéo & export"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:181
+msgid "Contrôles de lecture"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:186
+msgid "Marche"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:190
+msgid "Pause"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:194
+#: home/templates/docs/doc_scanning.html:35
+msgid "Arrêt"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:201
+msgid "Slider vitesse de lecture"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:205
+msgid "Slider timeline (position dans la vidéo)"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:215
+msgid "Téléchargements"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:219
+msgid "Télécharger l'image courante"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:223
+msgid "Télécharger la vidéo complète"
+msgstr ""
+
+#: home/templates/docs/doc_medias.html:236
+#: scanner/templates/scanner/replay.html:29
+msgid "Exporter l'ensemble des vidéos"
 msgstr ""
 
 #: home/templates/docs/doc_results.html:24
@@ -1219,10 +1382,6 @@ msgstr ""
 msgid "Paramètres"
 msgstr ""
 
-#: home/templates/docs/doc_results.html:145
-msgid "Choisir le puit"
-msgstr ""
-
 #: home/templates/docs/doc_results.html:149
 msgid "Choisir l'index du planaire"
 msgstr ""
@@ -1243,10 +1402,6 @@ msgstr ""
 msgid "Télécharge le fichier CSV directement sur le poste client."
 msgstr ""
 
-#: home/templates/docs/doc_results.html:168
-msgid "La procédure peut être longue."
-msgstr ""
-
 #: home/templates/docs/doc_scanning.html:23
 #: home/templates/docs/doc_scanning.html:49
 #: scanner/templates/scanner/base.html:50
@@ -1258,12 +1413,8 @@ msgid "Lancement, suivi et procédure en cas d'arrêt"
 msgstr ""
 
 #: home/templates/docs/doc_scanning.html:34
-#: home/templates/docs/doc_scanning.html:80 scanner/models.py:298
+#: home/templates/docs/doc_scanning.html:80 scanner/models.py:299
 msgid "Lancer le balayage"
-msgstr ""
-
-#: home/templates/docs/doc_scanning.html:35
-msgid "Arrêt"
 msgstr ""
 
 #: home/templates/docs/doc_scanning.html:36
@@ -1301,10 +1452,6 @@ msgstr ""
 
 #: home/templates/docs/doc_scanning.html:93
 msgid "Les logs s'affichent en bas de l'écran en temps réel."
-msgstr ""
-
-#: home/templates/docs/doc_scanning.html:111
-msgid "Images"
 msgstr ""
 
 #: home/templates/docs/doc_scanning.html:112
@@ -1428,8 +1575,8 @@ msgstr ""
 msgid "Identifiant expérience"
 msgstr ""
 
-#: planarian/models.py:24 scanner/models.py:102 scanner/models.py:179
-#: scanner/models.py:412
+#: planarian/models.py:24 scanner/models.py:103 scanner/models.py:180
+#: scanner/models.py:413
 msgid "Puit"
 msgstr ""
 
@@ -1446,12 +1593,12 @@ msgstr ""
 msgid "Créé le"
 msgstr ""
 
-#: planarian/models.py:30 scanner/models.py:133 scanner/models.py:280
-#: scanner/models.py:315 scanner/models.py:413
+#: planarian/models.py:30 scanner/models.py:134 scanner/models.py:281
+#: scanner/models.py:316 scanner/models.py:414
 msgid "Active"
 msgstr ""
 
-#: planarian/models.py:37 scanner/models.py:185
+#: planarian/models.py:37 scanner/models.py:186
 msgid "Facteur de calibration optique"
 msgstr ""
 
@@ -1487,7 +1634,7 @@ msgstr ""
 msgid "Horizontal"
 msgstr ""
 
-#: planarian/models.py:65 scanner/models.py:74
+#: planarian/models.py:65 scanner/models.py:75
 msgid "Axe du tube"
 msgstr ""
 
@@ -1507,21 +1654,21 @@ msgstr ""
 msgid "Nombre de planaires"
 msgstr ""
 
-#: planarian/models.py:84 scanner/models.py:78
+#: planarian/models.py:84 scanner/models.py:79
 msgid "Taille du kernel"
 msgstr ""
 
-#: planarian/models.py:85 scanner/models.py:78
+#: planarian/models.py:85 scanner/models.py:79
 msgid ""
 "taille du kernel elliptique de fusion des fragments (px). Augmenter si "
 "fragments résiduels"
 msgstr ""
 
-#: planarian/models.py:90 scanner/models.py:79
+#: planarian/models.py:90 scanner/models.py:80
 msgid "Distance <contour>"
 msgstr ""
 
-#: planarian/models.py:91 scanner/models.py:79
+#: planarian/models.py:91 scanner/models.py:80
 msgid ""
 "Distance min entre deux contours pour les considérer comme individus "
 "distincts. Défaut : 40px. Augmenter si IDs multiples persistent"
@@ -1596,12 +1743,14 @@ msgid "Configurations des expériences"
 msgstr ""
 
 #: planarian/templates/planarian/base.html:10
+#: scanner/templates/scanner/export_medias.html:5
 #: scanner/templates/scanner/images.html:9
 #: scanner/templates/scanner/replay.html:10
 msgid "Retour accueil"
 msgstr ""
 
 #: planarian/templates/planarian/base.html:13
+#: scanner/templates/scanner/export_medias.html:8
 #: scanner/templates/scanner/images.html:12
 msgid "Ensemble d'expériences"
 msgstr ""
@@ -1678,6 +1827,7 @@ msgstr ""
 
 #: planarian/templates/planarian/export_csv.html:95
 #: planarian/templates/planarian/import_params.html:77
+#: scanner/templates/scanner/export_medias.html:50
 msgid "Annuler"
 msgstr ""
 
@@ -1707,6 +1857,9 @@ msgstr ""
 
 #: planarian/templates/planarian/export_csv.html:159
 #: planarian/templates/planarian/import_params.html:268
+#: scanner/templates/scanner/export_medias.html:56
+#: scanner/templates/scanner/images.html:56
+#: scanner/templates/scanner/replay.html:72
 msgid "Choisir une session"
 msgstr ""
 
@@ -1867,34 +2020,34 @@ msgstr ""
 msgid "Puis une expérience."
 msgstr ""
 
-#: planarian/views.py:140
+#: planarian/views.py:137
 #, python-format
 msgid "Erreur lors de l'export CSV: %(error)s"
 msgstr ""
 
-#: planarian/views.py:157
+#: planarian/views.py:154
 msgid "Export vers un fichier CSV depuis ReductStore"
 msgstr ""
 
-#: planarian/views.py:172
+#: planarian/views.py:169
 msgid "Aucune donnée trouvée."
 msgstr ""
 
-#: planarian/views.py:209
+#: planarian/views.py:206
 #, python-format
 msgid "Import terminé : %(c)d créés, %(u)d mis à jour, %(e)d erreurs."
 msgstr ""
 
-#: planarian/views.py:246
+#: planarian/views.py:243
 #, python-format
 msgid "Colonnes manquantes : %(cols)s"
 msgstr ""
 
-#: planarian/views.py:253
+#: planarian/views.py:250
 msgid "Importer des configurations depuis un fichier CSV"
 msgstr ""
 
-#: planarian/views.py:295
+#: planarian/views.py:292
 msgid "Métriques de tracking d'un planaire"
 msgstr ""
 
@@ -2023,397 +2176,407 @@ msgid "CNC Grbl Ymax en mm"
 msgstr ""
 
 #: scanner/models.py:56
-msgid "Type de capture"
+msgid ""
+"Type de capture. Nécessite un redémarrage en cas de modification à chaud!"
 msgstr ""
 
-#: scanner/models.py:57
+#: scanner/models.py:58
 msgid "Index de la webcam"
 msgstr ""
 
-#: scanner/models.py:57
+#: scanner/models.py:58
 msgid "Index de la webcam (0, 1, ...) si présente"
 msgstr ""
 
-#: scanner/models.py:58
+#: scanner/models.py:59
 msgid "Qualité JPEG"
 msgstr ""
 
-#: scanner/models.py:58
+#: scanner/models.py:59
 msgid "Qualité JPEG (1-100) pour les images exportées"
 msgstr ""
 
-#: scanner/models.py:59
+#: scanner/models.py:60
 msgid "Qualité JPEG pour les vidéos"
 msgstr ""
 
-#: scanner/models.py:59
+#: scanner/models.py:60
 msgid "Qualité JPEG (1-100) pour les images extraites des vidéos"
 msgstr ""
 
-#: scanner/models.py:60
+#: scanner/models.py:61
 msgid "Fréquence d'extraction des images des vidéos (images par seconde)"
 msgstr ""
 
-#: scanner/models.py:61
+#: scanner/models.py:62
 msgid "Largeur de capture vidéo en pixels"
 msgstr ""
 
-#: scanner/models.py:62
+#: scanner/models.py:63
 msgid "Hauteur de capture vidéo en pixels"
 msgstr ""
 
-#: scanner/models.py:64
+#: scanner/models.py:65
 msgid "Simuler balayage"
 msgstr ""
 
-#: scanner/models.py:64
+#: scanner/models.py:65
 msgid "Autorise la simulation du balayage"
 msgstr ""
 
-#: scanner/models.py:65
+#: scanner/models.py:66
 msgid "Rayon de découpe pour la calibration"
 msgstr ""
 
-#: scanner/models.py:65
+#: scanner/models.py:66
 msgid "Rayon en pixels pour découper les images de calibration en px"
 msgstr ""
 
-#: scanner/models.py:66
+#: scanner/models.py:67
 msgid "Multi-puits de calibration par défaut"
 msgstr ""
 
-#: scanner/models.py:66
+#: scanner/models.py:67
 msgid "Position du multi-puits de calibration par défaut"
 msgstr ""
 
-#: scanner/models.py:67
+#: scanner/models.py:68
 msgid "Vitesse de calibration"
 msgstr ""
 
-#: scanner/models.py:67
+#: scanner/models.py:68
 msgid "Vitesse de déplacement pour la calibration en mm/mn"
 msgstr ""
 
-#: scanner/models.py:68
+#: scanner/models.py:69
 msgid "Pas de calibration"
 msgstr ""
 
-#: scanner/models.py:68
+#: scanner/models.py:69
 msgid "Pas de déplacement pour la calibration en mm"
 msgstr ""
 
-#: scanner/models.py:69
+#: scanner/models.py:70
 msgid "Duruée calibration"
 msgstr ""
 
-#: scanner/models.py:69
+#: scanner/models.py:70
 msgid "Durée de pose entre chaque puits en s"
 msgstr ""
 
-#: scanner/models.py:71
+#: scanner/models.py:72
 msgid "Suivi"
 msgstr ""
 
-#: scanner/models.py:71
+#: scanner/models.py:72
 msgid "Suivi et analyse des planaires"
 msgstr ""
 
-#: scanner/models.py:72
+#: scanner/models.py:73
 msgid "Réglage dans calibration"
 msgstr ""
 
-#: scanner/models.py:72
+#: scanner/models.py:73
 msgid "Autorise le réglage des valeurs par défaut dans la calibration"
 msgstr ""
 
-#: scanner/models.py:74
+#: scanner/models.py:75
 msgid "Axe du puit"
 msgstr ""
 
-#: scanner/models.py:75
+#: scanner/models.py:76
 msgid "Surface minimale"
 msgstr ""
 
-#: scanner/models.py:75
+#: scanner/models.py:76
 msgid "surface minimale d'un contour pour être considéré valide (px²)"
 msgstr ""
 
-#: scanner/models.py:76
+#: scanner/models.py:77
 msgid "surface maximale "
 msgstr ""
 
-#: scanner/models.py:76
+#: scanner/models.py:77
 msgid "surface maximale d'un contour en fraction de la frame (défaut 10%)"
 msgstr ""
 
-#: scanner/models.py:77
+#: scanner/models.py:78
 msgid "Max planaire"
 msgstr ""
 
-#: scanner/models.py:77
+#: scanner/models.py:78
 msgid "nombre maximum de planaires à suivre simultanément (1-10)"
 msgstr ""
 
-#: scanner/models.py:81
+#: scanner/models.py:82
 msgid "Actif"
 msgstr ""
 
-#: scanner/models.py:98
+#: scanner/models.py:99
 msgid "Nom"
 msgstr ""
 
-#: scanner/models.py:98
+#: scanner/models.py:99
 msgid "Nom du puit: Ai..Di"
 msgstr ""
 
-#: scanner/models.py:112
+#: scanner/models.py:113
 msgid "Label"
 msgstr ""
 
-#: scanner/models.py:112
+#: scanner/models.py:113
 msgid "Label du multi-puit"
 msgstr ""
 
-#: scanner/models.py:114
+#: scanner/models.py:115
 msgid "Position"
 msgstr ""
 
-#: scanner/models.py:114
+#: scanner/models.py:115
 msgid "Position du multi-puits sur la table"
 msgstr ""
 
-#: scanner/models.py:115
+#: scanner/models.py:116
 msgid "Par défaut"
 msgstr ""
 
-#: scanner/models.py:115
+#: scanner/models.py:116
 msgid "Multi-puit par défaut"
 msgstr ""
 
-#: scanner/models.py:117
+#: scanner/models.py:118
 msgid "Colonnes"
 msgstr ""
 
-#: scanner/models.py:118
+#: scanner/models.py:119
 msgid "Lignes"
 msgstr ""
 
-#: scanner/models.py:119
+#: scanner/models.py:120
 msgid "Diamètre"
 msgstr ""
 
-#: scanner/models.py:119
+#: scanner/models.py:120
 msgid "Diamètre des tubes en mm"
 msgstr ""
 
-#: scanner/models.py:120
+#: scanner/models.py:121
 msgid "Définition"
 msgstr ""
 
-#: scanner/models.py:120
+#: scanner/models.py:121
 msgid "Définition des lignes"
 msgstr ""
 
-#: scanner/models.py:121
+#: scanner/models.py:122
 msgid "Ordre ligne"
 msgstr ""
 
-#: scanner/models.py:121
+#: scanner/models.py:122
 msgid "Ordre ligne de puit. Lecture en serpentin dans le sens des +- X"
 msgstr ""
 
-#: scanner/models.py:123 scanner/models.py:182
+#: scanner/models.py:124 scanner/models.py:183
 msgid "Ordre"
 msgstr ""
 
-#: scanner/models.py:123
+#: scanner/models.py:124
 msgid "Ordre de lecture du multi-puit"
 msgstr ""
 
-#: scanner/models.py:124 scanner/models.py:244
+#: scanner/models.py:125 scanner/models.py:245
 #: scanner/templates/scanner/calibration.html:187
 msgid "Durée"
 msgstr ""
 
-#: scanner/models.py:124
+#: scanner/models.py:125
 msgid "Durée de capture en secondes pour la calibration"
 msgstr ""
 
-#: scanner/models.py:125
+#: scanner/models.py:126
 msgid "Base origine X en mm"
 msgstr ""
 
-#: scanner/models.py:126
+#: scanner/models.py:127
 msgid "Base origine Y en mm"
 msgstr ""
 
-#: scanner/models.py:128
+#: scanner/models.py:129
 msgid "Pas X"
 msgstr ""
 
-#: scanner/models.py:128
+#: scanner/models.py:129
 msgid "Pas ou interval sur X en mm"
 msgstr ""
 
-#: scanner/models.py:129
+#: scanner/models.py:130
 msgid "Pas Y"
 msgstr ""
 
-#: scanner/models.py:129
+#: scanner/models.py:130
 msgid "Pas ou interval sur Y en mm"
 msgstr ""
 
-#: scanner/models.py:130 scanner/templates/scanner/calibration.html:23
+#: scanner/models.py:131 scanner/templates/scanner/calibration.html:23
 msgid "Vitesse"
 msgstr ""
 
-#: scanner/models.py:130
+#: scanner/models.py:131
 msgid "Vitesse déplacement en mm/mn "
 msgstr ""
 
-#: scanner/models.py:132
+#: scanner/models.py:133
 msgid ""
 "Positions des puits générées ?. Non => efface WellPosition et recalcule les "
 "positions"
 msgstr ""
 
-#: scanner/models.py:182
+#: scanner/models.py:183
 msgid "Ordre de lecture du puit"
 msgstr ""
 
-#: scanner/models.py:183
+#: scanner/models.py:184
 msgid "X"
 msgstr ""
 
-#: scanner/models.py:183
+#: scanner/models.py:184
 msgid "Axe X en mm"
 msgstr ""
 
-#: scanner/models.py:184
+#: scanner/models.py:185
 msgid "Y"
 msgstr ""
 
-#: scanner/models.py:184
+#: scanner/models.py:185
 msgid "Axe Y en mm"
 msgstr ""
 
-#: scanner/models.py:199
+#: scanner/models.py:200
 msgid "Position du puit"
 msgstr ""
 
-#: scanner/models.py:200
+#: scanner/models.py:201
 msgid "Position des puits"
 msgstr ""
 
-#: scanner/models.py:238
+#: scanner/models.py:239
 msgid "Titre de l'expérience"
 msgstr ""
 
-#: scanner/models.py:239
+#: scanner/models.py:240
 msgid "Descriptions de l'expérience"
 msgstr ""
 
-#: scanner/models.py:244
+#: scanner/models.py:245
 msgid "Durée de la prise de vue en secondes"
 msgstr ""
 
-#: scanner/models.py:246 scanner/models.py:284
+#: scanner/models.py:247 scanner/models.py:285
+#: scanner/templates/scanner/export_medias.html:39
 msgid "Date de création"
 msgstr ""
 
-#: scanner/models.py:247
+#: scanner/models.py:248
 msgid "Date de début"
 msgstr ""
 
-#: scanner/models.py:248 scanner/models.py:285
+#: scanner/models.py:249 scanner/models.py:286
 msgid "Date de fin"
 msgstr ""
 
-#: scanner/models.py:273
+#: scanner/models.py:274
 msgid "En attente"
 msgstr ""
 
-#: scanner/models.py:274
+#: scanner/models.py:275
 msgid "En cours"
 msgstr ""
 
-#: scanner/models.py:275
+#: scanner/models.py:276
 msgid "Terminé"
 msgstr ""
 
-#: scanner/models.py:276
+#: scanner/models.py:277
 msgid "Erreur"
 msgstr ""
 
-#: scanner/models.py:278
+#: scanner/models.py:279
 msgid "Nom de la session"
 msgstr ""
 
-#: scanner/models.py:278
+#: scanner/models.py:279
 msgid "Session d'expérience. 4 Multi-puits maximum"
 msgstr ""
 
-#: scanner/models.py:281
-msgid "Date d'exportation prévue"
+#: scanner/models.py:282
+msgid "Exportation auto"
 msgstr ""
 
 #: scanner/models.py:282
+msgid "Date d'exportation prévue"
+msgstr ""
+
+#: scanner/models.py:283
+msgid "Bbalayage auto"
+msgstr ""
+
+#: scanner/models.py:283
 msgid "Date du balayage prévue"
 msgstr ""
 
-#: scanner/models.py:287
+#: scanner/models.py:288
 msgid "Status exportation"
 msgstr ""
 
-#: scanner/models.py:290
+#: scanner/models.py:291
 msgid "Export médias"
 msgstr ""
 
-#: scanner/models.py:291
+#: scanner/models.py:292
 msgid "Programmation de l'exportation des vidéos et images"
 msgstr ""
 
-#: scanner/models.py:293
+#: scanner/models.py:294
 msgid "Exportation terminée à"
 msgstr ""
 
-#: scanner/models.py:295
+#: scanner/models.py:296
 msgid "Status scanning"
 msgstr ""
 
-#: scanner/models.py:299
+#: scanner/models.py:300
 msgid "Programmation du lancement du balayage"
 msgstr ""
 
-#: scanner/models.py:301
+#: scanner/models.py:302
 msgid "Balayage terminé à"
 msgstr ""
 
-#: scanner/models.py:315
+#: scanner/models.py:316
 msgid "Terminée"
 msgstr ""
 
-#: scanner/models.py:402
+#: scanner/models.py:403
 msgid "Expérience d'une session"
 msgstr ""
 
-#: scanner/models.py:426
+#: scanner/models.py:427
 msgid "Expérience puit"
 msgstr ""
 
-#: scanner/models.py:427
+#: scanner/models.py:428
 msgid "Expériences puits"
 msgstr ""
 
-#: scanner/process.py:381
+#: scanner/process.py:397
 msgid "La session est nulle!..."
 msgstr ""
 
-#: scanner/process.py:388
+#: scanner/process.py:404
 msgid "Balayage démarré..."
 msgstr ""
 
-#: scanner/process.py:391
+#: scanner/process.py:407
 msgid "Erreur lors du démarrage du balayage..."
 msgstr ""
 
@@ -2523,7 +2686,7 @@ msgstr ""
 msgid "Gestions des expériences"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:137 scanner/views.py:123
+#: scanner/templates/scanner/base.html:137 scanner/views.py:124
 msgid "Balayage multi-puits"
 msgstr ""
 
@@ -2535,12 +2698,12 @@ msgstr ""
 msgid "Export CSV des expériences"
 msgstr ""
 
-#: scanner/templates/scanner/base.html:146 scanner/views.py:187
-msgid "Gestionnaire d'images"
-msgstr ""
-
 #: scanner/templates/scanner/base.html:149
 msgid "Redifusion vidéos"
+msgstr ""
+
+#: scanner/templates/scanner/base.html:152
+msgid "Exporter les fichiers multimédias"
 msgstr ""
 
 #: scanner/templates/scanner/calibration.html:15
@@ -2696,27 +2859,39 @@ msgstr ""
 msgid "ARRET"
 msgstr ""
 
+#: scanner/templates/scanner/export_medias.html:21
+msgid "L'explortation des fichiers multimédia peut durer plusieurs heures."
+msgstr ""
+
+#: scanner/templates/scanner/export_medias.html:22
+msgid "Préférer l'exportation différée."
+msgstr ""
+
+#: scanner/templates/scanner/export_medias.html:42
+msgid "Status"
+msgstr ""
+
+#: scanner/templates/scanner/export_medias.html:47
+msgid "Exporter"
+msgstr ""
+
 #: scanner/templates/scanner/images.html:27
 msgid "Exporter l'ensemble des images de la session"
 msgstr ""
 
-#: scanner/templates/scanner/images.html:45
+#: scanner/templates/scanner/images.html:46
 msgid "Télécharger"
 msgstr ""
 
-#: scanner/templates/scanner/images.html:65
+#: scanner/templates/scanner/images.html:71
 msgid "Confirmer l'export des images."
 msgstr ""
 
-#: scanner/templates/scanner/images.html:66
+#: scanner/templates/scanner/images.html:72
 msgid "ATTENTION le processus peut être long!"
 msgstr ""
 
-#: scanner/templates/scanner/replay.html:29
-msgid "Exporter l'ensemble des vidéos"
-msgstr ""
-
-#: scanner/templates/scanner/replay.html:78
+#: scanner/templates/scanner/replay.html:84
 msgid "Confirmer l'export des vidéos. ATTENTION le processus peut être long!"
 msgstr ""
 
@@ -2741,23 +2916,27 @@ msgstr ""
 msgid "Simuler"
 msgstr ""
 
-#: scanner/views.py:111
+#: scanner/views.py:112
 msgid "Documentation"
 msgstr ""
 
-#: scanner/views.py:222 scanner/views.py:273
+#: scanner/views.py:221
+msgid "Exporter les fichiers médias"
+msgstr ""
+
+#: scanner/views.py:252 scanner/views.py:303
 msgid "Erreur d'exportation"
 msgstr ""
 
-#: scanner/views.py:246
+#: scanner/views.py:276
 msgid "Gestionnaire de vidéos"
 msgstr ""
 
-#: scanner/views.py:268
+#: scanner/views.py:298
 msgid "Images téléchargées"
 msgstr ""
 
-#: scanner/views.py:271
+#: scanner/views.py:301
 msgid "Vidéos téléchargées"
 msgstr ""
 

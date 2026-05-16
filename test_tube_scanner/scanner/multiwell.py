@@ -238,6 +238,9 @@ class MultiWellManager:
     def _start_scanning(self, session, experiments, simulate=False):
         result = False
         try:
+            conf = self.process.cam.get_config()
+            self.process.cam.use_tracking = conf.use_tracking
+            
             self.process.cam._aligner.debug = False
             self.stop_playing.clear()
             
