@@ -113,14 +113,15 @@ class VideoCaptureInterface(abc.ABC):
         if not self._metrics or not self._params:
             return
         for pid, m in enumerate(self._metrics):
-            async_to_sync(self._client.store_summary)(
+            async_to_sync(self._clientDB.store_summary)(
                 summary    = m.summary(),
                 experiment = self._params.experiment,
                 well       = self._params.well,
                 planarian  = pid,
                 uuid       = uuid,
             )
-        self._metrics_.clear()    
+            logger.warning(f'_flush_current_well: {self._params.well} planaire: {pid}')
+        self._metrics.clear()    
 
 
     def on_well_change(self, cfg, uuid="", draw_contours=False):

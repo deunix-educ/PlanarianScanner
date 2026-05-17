@@ -298,7 +298,6 @@ class ScannerProcess(Task):
                 self.cam._params.well,
                 uuid=uuid,
                 planarian=pid,
-                record_type='metrics',
                 ts_us=ts,
             )
                   

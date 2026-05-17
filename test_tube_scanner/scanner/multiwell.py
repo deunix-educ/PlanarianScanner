@@ -159,7 +159,7 @@ class MultiWellManager:
                 if not cfg:
                     raise Exception(f"Configuration d'expérience introuvable pour {experiment} / {well}")
                 # reset PlanarianTracker => on_well_change
-                self.process.cam.on_well_change(cfg, uuid=uuid, raw_contours=False)
+                self.process.cam.on_well_change(cfg, uuid=uuid, draw_contours=False)
               
             ## start recording   
             self.process.data.uuid = uuid
@@ -243,8 +243,7 @@ class MultiWellManager:
     def _start_scanning(self, session, experiments, simulate=False):
         result = False
         try:
-            conf = self.process.cam.get_config()
-            self.process.cam.use_tracking = conf.use_tracking
+            self.process.get_config()   # get video configuration if updated
             
             self.process.cam._aligner.debug = False
             self.stop_playing.clear()
