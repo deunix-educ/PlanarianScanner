@@ -687,16 +687,8 @@ class ReductStoreClient:
         logger.info(f"ReductStore connecté : {self.url} / {self.bucket_name}")
     '''
         
-    async def store_metric(
-        self,
-        record:      dict,
-        experiment:  str,
-        well:        str,
-        planarian:   int = 0,
-        record_type: str = "frame",
-        uuid:        str = "",
-        ts_us:       Optional[int] = None,
-    ):
+    async def store_metric(self, record: dict, experiment: str, well: str, uuid: str,
+                           planarian: int = 0, record_type: str = "frame", ts_us:  Optional[int] = None, ):
         """
         Stocke un enregistrement dans ReductStore.
 
@@ -705,17 +697,18 @@ class ReductStoreClient:
         quand plusieurs planaires du même puits écrivent dans la même frame.
 
         Args:
+            uuid        : identifiant unique de session (permet de filtrer
+                          plusieurs sessions d'un même puits/expérience)       
             record      : dict de métriques (issu de EthoVisionMetrics.update())
             experiment  : identifiant de l'expérience
             well        : identifiant du puits
             planarian   : index du planaire (défaut 0)
             record_type : "frame" ou "summary"
-            uuid        : identifiant unique de session (permet de filtrer
-                          plusieurs sessions d'un même puits/expérience)
             ts_us       : timestamp en microsecondes (défaut : maintenant)
         """
         if self._bucket is None:
             await self.connect()
+            
         # ts_us de base + offset planaire (0, 1, 2…) pour unicité garantie
         base_ts   = ts_us or int(time.time() * 1_000_000)
         unique_ts = base_ts + planarian
@@ -725,10 +718,13 @@ class ReductStoreClient:
             "planarian":   str(planarian),
             "record_type": record_type,
         }
+        """
         if uuid:
-            labels["uuid"] = uuid
+            labels["uuid"] = uuid"""
+            
         await self._bucket.write(
-            entry_name   = "metrics",
+            #entry_name   = "metrics",
+            entry_name   = uuid,
             data         = json.dumps(record).encode("utf-8"),
             timestamp    = unique_ts,
             labels       = labels,
@@ -740,8 +736,9 @@ class ReductStoreClient:
         summary:    dict,
         experiment: str,
         well:       str,
+        uuid:       str,        
         planarian:  int = 0,
-        uuid:       str = "",
+        record_type: str = "summary",
     ):
         """
         Stocke le résumé de fin de session dans ReductStore.
@@ -750,26 +747,20 @@ class ReductStoreClient:
             summary    : dict issu de EthoVisionMetrics.summary()
             experiment : identifiant de l'expérience
             well       : identifiant du puits
-            planarian  : index du planaire
             uuid       : identifiant unique de session (même valeur que
-                         celle utilisée dans store_metric pour cette session)
+                         celle utilisée dans store_metric pour cette session)            
+            planarian  : index du planaire
         """
-        await self.store_metric(
-            record      = summary,
-            experiment  = experiment,
-            well        = well,
-            planarian   = planarian,
-            record_type = "summary",
-            uuid        = uuid,
-        )
+        await self.store_metric(record=summary,experiment=experiment, 
+                                well=well, uuid=uuid, planarian=planarian, record_type=record_type)
 
     async def get_tracking_data(
         self,
         experiment:  str,
         well:        str,
+        uuid:        str,
         planarian:   int = 0,
         record_type: str = "frame",
-        uuid:        str = "",
         start:       Optional[datetime] = None,
         stop:        Optional[datetime] = None,
     ) -> list:
@@ -779,29 +770,31 @@ class ReductStoreClient:
         Args:
             experiment  : identifiant de l'expérience
             well        : identifiant du puits
+            uuid        : filtre sur une session spécifique (optionnel —
+                          si vide, retourne toutes les sessions)            
             planarian   : index du planaire
             record_type : "frame" | "summary"
-            uuid        : filtre sur une session spécifique (optionnel —
-                          si vide, retourne toutes les sessions)
             start, stop : plage temporelle (datetime UTC, optionnel)
         """
         if self._bucket is None:
             await self.connect()
-        labels = {
-            "experiment":  experiment,
-            "well":        well,
-            "planarian":   str(planarian),
-            "record_type": record_type,
+
+        when = {
+            "$and": [
+                #{"&experiment":  {"$contains": experiment}},
+                #{"&well":        {"$contains": well}},
+                {"&planarian":   {"$contains": str(planarian)}},
+                {"&record_type": {"$contains": record_type}},
+            ]
         }
-        if uuid:
-            labels["uuid"] = uuid
-        kwargs = {"include": labels}
+        kwargs = {'when': when}
         if start:
             kwargs["start"] = int(start.timestamp() * 1_000_000)
         if stop:
             kwargs["stop"]  = int(stop.timestamp() * 1_000_000)
+        
         records = []
-        async for rec in self._bucket.query("metrics", **kwargs):
+        async for rec in self._bucket.query(uuid, **kwargs):
             try:
                 records.append(json.loads(await rec.read_all()))
             except Exception as e:
@@ -854,16 +847,16 @@ class ReductStoreClient:
         """
         dirpath  = os.path.abspath(output_dir)
         os.makedirs(dirpath, exist_ok=True)
-        filename = f"{experiment}_{well}_planaire{planarian:02d}_{record_type}.csv"
+        filename = f"{experiment}_{well}_planaire-{planarian}-{record_type}.csv"
         return os.path.join(dirpath, filename)
 
     async def export_csv(
         self,
         experiment:  str,
         well:        str,
+        uuid:        str,        
         planarian:   int = 0,
         record_type: str = "frame",
-        uuid:        str = "",
         output_dir:  str = ".",
         start:       Optional[datetime] = None,
         stop:        Optional[datetime] = None,
@@ -876,25 +869,34 @@ class ReductStoreClient:
         Args:
             experiment  : identifiant de l'expérience
             well        : identifiant du puits
+            uuid        : filtre sur une session spécifique (optionnel —
+                          si vide, retourne toutes les sessions)            
             planarian   : index du planaire
             record_type : "frame" | "summary"
             output_dir  : répertoire de sortie (défaut : répertoire courant)
-            uuid        : filtre sur une session spécifique (optionnel —
-                          si vide, retourne toutes les sessions)
             start, stop : plage temporelle (datetime UTC, optionnel)
 
         Returns:
             tuple (filepath, nb_lignes)
         """
+        
+        # record, experiment, well, uuid,
         records = await self.get_tracking_data(
-            experiment, well, planarian, record_type, uuid, start, stop)
+            experiment, 
+            well, 
+            uuid, 
+            planarian=planarian, 
+            record_type=record_type, 
+            start=start, 
+            stop=stop,
+        )
+        
         if not records:
             logger.warning(f"Aucune donnée pour {experiment}/{well}/{planarian}")
             return "", 0
 
         records    = self._convert_timestamps(records)
-        filepath   = self._build_filepath(output_dir, experiment, well,
-                                          planarian, record_type)
+        filepath   = self._build_filepath(output_dir, experiment, well, planarian, record_type)
         fieldnames = list(dict.fromkeys(k for r in records for k in r.keys()))
 
         with open(filepath, "w", newline="", encoding="utf-8") as f:
@@ -909,9 +911,9 @@ class ReductStoreClient:
         self,
         experiment:  str,
         well:        str,
+        uuid:        str,
         planarian:   int = 0,
         record_type: str = "frame",
-        uuid:        str = "",
         start:       Optional[datetime] = None,
         stop:        Optional[datetime] = None,
     ) -> tuple:
@@ -923,7 +925,15 @@ class ReductStoreClient:
             tuple (contenu_csv_str, nb_lignes)
         """
         records = await self.get_tracking_data(
-            experiment, well, planarian, record_type, uuid, start, stop)
+            experiment, 
+            well, 
+            uuid, 
+            planarian=planarian, 
+            record_type=record_type, 
+            start=start, 
+            stop=stop,
+        )
+        
         if not records:
             return "", 0
         records    = self._convert_timestamps(records)

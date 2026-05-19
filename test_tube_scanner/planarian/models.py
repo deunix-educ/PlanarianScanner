@@ -143,7 +143,8 @@ class ExperimentConfig(models.Model):
     
     
     def get_session(self):
-        return self.experiment_key.session_experiments.first() if self.experiment_key else None
+        se = self.experiment_key.session_experiments.first() if self.experiment_key else None
+        return se.session
     
 
     def to_params_dict(self) -> dict:

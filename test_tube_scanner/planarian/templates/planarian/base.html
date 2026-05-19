@@ -27,6 +27,12 @@
 	        <i class="fa-solid fa-file-export w3-text-red w3-xlarge"></i> {% trans "Exporter les metrics de l'expérience" %}<br>
 	        <span class="w3-margin-left-5">&nbsp;$> {{ export_csv_destination }}
 	    </a>
+	    
+        <a href="#" class="w3-bar-item w3-btn w3-hover-opacity" onclick="export_csv('{{ url_export }}', {{ current_session.id }}, 'session_csv')">
+            <i class="fa-solid fa-file-export w3-text-pink w3-xxlarge"></i> {% trans "Exporter les metrics de la session" %}<br>
+            <span class="w3-margin-left-5">&nbsp;$> {{ export_csv_destination }}
+        </a>	    
+	  
 	    {% endif %}   
     {% endblock %}
 {% endblock %}
@@ -34,6 +40,7 @@
 {% block js_footer %}
     {{ block.super }}
 	<script>
+	    const export_msg = "{% trans "Confirmer l'export des vidéos. ATTENTION le processus peut être long!" %}";
 	    // Auto-dismiss messages after 5 seconds
 	    document.addEventListener('DOMContentLoaded', function() {
 	        const messages = document.querySelectorAll('.alert');

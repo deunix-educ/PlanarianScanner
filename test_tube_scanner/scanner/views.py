@@ -39,6 +39,7 @@ def stats_view(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
+
 def global_context(request, **ctx):
     default_multiwell = models.MultiWell.objects.filter(default=True).first()
     conf = ScannerConstants().get()
@@ -60,10 +61,11 @@ def global_context(request, **ctx):
 def admin_view(request):
     return render(request, "scanner/iframe.html", context=global_context(request, link='/admin/'))
 
-@login_required
 
+@login_required
 def admin_session_view(request):
     return render(request, "scanner/iframe.html", context=global_context(request, link='/admin/scanner/session/'))
+
 
 @login_required
 def admin_experiment_view(request):
@@ -73,14 +75,17 @@ def admin_experiment_view(request):
 def admin_experimentconfig_view(request):
     return render(request, "scanner/iframe.html", context=global_context(request, link='/admin/planarian/experimentconfig/'))
 
+
 @login_required
 def admin_periodictask_view(request):
     return render(request, "scanner/iframe.html", context=global_context(request, link='/admin/django_celery_beat/periodictask/'))
+
 
 @login_required
 @user_passes_test(is_staff_or_admin)
 def reductstore_view(request):
     return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:8383/'))
+
 
 @login_required
 @user_passes_test(is_staff_or_admin)
@@ -92,20 +97,24 @@ def adminer_view(request):
 def portainer_view(request):
     return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9000/'))
 
+
 @login_required
 @user_passes_test(is_staff_or_admin)
 def supervisor_view(request):
     return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9001/'))
+
 
 @login_required
 @user_passes_test(is_staff_or_admin)
 def supervisor_worker(request):
     return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9001/logtail/test_tube:services'))
 
+
 @login_required
 @user_passes_test(is_staff_or_admin)
 def supervisor_scheduler(request):
     return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9001/logtail/test_tube:planification'))
+
 
 def documentation(request, template=None):
     ctx = dict(
@@ -225,6 +234,7 @@ def export_medias(request):
     )
     return render(request, "scanner/export_medias.html", context=global_context(request, **ctx))
 
+
 @require_POST
 @csrf_exempt
 def download_api(request):
@@ -286,6 +296,7 @@ def replay_view(request):
     )
     return render(request, "scanner/replay.html", context=global_context(request, **ctx))
 
+
 @require_POST
 @csrf_exempt
 def export_api(request):
@@ -295,10 +306,10 @@ def export_api(request):
     try:
         if action == 'export_images':
             export_all_images(session_id)
-            return JsonResponse({"success":  True,  "msg": str(_("Images téléchargées"))})
+            return JsonResponse({"success":  True,  "msg": str(_("Images en cours de téléchargement"))})
         elif action == 'export_videos':
             export_all_videos(session_id)
-            return JsonResponse({"success":  True, "msg": str(_("Vidéos téléchargées"))})
+            return JsonResponse({"success":  True, "msg": str(_("Vidéos en cours de téléchargement"))})
     except:
         return JsonResponse({"state":  False, "success":  False, "msg": str(_("Erreur d'exportation")), })
 

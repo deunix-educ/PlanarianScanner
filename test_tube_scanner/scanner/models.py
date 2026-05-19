@@ -258,7 +258,6 @@ class Experiment(models.Model):
     def by_identifier(cls, identifier):
         return Experiment.objects.filter(identifier__exact=identifier).first()
 
-
     class Meta:
         ordering = ['-created', ]
         verbose_name = _("Expérience")
@@ -376,14 +375,20 @@ def delete_periodic_task(sender, instance, **kwargs):
         instance.scanning_task.delete()       
     
     
+def get_uuid_from_session(session_id, multiwel_position, well_name):
+    return f'{session_id}-{multiwel_position}-{well_name}'
+
+
 class SessionExperiment(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name="Auteur", null=True, blank=True)
     session = models.ForeignKey(Session, verbose_name=_("Session"), on_delete=models.CASCADE, null=True, blank=True)
     experiment = models.ForeignKey(Experiment, verbose_name=_("Expérience"), on_delete=models.CASCADE, null=True, blank=True, related_name="session_experiments")
 
+
     @classmethod
     def experiment_by_session(cls, session_id, active=True):
         return [ ss.experiment for ss in SessionExperiment.objects.filter(session__id=session_id, session__active=active).order_by('experiment__multiwell__order') ]
+    
     
     @classmethod
     def uuid_from_session(cls, sid):
@@ -396,6 +401,15 @@ class SessionExperiment(models.Model):
                     uuid = f'{sid}-{obs.multiwell.position}-{row_def[row]}{col+1}'
                     uuid_list.append(uuid)
         return uuid_list
+
+
+    @classmethod
+    def get_uuid(cls, session_id, experiment_id, well_name):
+        ss = SessionExperiment.objects.filter(session__id=session_id, experiment_id=experiment_id).first()
+        if ss:
+            return get_uuid_from_session(session_id, ss.experiment.multiwel.position, well_name)
+        return None
+
 
     class Meta:
         ordering = ['session',]

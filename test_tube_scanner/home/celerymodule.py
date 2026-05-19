@@ -8,3 +8,6 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'home.settings')
 appc = Celery('home')
 appc.config_from_object('django.conf:settings', namespace='CELERY')
 appc.autodiscover_tasks()
+
+worker_prefetch_multiplier = 1
+task_acks_late = True

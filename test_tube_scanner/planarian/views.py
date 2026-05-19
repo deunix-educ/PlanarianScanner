@@ -20,7 +20,9 @@ from django.views import View
 from modules.planarian_metrics import ExperimentParams, ReductStoreClient
 from modules.system_stats import get_cached_stats, start_background_updater
 from scanner.constants import ScannerConstants
-from .tasks import export_experiment_metrics, export_session_metrics
+
+from .tasks import export_experiment_metrics_task, export_session_metrics_task
+from .export_service import export_csv_sync
 from scanner import models, views as scanner_views
 from .models import ExperimentConfig
 
@@ -82,7 +84,6 @@ def get_active_session(request, session_id=None, experiment_id=None):
 # ---------------------------------------------------------------------------
 # Vue :Export CSV depuis ReductStore
 # ---------------------------------------------------------------------------
-
 @login_required
 @csrf_exempt
 def export_metrics(request):   
@@ -92,48 +93,13 @@ def export_metrics(request):
     if action=='experiment_csv':    
         experiment = models.Experiment.objects.filter(pk=pid).first()
         if experiment:
-            export_experiment_metrics(experiment)
-            return JsonResponse({"state":  True})
+            export_experiment_metrics_task.delay(experiment.id)  # @UndefinedVariable
+            return JsonResponse({"success":  True,  "msg": str(_("Métrics en cours de téléchargement"))})
     if action=='session_csv':   
-        session = models.Session.objects.filter(pk=pid).first()
-        if session:
-            export_session_metrics(session)
-            return JsonResponse({"state":  True})
-    return JsonResponse({"state":  False})
- 
- 
-def export_csv(request):
-    d = request.POST
-    
-    print("export_csv===========", d)
-    
-    @async_to_sync
-    async def _do_export():
-        client = _get_reduct_client()
-        await client.connect()
-        try:
-            csv_content, n = await client.export_csv_response(
-                experiment  = d.get("experiment"),
-                well        = d.get("well"),
-                planarian   = d.get("planarian"),
-                record_type = d.get("record_type"),
-                start       = d.get("start_dt"),
-                stop        = d.get("stop_dt"),
-            )          
-            print(f"Export CSV: export_csv_response done, {n} lignes, content size={len(csv_content)}")
-        except Exception as e:
-            logger.error(f"Erreur export CSV: {e}")
-            messages.error(request, _("Erreur lors de l'export CSV: %(error)s") % {"error": str(e)})
-            return None, 0
-        return csv_content, n
-
-    csv_content, n = _do_export()
-    logger.info(f"Export CSV: {n} lignes, content size={len(csv_content)}")
-    filename = (
-        f"{d['experiment']}_{d['well']}-planaire-{d['planarian']}"
-        f"_{d['record_type']}.csv"
-    )
-    return csv_content, filename
+        if pid:
+            export_session_metrics_task(pid)  # @UndefinedVariable
+            return JsonResponse({"success":  True,  "msg": str(_("Métrics en cours de téléchargement"))})
+    return JsonResponse({"success":  False,  "msg": str(_("Erreur: les métrics non pas été téléchargés"))})
 
 
 @login_required
@@ -147,12 +113,35 @@ def export_csv_view(request):
         **session_context
     }    
     if request.method == 'POST':
-        valid = request.POST.get('valid')
-        if valid == 'ok':
-            csv_content, filename = export_csv(request)
+        valid = request.POST.get('valid')       
+        session = session_context['current_session']
+        experiment = session_context['current_experiment']         
+        if valid == 'ok' and session and experiment:
+            well_name = request.POST.get('well')
+            uuid = models.get_uuid_from_session(session.id, experiment.multiwell.position, well_name)
+            '''
+            csv_content, filename = export_csv(request, uuid)
             if csv_content:
                 response = FileResponse(csv_content, content_type="text/csv; charset=utf-8")
                 response["Content-Disposition"] = f'attachment; filename="{filename}"'
+                return response'''
+            csv_content, n = export_csv_sync(
+                experiment=experiment.identifier,
+                well=well_name,
+                uuid=uuid,
+                planarian=request.POST.get("planarian"),
+                record_type=request.POST.get("record_type"),
+                start=request.POST.get("start_dt"),
+                stop=request.POST.get("stop_dt"),
+            )
+            if csv_content:
+                filename = (
+                    f"{experiment.identifier}_{well_name}-{request.POST.get('planarian')}_"
+                    f"{request.POST.get('record_type')}.csv"
+                )
+                logger.info(f"Export CSV: {n} lignes, content size={len(csv_content)}")
+                response = FileResponse(csv_content, content_type="text/csv; charset=utf-8")
+                response["Content-Disposition"] = (f'attachment; filename="{filename}"')
                 return response
 
             messages.warning(request, _("Aucune donnée trouvée."))
