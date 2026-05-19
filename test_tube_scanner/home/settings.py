@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'celery',
     'home',
+    'backup',
     'scanner',
     'planarian',
 
@@ -354,6 +355,18 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_EXTENDED = True
 CELERY_RESULT_BACKEND = 'django-db'
 DJANGO_CELERY_RESULTS_TASK_ID_MAX_LENGTH=191
+
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    "mariadb-backup-every-night": {
+        "task": "backup.tasks.backup_mariadb_task",
+        "schedule": crontab(hour=2, minute=0),
+    },
+}
+
+
+
 
 ## reductstore
 #
