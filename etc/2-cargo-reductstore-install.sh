@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 echo "--- install reductstore"
 echo "    machine raspberry pi4"
 echo "    Compilation finished `release` profile [optimized] target(s) in 16m 31s"

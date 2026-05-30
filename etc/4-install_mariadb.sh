@@ -3,8 +3,7 @@
 # Script d'installation et de configuration de MariaDB
 # Utilisation : source mariadb_config.sh && ./install_mariadb.sh
 
-ENV_FILE="../test_tube_scanner/.env"
-source $ENV_FILE
+source ../test_tube_scanner/.env
 
 # Vérifie que le fichier de configuration est sourcé
 if [ -z "$DATABASE_ROOT_PASSWORD" ] || [ -z "$DATABASE_NAME" ] || [ -z "$DATABASE_USER" ] || [ -z "$DATABASE_PASSWORD" ]; then

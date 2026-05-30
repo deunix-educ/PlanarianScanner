@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 echo "==== System installation for rpi"
 echo

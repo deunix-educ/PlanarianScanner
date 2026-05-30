@@ -1,0 +1,41 @@
+# ── Secrets & credentials ──────────────────────────────────────────────────
+test_tube_scanner/.env
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+credentials*.json
+secrets*.json
+.secrets
+
+# ── Données capturées / exports / backups ──────────────────────────────────
+datas/
+
+# ── Python / venv ──────────────────────────────────────────────────────────
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# ── Django runtime ─────────────────────────────────────────────────────────
+*.sqlite3
+*.db
+test_tube_scanner/staticfiles/
+test_tube_scanner/media/
+test_tube_scanner/logs/
+*.log
+
+# ── Celery ─────────────────────────────────────────────────────────────────
+celerybeat-schedule
+celerybeat.pid
+*.pid
+
+# ── Éditeurs & OS ──────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
