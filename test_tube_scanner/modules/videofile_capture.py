@@ -33,7 +33,7 @@ class VideoFileCapture(VideoCaptureInterface):
 
     def __init__(
         self,
-        video_file: str = None,
+        video_file: str | None = None,
         fps: float = VideoCaptureInterface.DEFAULT_FPS,
         jpeg_quality: int = 85,
         width: Optional[int] = None,
@@ -50,7 +50,7 @@ class VideoFileCapture(VideoCaptureInterface):
         :param height:        Hauteur souhaitée (None = valeur par défaut du pilote)
         """
         super().__init__(fps=fps, use_tracking=use_tracking, display=display, parent=parent, jpeg_quality=jpeg_quality)
-        self._video_file: str = video_file
+        self._video_file: str | None = video_file
         self._jpeg_quality: int = jpeg_quality
         self._width: Optional[int] = width
         self._height: Optional[int] = height
@@ -134,8 +134,8 @@ class VideoFileCapture(VideoCaptureInterface):
     # ------------------------------------------------------------------
 
     @property
-    def video_file(self) -> int:
-        """Index du périphérique V4L2."""
+    def video_file(self) -> str | None:
+        """Fichier vidéo."""
         return self._video_file
 
     @property

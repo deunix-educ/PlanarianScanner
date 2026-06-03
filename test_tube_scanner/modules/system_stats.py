@@ -111,7 +111,7 @@ def _update_cache():
         _timer.start()
 
 
-def start_background_updater(interval_seconds: int = None):
+def start_background_updater(interval_seconds: int = 0):
     global REFRESH_INTERVAL, _timer
     if interval_seconds:
         REFRESH_INTERVAL = interval_seconds

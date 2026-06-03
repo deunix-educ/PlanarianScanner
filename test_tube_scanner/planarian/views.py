@@ -93,7 +93,7 @@ def export_metrics(request):
     if action=='experiment_csv':    
         experiment = models.Experiment.objects.filter(pk=pid).first()
         if experiment:
-            export_experiment_metrics_task.delay(experiment.id)  # @UndefinedVariable
+            export_experiment_metrics_task.delay(experiment.pk)  # @UndefinedVariable
             return JsonResponse({"success":  True,  "msg": str(_("Métrics en cours de téléchargement"))})
     if action=='session_csv':   
         if pid:
@@ -118,7 +118,7 @@ def export_csv_view(request):
         experiment = session_context['current_experiment']         
         if valid == 'ok' and session and experiment:
             well_name = request.POST.get('well')
-            uuid = models.get_uuid_from_session(session.id, experiment.multiwell.position, well_name)
+            uuid = models.get_uuid_from_session(session.pk, experiment.multiwell.position, well_name)  # type: ignore[union-attr]
             '''
             csv_content, filename = export_csv(request, uuid)
             if csv_content:
@@ -126,7 +126,7 @@ def export_csv_view(request):
                 response["Content-Disposition"] = f'attachment; filename="{filename}"'
                 return response'''
             csv_content, n = export_csv_sync(
-                experiment=experiment.identifier,
+                experiment=experiment.identifier,  # type: ignore[union-attr]
                 well=well_name,
                 uuid=uuid,
                 planarian=request.POST.get("planarian"),
@@ -136,7 +136,7 @@ def export_csv_view(request):
             )
             if csv_content:
                 filename = (
-                    f"{experiment.identifier}_{well_name}-{request.POST.get('planarian')}_"
+                    f"{experiment.identifier}_{well_name}-{request.POST.get('planarian')}_"  # type: ignore[union-attr]
                     f"{request.POST.get('record_type')}.csv"
                 )
                 logger.info(f"Export CSV: {n} lignes, content size={len(csv_content)}")
@@ -223,8 +223,8 @@ def import_csv_view(request):
             
                     return import_csv(request, current_experiment, rows, overwrite)
             except Exception as e:
-                messages.error(request, msg)
-                logger.error(msg) 
+                messages.error(request, e)
+                logger.error(e) 
     ctx = { 'choice_title': _("Importer des configurations depuis un fichier CSV"), **session_context }
     return render(request, "planarian/import_params.html", context=global_context(request, **ctx))    
 
@@ -266,6 +266,6 @@ class TrackingDataView(View):
         return JsonResponse({"count": len(records), "records": records})
     
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)  # type: ignore[attr-defined]
         return global_context(self.request, choice_title=str(_("Métriques de tracking d'un planaire")), **context)
     

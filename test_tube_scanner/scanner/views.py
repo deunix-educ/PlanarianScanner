@@ -55,7 +55,6 @@ def global_context(request, **ctx):
         **ctx
     )
 
-
 @login_required
 @user_passes_test(is_staff_or_admin)
 def admin_view(request):
@@ -126,9 +125,16 @@ def documentation(request, template=None):
 ## Mainboard
 @login_required
 def scanning_view(request):
+    cursid = 0
+    if request.method == 'POST':
+        cursid = request.POST.get('_session', 0)
+    if not cursid:
+        current_session = models.Session.objects.filter(active=True).first()
+        cursid = current_session.pk
+        
     ctx = dict(
         ws_route=settings.SCANNER_WEBSOCKET_ROUTE,
-        columns=1,
+        cursid=int(cursid),
         sessions=models.Session.objects.filter(active=True).all(),
         choice_title=_("Balayage multi-puits")
     )
@@ -137,25 +143,35 @@ def scanning_view(request):
 ## Calibration
 @login_required
 def calibration_view(request):
+    context = global_context(request)
+    wells = models.MultiWell.objects.filter(capture_video=False).all()
+    capture_type = context['conf'].capture_type
+    config = ScannerConstants.get_config()
+    
+    if capture_type == 'video':
+        mw = models.MultiWell.objects.filter(default=True, capture_video=True).first()
+        if mw:
+            context['conf'].default_position = mw.position
+            wells = models.MultiWell.objects.filter(capture_video=True).all()
+
     ctx = dict(
         ws_route=settings.SCANNER_WEBSOCKET_ROUTE,
-        columns=1,
-        choice_title=_("Calibration"),
-        wells = models.MultiWell.objects.all(),
+        choice_title=f'{str(_("Calibration"))} {config.get_capture_type_display()}',
+        wells = wells,
+        capture_type=capture_type,
     )
-    return render(request, "scanner/calibration.html", context=global_context(request, **ctx))
+    context.update(ctx)
+    return render(request, "scanner/calibration.html", context=context)
 
-
-def get_not_active_experiments(session, expid=None):
+def get_not_active_experiments(session, expid=None) -> tuple[list, "models.Experiment | None"]:
     if session:
-        experiments = models.SessionExperiment.experiment_by_session(session.id, active=False) or []
+        experiments = models.SessionExperiment.experiment_by_session(session.pk, active=False) or []
         if experiments and not expid:
             return experiments, experiments[0]
         for e in experiments:
-            if expid == str(e.id):
+            if expid == str(e.pk):
                 return experiments, e
     return [], None
-    
     
 ## images
 def get_images(uuid):

@@ -22,13 +22,24 @@ class TubeAligner:
         grbl_threshold_px : int   = 20,
         dead_zone_px      : int   = 5,
         debug             : bool  = False,      # ← activable depuis la vue
-        display = None,                         # display function 
+        display = None,                         # display function
     ):
         self.grbl_threshold_px = grbl_threshold_px
         self.dead_zone_px      = dead_zone_px
         self.debug             = debug
         self.display           = display
         self.TUBE_DIAMETER_MM  = 16.0
+        # Plage de recherche du rayon en fraction de min(w,h)
+        # Défaut : tube occupe ~30% du champ (camera).
+        # Mode vidéo : puit remplit le crop → ratio ~0.50 → appeler set_radius_range(0.35, 0.52)
+        self._min_radius_ratio = 0.26
+        self._max_radius_ratio = 0.37
+        self.draw_annotations  = True   # masquer l'overlay sans couper la détection
+
+    def set_radius_range(self, min_ratio: float, max_ratio: float) -> None:
+        """Ajuste la plage de recherche HoughCircles. Appeler avant detect_tube()."""
+        self._min_radius_ratio = min_ratio
+        self._max_radius_ratio = max_ratio
 
 
     def set_tube_diameter(self, tube_diameter: float = 16.0) -> None:
@@ -64,14 +75,18 @@ class TubeAligner:
         frame_out = frame.copy()
         
         gray    = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        # CLAHE pour renforcer le contraste local (paroi du puit sur fond gris uniforme)
+        clahe   = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+        gray    = clahe.apply(gray)
         blurred = cv2.GaussianBlur(gray, (15, 15), 3)
-        
+
+        lo = self._min_radius_ratio
+        hi = self._max_radius_ratio
         # 3 configurations légèrement différentes — vote majoritaire
-        # Fonctionne sur fond sombre ET fond clair
         configs = [
-            dict(param1=50, param2=30, minRadius=int(min(w,h)*0.26), maxRadius=int(min(w,h)*0.36)),
-            dict(param1=60, param2=30, minRadius=int(min(w,h)*0.26), maxRadius=int(min(w,h)*0.37)),
-            dict(param1=50, param2=28, minRadius=int(min(w,h)*0.25), maxRadius=int(min(w,h)*0.365)),
+            dict(param1=50, param2=30, minRadius=int(min(w,h)*lo),        maxRadius=int(min(w,h)*hi)),
+            dict(param1=60, param2=28, minRadius=int(min(w,h)*lo),        maxRadius=int(min(w,h)*(hi+0.01))),
+            dict(param1=50, param2=26, minRadius=int(min(w,h)*(lo-0.01)), maxRadius=int(min(w,h)*(hi+0.005))),
         ]
         
         all_cx, all_cy, all_r = [], [], []
@@ -93,7 +108,7 @@ class TubeAligner:
         if not all_cx:
             msg = f"TubeAligner: aucun cercle détecté ({w}x{h})"
             result["msg"] =msg
-            if self.debug:
+            if self.debug and self.draw_annotations:
                 frame_out = self._draw_debug_no_detection(frame_out, cx_img, cy_img)
             result["frame_annotated"] = frame_out
             return result        
@@ -120,7 +135,7 @@ class TubeAligner:
         else:
             action = "grbl"
     
-        if self.debug:
+        if self.debug and self.draw_annotations:
             frame_out = self._draw_debug(
                 frame_out, cx_img, cy_img,
                 tx, ty, tr,

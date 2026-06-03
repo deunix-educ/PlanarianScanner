@@ -19,7 +19,7 @@ class DefaultConfig:
     webcam_device_index: int = 2
     image_quality: int = 90
     video_jpeg_quality: int = 90
-    video_frame_rate: int = 5.0
+    video_frame_rate: float = 5.0
     video_width_capture: int = 2028
     video_height_capture: int = 1520
     scan_simulation: bool = False
@@ -51,5 +51,13 @@ class ScannerConstants:
             
     def get(self):
         return self.conf
+    
+    @classmethod
+    def get_config(cls):
+        return Configuration.objects.filter(active=True).first()
+    
+    def save_config(self):
+        d = asdict(self.conf)
+        Configuration.objects.filter(active=True).update(**d)
     
     

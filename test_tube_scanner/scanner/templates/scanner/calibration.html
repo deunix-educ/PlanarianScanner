@@ -1,8 +1,14 @@
 {% extends 'scanner/base.html' %}
-{% load i18n home_tags scanner_tags  %}
+{% load i18n home_tags %}
 
 {% block styles %}
     {{ block.super }}
+    <style>
+    :root {
+        --well-columns: 3; 
+    }
+    </style>
+
     <link href="/static/scanner/css/calibration.css" rel="stylesheet">
 {% endblock %}
 {% block columns %}{% endblock %}
@@ -84,34 +90,36 @@
                 </button>
             </div>
         </div>
+
         <div class="w3-row w3-row-padding">
             <div id="_well_btn" class="w3-col w3-margin-bottom"></div>  
-            
-            <div class="w3-third">
-                <button id="_previous" class="w3-button w3-dark-xlight w3-round-large w3-padding-small">
-                    <span class="w3-small">{% trans 'Précéd.' %}</span><br><i class="fa-solid fa-circle-left w3-xlarge"></i>
-                </button>
+            <div {% if capture_type == "file" %}class="w3-hide"{% endif %}>
+                <div class="w3-third">
+                    <button id="_previous" class="w3-button w3-dark-xlight w3-round-large w3-padding-small">
+                        <span class="w3-small">{% trans 'Précéd.' %}</span><br><i class="fa-solid fa-circle-left w3-xlarge"></i>
+                    </button>
+                </div>
+                <div class="w3-third">
+                    <button id="_calib_center" class="w3-button w3-dark-xlight w3-round-large w3-padding-small" title="{% trans 'Centrer manuellement' %}">
+                    <span class="w3-small">{% trans 'Centrer' %}</span><br><i class="fa-regular fa-circle w3-xlarge w3-text-orange"></i>
+                    </button>                
+                </div>                 
+                <div class="w3-third">
+                    <button id="_next" class="w3-button w3-dark-xlight w3-round-large w3-padding-small">
+                        <span class="w3-small">{% trans 'Suivant' %}</span><br><i class="fa-solid fa-circle-right w3-xlarge"></i>
+                    </button>
+                </div> 
+                <div class="w3-col">
+                    <button id="_calib_auto" class="w3-button w3-dark-xlight w3-round-large w3-margin-top w3-block" 
+                        title="{% trans 'Centrage auto et sauvegarde des positions' %}">
+                    {% trans 'Calibrage auto' %}<br><i class="fa-solid fa-robot w3-text-orange w3-xlarge"></i>
+                    </button>                   
+                </div>  
             </div>
-            <div class="w3-third">
-                <button id="_calib_center" class="w3-button w3-dark-xlight w3-round-large w3-padding-small" title="{% trans 'Centrer manuellement' %}">
-                   <span class="w3-small">{% trans 'Centrer' %}</span><br><i class="fa-regular fa-circle w3-xlarge w3-text-orange"></i>
-                </button>                
-            </div>                 
-            <div class="w3-third">
-                <button id="_next" class="w3-button w3-dark-xlight w3-round-large w3-padding-small">
-                    <span class="w3-small">{% trans 'Suivant' %}</span><br><i class="fa-solid fa-circle-right w3-xlarge"></i>
-                </button>
-            </div> 
-            <div class="w3-col">
-                <button id="_calib_auto" class="w3-button w3-dark-xlight w3-round-large w3-margin-top w3-block" 
-                      title="{% trans 'Centrage auto et sauvegarde des positions' %}">
-                   {% trans 'Calibrage auto' %}<br><i class="fa-solid fa-robot w3-text-orange w3-xlarge"></i>
-                </button>                   
-            </div>  
         </div>
     </div>
-    <div class="w3-col" style="width: 50%"> 
-       {% include 'scanner/scan-image.html' %}    
+    <div class="w3-col" style="width: 50%; display: flex; align-items: center; justify-content: center;">
+        <img id="scan-img" class="w3-image">
     </div>
     <div class="w3-col w3-center" style="width: 25%"> 
 	    <div class="w3-row w3-row-padding">
@@ -136,17 +144,27 @@
             <div class="w3-half">
 	            <button id="_calib_debug" class="w3-button w3-dark-xlight w3-round-large w3-padding-1 w3-block" title="{% trans 'Ce mode permet les réglages graphiques' %}">
 	                <span class="debug">{% trans 'Debug' %}</span><br><i class="fa-solid fa-triangle-exclamation w3-text-amber w3-xlarge"></i>
-	            </button>                
-            </div>   
+	            </button>
+            </div>
             <div class="w3-half">
-	            <button id="_median" class="w3-button w3-dark-xlight w3-round-large w3-padding-1 w3-block">
+	            <button id="_draw_debug" class="w3-button w3-dark-xlight w3-round-large w3-padding-1 w3-block" title="{% trans 'Afficher / masquer les annotations de détection' %}">
+	                <span class="draw_debug" style="color:#0ff">{% trans 'Overlay' %}</span><br><i class="fa-solid fa-chart-simple w3-text-amber w3-xlarge"></i>
+	            </button>
+            </div>
+            <div class="w3-half">
+	            <button id="_median" class="w3-button w3-dark-xlight w3-round-large w3-padding-1 w3-margin-top-1 w3-block">
 	                 <span class="median">{% trans 'Axes' %}</span><br><i class="fa-solid fa-crosshairs w3-text-amber w3-xlarge"></i>
-	            </button>               
+	            </button>
+            </div>
+            <div class="w3-half">
+	            <button id="_edge_enhance" class="w3-button w3-dark-xlight w3-round-large w3-padding-1 w3-margin-top-1 w3-block" title="{% trans 'Mettre en évidence les bords du puit' %}">
+	                 <span class="edge_enhance">{% trans 'Contours' %}</span><br><i class="fa-solid fa-circle-dot w3-text-amber w3-xlarge"></i>
+	            </button>
             </div>
             <div class="w3-col">
 	            <button id="_crop" class="w3-button w3-dark-xlight w3-round-large w3-padding-small w3-margin-top w3-block" title="{% trans 'Ce mode actionne le pointage graphique' %}">
 	                 <span class="crop">{% trans 'Recadrer pour calibrer / suivre' %}</span><br><i class="fa-solid fa-crop w3-text-amber w3-xlarge"></i>
-	            </button>               
+	            </button>
             </div>
         </div>    
         {% if conf.tracking  and conf.tracking_setting %}
@@ -248,14 +266,16 @@
 	        well    : sId("_well"),
 	        debug   : sId("_debug"),
 	        calib_debug : sId("_calib_debug"),
+        draw_debug  : sId("_draw_debug"),
 	        calib_auto  : sId("_calib_auto"),
 	        calib_center: sId("_calib_center"),
 	        previous    : sId("_previous"),        
 	        next        : sId("_next"),        
 	        set_well    : sId("_set_well"), 
 	        well_btn    : sId("_well_btn"),  
-            median      : sId("_median"),
-            crop        : sId("_crop"),
+            median       : sId("_median"),
+            edge_enhance : sId("_edge_enhance"),
+            crop         : sId("_crop"),
             crop_radius : sId("_crop_radius"),
             min_area_px : sId("_min_area_px"),
             max_area_ratio : sId("_max_area_ratio"),

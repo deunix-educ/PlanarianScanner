@@ -33,7 +33,7 @@ def export_experiment_metrics_task(experiment_id):
         return
     
     jobs = []
-    configs = (ExperimentConfig.objects.filter(experiment_key_id=experiment.id).order_by("well"))
+    configs = (ExperimentConfig.objects.filter(experiment_key_id=experiment.pk).order_by("well"))
     for conf in configs:
         well = conf.well
         count = conf.planarian_count

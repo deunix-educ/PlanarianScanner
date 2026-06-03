@@ -31,7 +31,7 @@ class Command(BaseCommand):
             
             )
             print()          
-            print(f"Export video: {job.id}")
+            print(f"Export video: {job.id}")  # type: ignore[union-attr]
         except Exception as e:
             print("Export video uuid error", e)
 

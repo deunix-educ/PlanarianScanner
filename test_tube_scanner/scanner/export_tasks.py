@@ -34,19 +34,20 @@ def delete_file_later(path):
 
 async def remove_video_by_uuid(uuid, start_ts=None, end_ts=None, when=None):
     record_manager = CameraRecordManager(cameraDB)
-    await record_manager.remove(uuid, start_ts, end_ts)
+    await record_manager.remove_uuid(uuid, start_ts, end_ts)
 
 
 async def remove_video(uuid, start_ts, end_ts, when=None):
     await remove_video_by_uuid(uuid, start_ts, end_ts, when=when)
 
 async def shm_download_video(uuid, start_ts, end_ts, frame_rate=5, opencv_fourcc_format='mp4v', opencv_video_type='mp4'):
+    video_path = os.path.join(settings.MEDIA_ROOT, f"output.{opencv_video_type}")
     try:        
         record_manager = CameraRecordManager(cameraDB)
         total_size = await record_manager.size(uuid, start_ts, end_ts)
 
         # segment de mémoire partagée pour stocker les frames
-        shm_size = int(total_size * 1.5)
+        shm_size = int((total_size or 0) * 1.5)
         shm_name = f"/video_frames_{uuid}"
         try:
             shm = posix_ipc.SharedMemory(shm_name, posix_ipc.O_CREAT | posix_ipc.O_EXCL, size=shm_size)
@@ -77,12 +78,13 @@ async def shm_download_video(uuid, start_ts, end_ts, frame_rate=5, opencv_fourcc
             raise Exception("No frame found!")
             #return JsonResponse({'error': 'Aucune frame trouvée'}, status=404)
 
-        video_path = os.path.join(settings.MEDIA_ROOT, f"output.{opencv_video_type}")
-        fourcc = cv2.VideoWriter_fourcc(* opencv_fourcc_format)
+        #video_path = os.path.join(settings.MEDIA_ROOT, f"output.{opencv_video_type}")
+        fourcc = cv2.VideoWriter_fourcc(*opencv_fourcc_format)  # type: ignore[attr-defined]
 
         # Lit les frames depuis la mémoire partagée
         current_offset = 0
         i = 0
+        video = None
         for size in frame_sizes:
             frame_bytes = mm[current_offset:current_offset + size]
             nparr = np.frombuffer(frame_bytes, np.uint8)
@@ -94,8 +96,9 @@ async def shm_download_video(uuid, start_ts, end_ts, frame_rate=5, opencv_fourcc
             current_offset += size
             
             progress_bar(i + 1, total, prefix=f'Progress {uuid}:', suffix='Ended', length=30)
-            i+=1                         
-        video.release()
+            i+=1
+        if video:                        
+            video.release()
 
         # Nettoie la mémoire partagée
         shm.unlink()
@@ -183,7 +186,7 @@ async def export_images_zip(
         # --- Chargement des frames en mémoire partagée ---
         record_manager = CameraRecordManager(cameraDB)
         total_size = await record_manager.size(uuid, start_ts, end_ts)
-        shm_size = int(total_size * 1.5)
+        shm_size = int((total_size or 0) * 1.5)
 
         try:
             shm = posix_ipc.SharedMemory(
@@ -336,11 +339,11 @@ async def export_video_mp4(
     video = None
     shm_name = f"/vid_frames_{uuid}"
 
-    try:      
+    try:
         # --- Chargement des frames en mémoire partagée ---
         record_manager = CameraRecordManager(cameraDB)
         total_size = await record_manager.size(uuid, start_ts, end_ts)
-        shm_size = int(total_size * 1.5)
+        shm_size = int((total_size or 0) * 1.5)
 
         try:
             shm = posix_ipc.SharedMemory(
@@ -390,7 +393,7 @@ async def export_video_mp4(
         )
         os.makedirs(os.path.dirname(video_path), exist_ok=True)
 
-        fourcc = cv2.VideoWriter_fourcc(*opencv_fourcc_format)
+        fourcc = cv2.VideoWriter_fourcc(*opencv_fourcc_format)  # type: ignore[attr-defined]
         skipped = 0
         written = 0
         current_offset = 0

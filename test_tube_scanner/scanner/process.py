@@ -27,6 +27,7 @@ from modules import reductstore, utils, planarian_metrics
 from modules.circular_crop import CircularCrop, CropStrategy
 from .multiwell import MultiWellManager
 from .constants import ScannerConstants
+from .models import MultiWell
 
 # CNC
 if not settings.GRBL_SIMULATION:
@@ -38,7 +39,7 @@ else:
 class ProcessData:
     play: bool = True
     record: bool = False
-    uuid: str = None
+    uuid: str | None = None
     session: int = 0
     tube_diameter: float = 16.0 
 
@@ -173,27 +174,31 @@ class ScannerProcess(Task):
         Constants:
             reset si besoin les constantes vidéo
         '''
-        self.conf = ScannerConstants().get()
+        self.constants = ScannerConstants()
+        self.conf = self.constants.get()
         self.use_tracking = self.conf.tracking
         
         self.video_quality = self.conf.video_jpeg_quality
         self.image_quality = self.conf.image_quality
         self.video_fps = self.conf.video_frame_rate
         self.video_width = self.conf.video_width_capture
-        self.video_height = self.conf.video_height_capture    
+        self.video_height = self.conf.video_height_capture 
+        
         self.crop_radius = self.conf.calibration_crop_radius
 
         self.video_jpg_quality = [int(cv2.IMWRITE_JPEG_QUALITY), self.video_quality]
         self.image_jpg_quality = [int(cv2.IMWRITE_JPEG_QUALITY), self.image_quality]
         return self.conf
     
+    def save_config(self):
+        pass
+    
 
     def start(self, *args, **kwargs):
         try:            
             self.get_config()
             self.grbl_xmax = self.conf.grbl_xmax
-            self.grbl_ymax = self.conf.grbl_ymax
-                    
+            self.grbl_ymax = self.conf.grbl_ymax   
             self.crop = self.set_crop_radius(self.crop_radius)
             
             capture_type = self.conf.capture_type
@@ -208,7 +213,30 @@ class ScannerProcess(Task):
                     use_tracking=self.use_tracking,
                     display=self._display,
                     parent=self,
-                )           
+                )
+            elif capture_type == 'video':
+                from modules.videoplate_capture import VideoPlateCapture
+                from .models import VideoPlate
+
+                vp = VideoPlate.active_video()
+                if not vp:
+                    raise Exception("Aucun VideoPlate actif trouvé — créer un enregistrement dans l'admin.")
+                initial_path = vp.video_file.path if vp.video_file else None
+                mw = vp.multiwell
+
+                self.cam = VideoPlateCapture(
+                    video_dir=settings.MEDIA_ROOT / 'videos',
+                    fps=self.video_fps,
+                    jpeg_quality=self.video_quality,
+                    use_tracking=self.use_tracking,
+                    display=self._display,
+                    parent=self,
+                    crop_radius_px=mw.crop_radius,
+                    px_per_mm=vp.px_per_mm,
+                    x_offset_mm=vp.x_origin_mm,
+                    y_offset_mm=vp.y_origin_mm,
+                    initial_video_path=initial_path,
+                )
             elif capture_type == 'webcam':
                 from modules.webcam_capture import WebcamCapture
                 self.cam = WebcamCapture(
@@ -237,9 +265,14 @@ class ScannerProcess(Task):
             self.cam._active_median = False
             self.cam.set_circular_crop(None)
             
-            self.grbl = GRBLController(
-                send_callback=self._display, 
-                x_max=self.conf.grbl_xmax, 
+            # Mode vidéo : toujours simuler le GRBL (pas de CNC physique)
+            if capture_type == 'video':
+                from modules.grbl_simulator import GRBLController as _GRBLCtrl
+            else:
+                _GRBLCtrl = GRBLController
+            self.grbl = _GRBLCtrl(
+                send_callback=self._display,
+                x_max=self.conf.grbl_xmax,
                 y_max=self.conf.grbl_ymax
             )
 
@@ -354,11 +387,10 @@ class ScannerProcess(Task):
 
 
     def _listen_to_redis(self):
+        logger.info(f"==== Scanner {self.group}: listen via redisDB")
+        pubsub = redisDB.pubsub()
+        pubsub.subscribe(self.group)        
         try:
-            logger.info(f"==== Scanner {self.group}: listen via redisDB")
-            pubsub = redisDB.pubsub()
-            pubsub.subscribe(self.group)
-
             for message in pubsub.listen():
                 try:
                     #logger.info(f"{message}")
@@ -371,18 +403,32 @@ class ScannerProcess(Task):
                     if not isinstance(cmd, dict):
                         continue
 
-                    self._send(state=cmd["type"], msg=f"Cmd: {cmd.get('topic')} {cmd.get('value', '')}")                   
+                    self._send(state=cmd["type"], msg=f"Cmd: {cmd.get('topic')} {cmd.get('value', '')}")      
+                    ctx = {}             
                     if cmd["type"]=="scanner":
                         topic = cmd.get("topic")
                         if topic == 'init':
-                            self.cam.set_circular_crop(self.crop)
+                            sid = cmd.get("sid")
+                            self.manager.set_first_multiwell_from_session(sid)     
                             self.cam._active_median = False
+                            self.cam.set_edge_enhance(False)
+                            if self.conf.capture_type == 'video':
+                                self.cam._active_crop = False
+                                self.cam.set_circular_crop(None)
+                                ctx = dict(state="crop", value=self.cam._active_crop)
+                            else:
+                                self.cam.set_circular_crop(self.crop)
                             self.grbl.go_origin(feed=self.manager.feed)
                             self.cam.set_draw_contours(False)
-                            buttons = self.manager.multiwell_buttons(btn_class="w3-btn well", onclick="")
-                            self._send(buttons=buttons) 
-                            
-                        elif topic == 'scan' or topic == 'simulate':                           
+    
+                        elif topic == 'video_plate':
+                            new_path = cmd.get('path')
+                            if new_path and hasattr(self.cam, 'set_video_file'):
+                                self.cam.set_video_file(new_path)
+                                self._send(state='video_plate', msg=f"Vidéo: {new_path}")
+                            continue
+
+                        elif topic == 'scan' or topic == 'simulate':
                             logger.info(f"==== Scan {cmd}")
                             sid = cmd.get("session", '0')
                             
@@ -391,6 +437,7 @@ class ScannerProcess(Task):
                             else:
                                 try:
                                     self.cam._active_median = False
+                                    self.cam.set_edge_enhance(False)
                                     simulate = (topic=='simulate')   
                                     self.manager.scan_process(sid, simulate)
 
@@ -401,8 +448,10 @@ class ScannerProcess(Task):
                             continue
                         
                         self._send(
-                            buttons=buttons,
+                            buttons=self.manager.multiwell_buttons(btn_class="w3-btn well", onclick=""),
+                            columns=self.manager.multiwell.cols,
                             current=self.manager.get_well_order(),
+                            **ctx
                         )                                
                     elif cmd["type"]=="calibrate":
                         topic = cmd.get("topic")
@@ -417,8 +466,9 @@ class ScannerProcess(Task):
                             position = cmd.get("position")
                             self.manager.set_multiwell(position)
                             self.cam.set_circular_crop(None)
-                            self.cam._active_median = False            
-                            self.cam.set_draw_contours(False)          
+                            self.cam._active_median = False
+                            self.cam.set_edge_enhance(False)
+                            self.cam.set_draw_contours(False)
                             buttons = self.manager.multiwell_buttons()
 
                         elif topic == 'up':
@@ -437,18 +487,32 @@ class ScannerProcess(Task):
                             self.cam._active_median = not self.cam._active_median
                             self._send(state="median", value=self.cam._active_median, msg=f"Median: {self.cam._active_median}")
                             continue
+
+                        elif topic == 'edge_enhance':
+                            self.cam.set_edge_enhance(not self.cam._active_edge_enhance)
+                            continue
                         
                         elif topic == 'crop':
                             self.cam._active_crop = not self.cam._active_crop
-                            self.cam.set_circular_crop(self.crop) if self.cam._active_crop else self.cam.set_circular_crop(None)
+                            if self.cam._active_crop:
+                                self.cam.set_circular_crop(self.crop)
+                                # En mode vidéo, naviguer vers le premier puit (Base)
+                                # pour que le crop circulaire soit aligné sur un puit réel
+                                if self.conf.capture_type == 'video':
+                                    self.manager.goto_xy()
+                            else:
+                                self.cam.set_circular_crop(None)
                             self._send(state="crop", value=self.cam._active_crop, msg=f"Crop: {self.cam._active_crop}")
                             continue
                         
                         elif topic == 'crop_radius':
                             self.conf.calibration_crop_radius=int(value)
                             self.crop = self.set_crop_radius(self.conf.calibration_crop_radius)
-                            self.conf.save()
+                            self.constants.save_config()  # type: ignore[attr-defined]
+                            
                             self.cam.set_circular_crop(self.crop)
+                            
+                            self.manager.update_crop_radius(int(value))
                             continue   
                                              
                         elif topic == 'position':
@@ -480,6 +544,12 @@ class ScannerProcess(Task):
                         elif topic == 'auto':
                             self.manager.set_calib_debug(True)
                             self.cam.set_circular_crop(self.crop)
+                            # En mode vidéo le puit remplit le crop (ratio ~0.50) ;
+                            # en mode caméra le tube occupe ~30% du champ.
+                            if self.conf.capture_type == 'video':
+                                self.cam._aligner.set_radius_range(0.38, 0.47)
+                            else:
+                                self.cam._aligner.set_radius_range(0.26, 0.37)
                             self.manager.scan_test(auto=True)
                             continue
                            
@@ -495,8 +565,19 @@ class ScannerProcess(Task):
                             self.manager.halt_scanning()
                             
                         elif topic == 'calib_debug':
+                            if self.conf.capture_type == 'video':
+                                self.cam._aligner.set_radius_range(0.38, 0.47)
+                            else:
+                                self.cam._aligner.set_radius_range(0.26, 0.37)
                             msg = self.manager.calib_toggle_debug()
-                            self._send(**msg)    
+                            self._send(**msg)
+                            continue
+
+                        elif topic == 'draw_debug':
+                            a = self.cam._aligner
+                            a.draw_annotations = not a.draw_annotations
+                            self._send(state='draw_debug', value=a.draw_annotations,
+                                       msg=f"Draw debug: {a.draw_annotations}")
                             continue
                         
                         elif topic == 'previous':
@@ -536,6 +617,7 @@ class ScannerProcess(Task):
                             dx=self.manager.dx, 
                             dy=self.manager.dy,
                             buttons=buttons,
+                            columns=self.manager.multiwell.cols,
                             current=self.manager.get_well_order(),
                         )
                 except Exception as e:
@@ -697,12 +779,11 @@ class ReplayProcess(Task):
         logger.info(f"==== ReplayProcess stopped.")
 
     def _listen_to_redis(self):
+        loop = None
+        logger.info(f"==== ReplayProcess {self.group}: listen via redisDB")
+        pubsub = redisDB.pubsub()
+        pubsub.subscribe(self.group)
         try:
-            loop = None
-            logger.info(f"==== ReplayProcess {self.group}: listen via redisDB")
-            pubsub = redisDB.pubsub()
-            pubsub.subscribe(self.group)
-
             for message in pubsub.listen():
                 try:
                     if self.stop_event.is_set():
@@ -754,7 +835,8 @@ class ReplayProcess(Task):
                     logger.error(f'ReplayProcess::listen_to_redis: {e}')
         finally:
             self.running.set()
-            utils.stop_async(loop)
+            if loop:
+                utils.stop_async(loop)
             pubsub.unsubscribe()
             pubsub.close()
 

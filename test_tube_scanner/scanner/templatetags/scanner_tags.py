@@ -1,13 +1,13 @@
 # encoding: utf-8
 from django import template
-from django.utils.html import mark_safe
+from django.utils.safestring import mark_safe
 
 register = template.Library()
 
 @register.simple_tag
 def multiwell_cards(sid, experiment):
     multiwells = []
-    row_def = experiment.multiwell.row_def.split(',')
+    row_def = experiment.multiwell.row_def.split(',')   
     multiwells.append(
     f'''
     <div class="w3-padding-small w3-sand">{experiment.title}</div>

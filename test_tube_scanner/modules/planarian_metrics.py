@@ -282,7 +282,7 @@ class EthoVisionMetrics:
         self.total_distance_mm += dist_mm
 
         # Vecteur de déplacement (pour calculs d'angle)
-        if self._prev_cx_mm is not None:
+        if self._prev_cx_mm is not None and self._prev_cy_mm is not None:
             move_dx = cx_mm - self._prev_cx_mm
             move_dy = cy_mm - self._prev_cy_mm
         else:
@@ -569,6 +569,36 @@ class ExperimentParams:
         "max_area_ratio":         0.10,
         **BEHAVIOUR_DEFAULTS,
     }
+
+    # Attributs issus de REQUIRED
+    experiment: str
+    well: str
+    px_per_mm: float
+    fps: float
+    # Attributs issus de DEFAULTS
+    well_radius_mm: float
+    thresh_immobile: float
+    thresh_mobile: float
+    planarian_count: int
+    tube_axis: str
+    min_area_px: int
+    max_area_ratio: float
+    merge_kernel_size: int
+    min_contour_dist_px: int
+    # Attributs issus de BEHAVIOUR_DEFAULTS
+    thigmotaxis_wall_dist_mm: float
+    photo_mode: str
+    photo_strength: float
+    photo_x: float
+    photo_y: float
+    photo_flee_angle_deg: float
+    chemo_strength: float
+    chemo_x: float
+    chemo_y: float
+    chemo_radius_mm: float
+    chemo_approach_angle_deg: float
+    avoid_radius_mm: float
+    aggreg_radius_mm: float
 
     def __init__(self, data: dict):
         missing = self.REQUIRED - set(data.keys())

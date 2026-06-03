@@ -2,7 +2,7 @@
 # encoding: utf-8
 from uuid import uuid4
 from django.core.management import BaseCommand
-from django.core.management.utils import get_random_string;
+from django.utils.crypto import get_random_string
 
 class Command(BaseCommand):
     def add_arguments(self, parser):

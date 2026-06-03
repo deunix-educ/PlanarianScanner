@@ -14,7 +14,7 @@ import time
 from threading import Thread, Event
 #from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from django.utils.html import mark_safe
+from django.utils.safestring import mark_safe
 from django.conf import settings
 from planarian.models import ExperimentConfig
 from . import models
@@ -115,42 +115,56 @@ class MultiWellManager:
         self._duration = duration or self.process.conf.calibration_default_duration
         self.px_per_mm = 50.0
 
+    def init_manager_values(self):
+        wells = models.WellPosition.objects.filter(multiwell_id=self.multiwell.pk).order_by('order').all()  # type: ignore[union-attr]
+        self.well_iterator = WellIterator(wells)        
+        self.position = self.multiwell.position
+        self._xbase = self.multiwell.xbase
+        self._ybase = self.multiwell.ybase       
+        self._dx = self.multiwell.dx
+        self._dy = self.multiwell.dy
 
     def set_multiwell(self, position=None):
         if position is None:
             self.multiwell = models.MultiWell.objects.filter(default=True).first()
         else:
             self.multiwell = models.MultiWell.by_position(position)
-            
-        wells = models.WellPosition.objects.filter(multiwell_id=self.multiwell.id).order_by('order').all()
-        self.well_iterator = WellIterator(wells)
-        
-        self.position = self.multiwell.position
-        self._xbase = self.multiwell.xbase
-        self._ybase = self.multiwell.ybase       
-        self._dx = self.multiwell.dx
-        self._dy = self.multiwell.dy
-        
+        self.init_manager_values()
         return self.multiwell.config()
     
-    
+    def set_first_multiwell_from_session(self, sid):
+        experiments = models.SessionExperiment.experiment_by_session(sid)
+        if experiments:
+            self.multiwell = experiments[0].multiwell
+            self.init_manager_values()
+
     def multiwell_buttons(self, btn_class="w3-button", onclick=''' onclick="goto_well(this)"'''):
         multiwells = []
         multiwells.append('''<div class="w3-border well-btn">''')
-        for wl in self.well_iterator:
+        for wl in self.well_iterator: 
             multiwells.append(f"""<button class="{btn_class} well" value="{wl.order}"{onclick}>{wl.well.name}</button>""")
         multiwells.append('''</div>''')
         self.well_iterator.reset()
         return mark_safe("\n".join(multiwells))         
-       
-        
-    #def _grid_scanning_capture(self, uuid, duration):
+    
+    def set_circular_crop(self, crop_radius):
+        crop = self.process.set_crop_radius(crop_radius)
+        self.process.cam.set_circular_crop(crop)
+
+    def update_crop_radius(self, value):
+        self.multiwell.crop_radius = value
+        self.multiwell.save()
+
     def _grid_scanning_capture(self, experiment, well_position, simulate=False):
         uuid = None
         try:
             well = well_position.well
             multiwell = experiment.multiwell
             
+            # En mode video le crop_radius est piloté par _capture_video_simulation
+            if self.process.conf.capture_type != 'video':
+                self.set_circular_crop(multiwell.crop_radius)
+
             ## create uuid for this capture
             uuid = f'{self.process.data.session}-{multiwell.position}-{well.name}'
             
@@ -198,8 +212,17 @@ class MultiWellManager:
         vf = settings.MEDIA_ROOT / 'simulation' / f'{name}.mp4'
         if vf.exists():
             self.process.cam._video_file = str(vf)
-        self.process.cam._error_occured = True  
-        logger.info(f"Simulating capture with file {vf}")           
+        self.process.cam._error_occured = True
+        logger.info(f"Simulating capture with file {vf}")
+
+    def _capture_video_simulation(self, well_position):
+        """Met à jour VideoPlateCapture : crop_radius depuis MultiWell.crop_radius."""
+        cam = self.process.cam
+        r = well_position.multiwell.crop_radius
+        if hasattr(cam, 'set_crop_radius_px'):
+            cam.set_crop_radius_px(r)
+        self.set_circular_crop(r)
+        logger.info(f"video_simulation: {well_position.well.name} crop_r={r}px")
 
 
     def _is_well_valid(self, welposition, experiment):
@@ -222,10 +245,12 @@ class MultiWellManager:
                 if not self._is_well_valid(wl, experiment):
                     continue
                 
-                self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)  
+                self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)
                 if self.process.conf.capture_type == 'file':
-                    self._capture_file_simulation(wl.well.name)   
-                
+                    self._capture_file_simulation(wl.well.name)
+                elif self.process.conf.capture_type == 'video':
+                    self._capture_video_simulation(wl)
+
                 self._grid_scanning_capture(experiment, wl, simulate=simulate)
             msg =f"Scan terminé — retour à l'origine (X={xnext:.1f}  Y={ynext:.1f})"
             logger.info(msg)
@@ -237,7 +262,7 @@ class MultiWellManager:
             self.process._send(state='error', msg=msg)
             return False
         finally: 
-            self.cnc_controller.move_to(xnext, ynext, feed=multiwell.feed*2)
+            self.cnc_controller.move_to(xnext, ynext, feed=self.feed*2)
              
 
     def _start_scanning(self, session, experiments, simulate=False):
@@ -315,38 +340,46 @@ class MultiWellManager:
         wl = self.well_iterator.previous()
         if self.process.conf.capture_type == 'file':
             self._capture_file_simulation(wl.well.name)
+        elif self.process.conf.capture_type == 'video':
+            self._capture_video_simulation(wl)
         self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)
-        return {"state": "previous", "msg": f">>> {wl.well.name}: ({wl.x}, {wl.y})"} 
-     
-     
+        return {"state": "previous", "msg": f">>> {wl.well.name}: ({wl.x}, {wl.y})"}
+
+
     def next_well(self):
         wl = self.well_iterator.next()
         if self.process.conf.capture_type == 'file':
             self._capture_file_simulation(wl.well.name)
-                    
+        elif self.process.conf.capture_type == 'video':
+            self._capture_video_simulation(wl)
         self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)
-        return {"state": "next", "msg": f">>> {wl.well.name}: ({wl.x}, {wl.y})"} 
-    
-    
+        return {"state": "next", "msg": f">>> {wl.well.name}: ({wl.x}, {wl.y})"}
+
+
     def goto_well(self, numwell):
         wl = self.well_iterator.seek(numwell)
         if self.process.conf.capture_type == 'file':
-            self._capture_file_simulation(wl.well.name)     
-                 
+            self._capture_file_simulation(wl.well.name)
+        elif self.process.conf.capture_type == 'video':
+            self._capture_video_simulation(wl)
         self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)
         return {"state": "goto", "msg": f">>> {wl.well.name}: ({wl.x}, {wl.y})"}
-  
-  
+
     def goto_xy(self):
         wl = self.well_iterator.seek(0)
         if self.process.conf.capture_type == 'file':
-            self._capture_file_simulation(wl.well.name) 
+            self._capture_file_simulation(wl.well.name)
+        elif self.process.conf.capture_type == 'video':
+            self._capture_video_simulation(wl)
         self.cnc_controller.move_to(self.xbase, self.ybase, feed=self.feed)
-  
+
     def goto_0(self):
         self.well_iterator.reset()
         if self.process.conf.capture_type == 'file':
-            self._capture_file_simulation('zero')  
+            self._capture_file_simulation('zero')
+        elif self.process.conf.capture_type == 'video':
+            # Plein cadre : désactiver le masque circulaire pour ne pas rogner la vue d'ensemble
+            self.process.cam.set_circular_crop(None)
         self.cnc_controller.move_to(0, 0, feed=self.feed*2)
         
     def set_well_position(self):
@@ -364,18 +397,19 @@ class MultiWellManager:
         self.stop_playing.clear()
         cam = self.process.cam
         cam._aligner.set_tube_diameter(self.multiwell.diameter)
-        duration = self.duration if not auto else settings.CALIBRATION_AUTO_DURATION        
+        duration = self.duration if not auto else settings.CALIBRATION_AUTO_DURATION      
+        start_test = time.monotonic()    
         try:
-            start_test = time.monotonic()  
             for wl in self.well_iterator:
                 if self.stop_playing.is_set():
                     break
                 
                 self.cnc_controller.wait_for(2.0)
                 self.cnc_controller.move_to(wl.x, wl.y, feed=wl.multiwell.feed)
-                ## change file 
                 if self.process.conf.capture_type == 'file':
-                    self._capture_file_simulation(wl.well.name)                  
+                    self._capture_file_simulation(wl.well.name)
+                elif self.process.conf.capture_type == 'video':
+                    self._capture_video_simulation(wl)
                 self.process._send(current=wl.order)
     
                 start = time.monotonic()
@@ -497,7 +531,7 @@ class MultiWellManager:
         if wl:
             return wl.order
         return None
-
+    
     def set_position(self):
         x, y = self.cnc_controller.get_mpos()
         self.cnc_controller.wait_for(2.0)

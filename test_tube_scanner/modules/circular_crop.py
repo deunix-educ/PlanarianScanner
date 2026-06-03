@@ -66,7 +66,7 @@ class CircularCrop:
 
         # Cache du masque pour éviter de le recalculer à chaque frame
         self._mask_cache: Optional[np.ndarray] = None
-        self._mask_shape: Optional[tuple[int, int, int]] = None  # (H, W, strategy)
+        self._mask_shape: Optional[tuple[int, ...]] = None  # (H, W, cx, cy, radius)
 
     # ------------------------------------------------------------------
     # API publique

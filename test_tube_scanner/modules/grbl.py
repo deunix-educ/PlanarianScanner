@@ -12,6 +12,7 @@ import logging
 import serial
 import time
 import threading
+from typing import Callable, Any
 
 
 logging.basicConfig(level=logging.INFO)
@@ -41,11 +42,10 @@ class GRBLController:
         if y_max is not None:
             self.Y_MAX = y_max
 
-        self._state = send_callback
-        if self._state is None:
-            self._state = self._send_msg
+        self._state: Callable[..., Any] = send_callback if send_callback is not None else self._send_msg
 
-        self.x, self.y = 0, 0
+        self.x: float | None = None
+        self.y: float | None = None
         
         #self.start_connection()
 
@@ -67,8 +67,8 @@ class GRBLController:
             try:
                 self.ser = serial.Serial(self.port, self.baudrate, timeout=self.timeout, exclusive=True)
                 # CRITIQUE :
-                self.ser.setDTR(False)
-                self.ser.setRTS(False)
+                self.ser.setDTR(False)  # type: ignore[attr-defined]
+                self.ser.setRTS(False)  # type: ignore[attr-defined]
                 self.clear_buffer()
                 
                 self._wake_up()
@@ -192,7 +192,7 @@ class GRBLController:
         
     def move_relative(self, dx=0, dy=0, feed=1000):
         x, y = self.get_mpos()  # Position actuelle
-        self.move_to(x + dx, y + dy, feed=feed)
+        self.move_to((x or 0) + dx, (y or 0) + dy, feed=feed)
         
     def move_relative__(self, dx=0, dy=0, feed=1000):
         self.send("G91")  # Mode relatif

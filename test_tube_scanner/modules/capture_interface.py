@@ -25,7 +25,7 @@ from asgiref.sync import async_to_sync
 
 from django.conf import settings
 from modules.planarian_tracker import PlanarianTracker
-from modules.planarian_metrics import ExperimentParams
+from modules.planarian_metrics import ExperimentParams, EthoVisionMetrics
 from modules.tube_aligner import TubeAligner
 
 
@@ -81,11 +81,12 @@ class VideoCaptureInterface(abc.ABC):
         self._circular_crop: Optional["CircularCrop"] = None  # Recadrage circulaire optionnel
         self._active_median = False
         self._active_crop = False
+        self._active_edge_enhance = False
         self._error_occured = False
         
-        self._tracker = None
-        self._metrics = None
-        self._params = None
+        self._tracker: PlanarianTracker | None = None
+        self._metrics: list[EthoVisionMetrics] | None = None
+        self._params: ExperimentParams | None = None
         self._clientDB = self.parent.metricDB
 
         # Tracker générique, pour simulation
@@ -284,10 +285,30 @@ class VideoCaptureInterface(abc.ABC):
             msg= f"{self.__class__.__name__}: recadrage circulaire désactivé"
         
         logger.info(msg)
-        self.display(state='circular_crop', msg=msg)
+        if self.display is not None:
+            self.display(state='circular_crop', msg=msg)
             
 
-    def process_frame(self, jpeg_bytes: bytes) -> bytes:
+    def set_edge_enhance(self, enabled: bool) -> None:
+        """Active ou désactive le filtre de mise en évidence des contours (calibration)."""
+        self._active_edge_enhance = enabled
+        logger.info(f"{self.__class__.__name__}: edge_enhance={enabled}")
+        if self.display is not None:
+            self.display(state='edge_enhance', value=enabled, msg=f"Edge enhance: {enabled}")
+
+    def _apply_edge_enhance(self, frame: np.ndarray) -> np.ndarray:
+        """Overlay Canny vert additif sur l'image originale.
+        Flou fort avant détection pour ne garder que les bords dominants (rebord du puit).
+        """
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        blurred = cv2.GaussianBlur(gray, (9, 9), 2)
+        edges = cv2.Canny(blurred, 80, 200)
+        edges = cv2.dilate(edges, np.ones((3, 3), np.uint8), iterations=1)
+        overlay = np.zeros_like(frame)
+        overlay[edges > 0] = [0, 255, 0]  # vert sur fond noir
+        return cv2.addWeighted(frame, 1.0, overlay, 1.0, 0)  # additif : image inchangée hors bords
+
+    def process_frame(self, jpeg_bytes: bytes) -> tuple[bytes, dict]:
         """
         Applique le post-traitement configuré sur une image brute.
 
@@ -305,8 +326,12 @@ class VideoCaptureInterface(abc.ABC):
             frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
             if frame is None:
                 return jpeg, metrics        
-            try:            
-                # Mode debug
+            try:
+                # Edge enhance sur la frame propre, avant les annotations
+                if self._active_edge_enhance:
+                    frame = self._apply_edge_enhance(frame)
+                ##
+                # Mode debug (annotations par-dessus)
                 if self._aligner.debug:
                     self.align_detection = self._aligner.detect_tube(frame)
                     annotated = self.align_detection.get('frame_annotated')
@@ -324,7 +349,17 @@ class VideoCaptureInterface(abc.ABC):
             
             except Exception as e:
                 logger.error(e)
-                
+
+        # Pas de circular crop — appliquer edge enhance si actif
+        if self._active_edge_enhance:
+            nparr = np.frombuffer(jpeg_bytes, np.uint8)
+            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            if frame is not None:
+                frame = self._apply_edge_enhance(frame)
+                ok, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, self.jpeg_quality])
+                if ok:
+                    return buf.tobytes(), metrics
+
         return jpeg_bytes, metrics
 
     def save_frame(self, jpeg_bytes: bytes, directory: str = ".", prefix: str = "frame") -> Path:

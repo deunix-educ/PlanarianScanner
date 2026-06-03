@@ -29,6 +29,7 @@ try:
     from planarian_metrics import EthoVisionMetrics
     HAS_METRICS = True
 except ImportError:
+    EthoVisionMetrics = None  # type: ignore[assignment]
     HAS_METRICS = False
 import numpy as np
 import math
@@ -1007,8 +1008,8 @@ def draw_arena(frame, cfg, width, height, arena_center, arena_radius_px, mm_to_p
         cv2.circle(overlay, arena_center, arena_radius_px + r_off, (245, 243, 238), 3)
         cv2.addWeighted(overlay, alpha / 255.0, frame, 1 - alpha / 255.0, 0, frame)
 
-    cv2.circle(frame, arena_center, arena_radius_px, arena_border, 2)
-    cv2.circle(frame, arena_center, arena_radius_px + 4, (200, 198, 192), 1)
+    cv2.circle(frame, arena_center, arena_radius_px, arena_border, 4)
+    cv2.circle(frame, arena_center, arena_radius_px + 8, (200, 198, 192), 1)
 
     bar_len = int(mm_to_px)
     bx, by  = width - 40, height - 25
@@ -1191,14 +1192,18 @@ def main():
     }
     metrics_list = []
     if HAS_METRICS:
+        assert EthoVisionMetrics is not None
         for _ in planaires:
-            metrics_list.append(EthoVisionMetrics(
+            metric = EthoVisionMetrics(
                 px_per_mm       = MM_TO_PX,
                 fps             = args.fps,
                 thresh_immobile = args.thresh_immobile,
                 thresh_mobile   = args.thresh_mobile,
                 behaviour       = behaviour,
-            ))
+            )
+            if metric:
+                metrics_list.append(metric)
+            
 
     # --- Arène de base ---
     arena_base = np.zeros((HEIGHT, WIDTH, 3), dtype=np.uint8)
@@ -1208,7 +1213,7 @@ def main():
     output_path = args.output
     if not output_path.endswith(".mp4"):
         output_path += ".mp4"
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # type: ignore[attr-defined]
     out    = cv2.VideoWriter(output_path, fourcc, args.fps, (WIDTH, HEIGHT))
 
     print(f"Simulation : {args.count} planaire(s), {TOTAL_FRAMES} frames ({args.duration}s à {args.fps} fps)")

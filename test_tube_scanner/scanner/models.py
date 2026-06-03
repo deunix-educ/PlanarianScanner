@@ -4,6 +4,7 @@
 from django.utils.translation import gettext_lazy as _
 import uuid
 import json
+from pathlib import Path
 from django_celery_beat.models import PeriodicTask, ClockedSchedule
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
@@ -13,10 +14,22 @@ from django.contrib.auth.models import User
 
 
 MULTIWELL_POSITION = [
-    ('HG', _("HG-Haut gauche")),
-    ('HD', _("HD-Haut droit")),
-    ('BG', _("BG-Bas gauche")),
-    ('BD', _("BD-Bas droit")),
+    ('HG', _("MP 6x24: HG-Haut gauche")),
+    ('HD', _("MP 6x24: HD-Haut droit")),
+    ('BG', _("MP 6x24: BG-Bas gauche")),
+    ('BD', _("MP 6x24: BD-Bas droit")),
+    ('HG_6',  _("MP 2x3: HG-Haut gauche")),
+    ('HD_6',  _("MP 2x3: HD-Haut droit")),
+    ('BG_6',  _("MP 2x3: BG-Bas gauche")),
+    ('BD_6',  _("MP 2x3: BD-Bas droit")),
+    ('HG_12', _("MP 3x4: HG-Haut gauche")),
+    ('HD_12', _("MP 3x4: HD-Haut droit")),
+    ('BG_12', _("MP 3x4: BG-Bas gauche")),
+    ('BD_12', _("MP 3x4: BD-Bas droit")),
+    ('HG_48', _("MP 6x8: HG-Haut gauche")),
+    ('HD_48', _("MP 6x8: HD-Haut droit")),
+    ('BG_48', _("MP 6x8: BG-Bas gauche")),
+    ('BD_48', _("MP 6x8: BD-Bas droit")),    
 ]
 
 FOURCC_FORMAT = [
@@ -32,7 +45,8 @@ VIDEO_TYPE = [
 CAPTURE_TYPE = [
     ('rpi', _("Arducam")),
     ('webcam', _("Webcam")),
-    ('file', _("Fichier vidéo (mp4, avi)")),
+    ('file', _("Simulation Fichier vidéo (mp4, avi)")),
+    ('video', _("Fichier vidéo (mp4, avi)")),
 ]
 
 TUBE_AXIS_TYPE = [
@@ -81,7 +95,6 @@ class Configuration(models.Model):
     #
     active = models.BooleanField(_("Actif"), default=False)
 
-    
     @classmethod
     def active_config(cls):
         return Configuration.objects.filter(active=True).first()
@@ -102,7 +115,6 @@ class Well(models.Model):
         ordering = ['name', ]
         verbose_name = _("Puit")
         verbose_name_plural = _("Puits")
-        
 
     def __str__(self):
         return f'{self.name}'
@@ -113,13 +125,15 @@ class MultiWell(models.Model):
     label =  models.CharField(_("Label"), help_text=_("Label du multi-puit"), max_length=100, null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name="Auteur", null=True, blank=True)
     position = models.CharField(_("Position"), help_text=_('Position du multi-puits sur la table'), unique=True, max_length=8, choices=MULTIWELL_POSITION, null=True, blank=False)
-    default = models.BooleanField(_("Par défaut"), help_text=_('Multi-puit par défaut'), default=False)
+    default = models.BooleanField(_("Défaut"), help_text=_('Multi-puit par défaut'), default=False)
     # Configuration   
     cols = models.PositiveSmallIntegerField(_("Colonnes"), help_text=_('Nombre de colonnes'), blank=False, default=6)
     rows = models.PositiveSmallIntegerField(_("Lignes"), help_text=_('Nombre de lignes'), blank=False, default=4)  
     diameter = models.FloatField(_("Diamètre"), help_text=_('Diamètre des tubes en mm'), blank=False, default=16.0)
     row_def = models.CharField(_("Définition"), help_text=_('Définition des lignes'), max_length=16, null=True, blank=False, default="A,B,C,D")
     row_order = models.CharField(_("Ordre ligne"), help_text=_('Ordre ligne de puit. Lecture en serpentin dans le sens des +- X'), max_length=16, null=True, blank=False, default="D,C,B,A")
+    crop_radius = models.PositiveSmallIntegerField(_("Rayon de découpe recadrage"), help_text=_("Rayon en pixels pour recadrer les images en px"), blank=False, default=500)
+    
     # Balayage
     order = models.PositiveSmallIntegerField(_("Ordre"), help_text=_('Ordre de lecture du multi-puit'), blank=False, default=0)
     duration = models.PositiveIntegerField(_("Durée"), help_text=_('Durée de capture en secondes pour la calibration'), blank=False, default=10)
@@ -129,11 +143,11 @@ class MultiWell(models.Model):
     dx = models.FloatField(_("Pas X"), help_text=_('Pas ou interval sur X en mm'), blank=False, default=19.5)
     dy = models.FloatField(_("Pas Y"), help_text=_('Pas ou interval sur Y en mm'), blank=False, default=19.5)
     feed = models.PositiveIntegerField(_("Vitesse"), help_text=_('Vitesse déplacement en mm/mn '), blank=False, default=1000)
-    
+
     well_position = models.BooleanField(_("Positions"), help_text=_('Positions des puits générées ?. Non => efface WellPosition et recalcule les positions'), default=False)
+    capture_video = models.BooleanField(_("Vidéo"), help_text=_('Ce multi-puit servira pour la capture vidéo'), default=False)
     active = models.BooleanField(_("Active"), default=True)
     
-
     def config(self):
         return dict(
             position=self.position,
@@ -166,7 +180,7 @@ class MultiWell(models.Model):
         return MultiWell.objects.filter(active=True).all()
 
     class Meta:
-        ordering = ['order', ]
+        ordering = ['label', 'order', ]
         verbose_name = _("Multi-puits")
         verbose_name_plural = _("Multi-puits")
 
@@ -206,8 +220,8 @@ class WellPosition(models.Model):
 
 @receiver(post_save, sender=MultiWell)
 def create_well_position(sender, instance, created, **kwargs):
-    if created:
-        pass
+    #if created:
+    #    pass
     if not instance.well_position:
         row_order = instance.row_order.split(',')
         n = 0
@@ -302,7 +316,7 @@ class Session(models.Model):
     
     
     @classmethod
-    def get_session(self, sid):
+    def get_session(cls, sid):
         return Session.objects.filter(pk=sid).first()   
     
     
@@ -313,7 +327,7 @@ class Session(models.Model):
 
     def __str__(self):
         state = _("Terminée") if not self.active else _("Active")
-        return f'[ {self.id} ] {self.name} ({state})'
+        return f'[ {self.pk} ] {self.name} ({state})'
     
 
 @receiver(post_save, sender=Session)
@@ -444,6 +458,106 @@ class ExperimentWell(models.Model):
     def __str__(self):
         return f'{self.experiment.title}'
     
+class VideoPlate(models.Model):
+    """Vidéo d'une plaque multi-puits entière, utilisée en mode capture_type='video'."""
+    multiwell = models.ForeignKey(
+        MultiWell,
+        on_delete=models.CASCADE,
+        verbose_name=_("Multi-puits"),
+        related_name='video_plates',
+    )
+    label = models.CharField(_("Label"), max_length=200, blank=True)
+    video_file = models.FileField(
+        _("Fichier vidéo"),
+        upload_to='videos/',
+        null=True,
+        blank=True,
+    )
+    active = models.BooleanField(_("Active"), default=True)
+    uploaded_at = models.DateTimeField(_("Déposé le"), auto_now_add=True)
+    # Calibration vidéo plaque : pixels par mm dans la vidéo (≠ calibration caméra individuelle)
+    px_per_mm = models.FloatField(
+        _("Pixels par mm (vidéo plaque)"),
+        default=15.0,
+        help_text=_("Facteur pixels/mm dans la vidéo plaque. À calibrer selon la résolution de la caméra plaque."),
+    )
+    # Origine : position CNC (mm) correspondant au pixel (0, 0) de la vidéo.
+    # Indépendant de MultiWell.xbase — ne change pas à la recalibration des puits.
+    x_origin_mm = models.FloatField(
+        _("Origine X (mm)"),
+        default=0.0,
+        help_text=_("Position CNC X correspondant au bord gauche de la vidéo plaque (mm). Défaut 0."),
+    )
+    y_origin_mm = models.FloatField(
+        _("Origine Y (mm)"),
+        default=0.0,
+        help_text=_("Position CNC Y correspondant au bord haut de la vidéo plaque (mm). Défaut 0."),
+    )
+    # Métadonnées extraites automatiquement à l'upload
+    native_fps = models.FloatField(_("FPS natif"), null=True, blank=True)
+    duration_s = models.FloatField(_("Durée (s)"), null=True, blank=True)
+    frame_w = models.PositiveIntegerField(_("Largeur (px)"), null=True, blank=True)
+    frame_h = models.PositiveIntegerField(_("Hauteur (px)"), null=True, blank=True)
+
+    @classmethod
+    def active_for(cls, multiwell_position: str) -> "VideoPlate | None":
+        return cls.objects.filter(multiwell__position=multiwell_position, active=True).first()
+    
+    @classmethod
+    def active_video(cls) -> "VideoPlate | None":
+        return cls.objects.filter(active=True).first()
+    
+    @property
+    def video_filename(self) -> str:
+        return Path(self.video_file.name).name if self.video_file else "—"
+
+    @property
+    def resolution(self) -> str:
+        if self.frame_w and self.frame_h:
+            return f"{self.frame_w}×{self.frame_h}"
+        return "—"
+
+    class Meta:
+        ordering = ['multiwell__order', '-uploaded_at']
+        verbose_name = _("Vidéo plaque")
+        verbose_name_plural = _("Vidéos plaque")
+
+    def __str__(self) -> str:
+        return f"{self.multiwell.position} — {self.label or self.video_filename}"
+
+
+@receiver(post_save, sender=VideoPlate)
+def notify_video_plate_change(sender, instance, **kwargs):
+    """Hot swap : publie sur Redis quand une vidéo active est enregistrée."""
+    if not instance.active or not instance.video_file:
+        return
+    try:
+        from redis import Redis
+        from django.conf import settings as django_settings
+        r = Redis(
+            host=django_settings.REDIS_HOST,
+            port=django_settings.REDIS_PORT,
+            db=0,
+            decode_responses=True,
+        )
+        r.publish('scanner_proc', json.dumps({
+            'type': 'scanner',
+            'topic': 'video_plate',
+            'multiwell': instance.multiwell.position,
+            'path': instance.video_file.path,
+        }))
+    except Exception:
+        pass
+
+
+@receiver(post_delete, sender=VideoPlate)
+def delete_video_file(sender, instance, **kwargs):
+    """Supprime le fichier physique quand l'enregistrement est effacé."""
+    if instance.video_file:
+        path = Path(instance.video_file.path)
+        path.unlink(missing_ok=True)
+
+
 @receiver(post_save, sender=Experiment)
 def create_experiment_well(sender, instance, created, **kwargs):
     from planarian.models import ExperimentConfig

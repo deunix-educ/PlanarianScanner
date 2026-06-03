@@ -70,6 +70,7 @@ def get_tmpfs_info(mount_point="/ramdisk"):
         return f"{n:.1f}PB"
 
     usage = None
+    part = None
     for part in psutil.disk_partitions(all=True):
         if part.mountpoint == mount_point and part.fstype.lower() == "tmpfs":
             usage = psutil.disk_usage(part.mountpoint)
@@ -81,15 +82,17 @@ def get_tmpfs_info(mount_point="/ramdisk"):
             print(f"  Free:  {usage.free} bytes ({sizeof(usage.free)})")
             print(f"  Percent used: {usage.percent}%")
             break
-    return {
-        "percent": usage.percent,
-        "mount": part.mountpoint,
-        "device": part.device,
-        "fstype": part.fstype,
-        "total": usage.total,
-        "used": usage.used,
-        "free": usage.free,
-    }
+    if usage and part:
+        return {
+            "percent": usage.percent,
+            "mount": part.mountpoint,
+            "device": part.device,
+            "fstype": part.fstype,
+            "total": usage.total,
+            "used": usage.used,
+            "free": usage.free,
+        }
+
 
 
 def get_cpu_info():

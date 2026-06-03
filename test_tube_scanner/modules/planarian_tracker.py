@@ -75,12 +75,12 @@ class PlanarianState:
         Args:
             idx : index de l'individu (0-based)
         """
-        self.idx        = idx
-        self.cx         = None
-        self.cy         = None
-        self.ts         = None
-        self.lost       = 0     # compteur de frames sans détection
-        self.active     = False # vrai si l'individu a été détecté au moins une fois
+        self.idx:    int          = idx
+        self.cx:     int | None  = None
+        self.cy:     int | None  = None
+        self.ts:     float | None = None
+        self.lost:   int         = 0     # compteur de frames sans détection
+        self.active: bool        = False # vrai si l'individu a été détecté au moins une fois
 
     def update(self, cx: int, cy: int, ts: float):
         """
@@ -117,7 +117,7 @@ class PlanarianState:
         Returns:
             tuple (speed_px_s, axial_speed) ou (0.0, 0.0) si état vide
         """
-        if self.cx is None or self.ts is None:
+        if self.cx is None or self.cy is None or self.ts is None:
             return 0.0, 0.0
 
         dt = ts - self.ts
@@ -445,7 +445,7 @@ class PlanarianTracker:
         row_ind, col_ind = linear_sum_assignment(cost)
 
         # Construire le dict d'association
-        assignment = {i: None for i in range(n_slots)}
+        assignment: dict[int, int | None] = {i: None for i in range(n_slots)}
 
         assigned_dets = set()
         for ri, ci in zip(row_ind, col_ind):

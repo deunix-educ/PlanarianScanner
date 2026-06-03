@@ -68,15 +68,13 @@ def export_all_images(session_id=None):
         conf = ScannerConstants().get()
         
         if session_id is None:
-            sessions = [s.id for s in models.Session.objects.filter(active=False)]
+            sessions = [s.pk for s in models.Session.objects.filter(active=False)]
         else:
             sessions = [session_id]
-            
-        for session_id in sessions:      
+        job_zip = []
+        for session_id in sessions:
             uuid_list = models.SessionExperiment.uuid_from_session(session_id)
-            job_zip = []
             for uuid in uuid_list:
-                
                 job = export_images.delay(  # @UndefinedVariable
                     uuid, 
                     start_ts=None,
@@ -109,13 +107,12 @@ def export_all_videos(session_id=None):
     try:
         conf = ScannerConstants().get()
         if session_id is None:
-            sessions = [s.id for s in models.Session.objects.filter(active=False)]
+            sessions = [s.pk for s in models.Session.objects.filter(active=False)]
         else:
             sessions = [session_id]
-            
+        job_mp4 = []
         for session_id in sessions:
-            uuid_list = models.SessionExperiment.uuid_from_session(session_id)  
-            job_mp4 = []
+            uuid_list = models.SessionExperiment.uuid_from_session(session_id)
             for uuid in uuid_list:
                 
                 job = export_videos.delay(  # @UndefinedVariable
@@ -146,7 +143,7 @@ def run_session_exports(self, session_id: str):
         logger.error("run_session_exports: session %s introuvable", session_id)
         return {"status": "error", "message": "Session introuvable"}
 
-    session.status = models.Session.Status.RUNNING
+    session.export_status = models.Session.Status.RUNNING
     session.save(update_fields=["export_status"])
     logger.info(f"run_session_exports [{session_id}]: export démarré")
     chord(

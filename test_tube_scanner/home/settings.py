@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 print("Django BASE_DIR:", BASE_DIR)
 
 PACKAGE_DIR = BASE_DIR.parent
-APP_DATAS = PACKAGE_DIR / config('APP_DATAS')
+APP_DATAS = PACKAGE_DIR / str(config('APP_DATAS'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -35,10 +35,10 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = config('DEBUG', cast=bool)
 
 DOMAIN_SERVER = config("DOMAIN_SERVER")
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+ALLOWED_HOSTS: list = list(config('ALLOWED_HOSTS', cast=Csv()))
 ALLOWED_HOSTS += [DOMAIN_SERVER, '*']
 
-CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', cast=Csv())
+CSRF_TRUSTED_ORIGINS: list = list(config('CSRF_TRUSTED_ORIGINS', cast=Csv()))
 CSRF_TRUSTED_ORIGINS += [f'http://{DOMAIN_SERVER}', f'https://{DOMAIN_SERVER}']
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'
@@ -237,7 +237,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ## LOGGING
 # CRITICAL=50, ERROR=40, WARN=30, INFO=20, DEBUG=10 and NOTSET=0
 
-LOGGING_FILE = config('LOGGING_FILE')
+LOGGING_FILE: str = str(config('LOGGING_FILE'))
 IS_LOGGING = config('IS_LOGGING', cast=bool)
 IS_LOGGING = False
 

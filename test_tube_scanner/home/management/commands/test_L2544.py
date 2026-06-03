@@ -4,7 +4,11 @@ Created on 19 janv. 2026
 @author: denis
 '''
 from django.core.management.base import BaseCommand
-from modules.grbl import GRBLController, wait_for
+from modules.grbl import GRBLController
+import threading
+
+def wait_for(delay: float = 1.0) -> None:
+    threading.Event().wait(delay)
 import time
 
 

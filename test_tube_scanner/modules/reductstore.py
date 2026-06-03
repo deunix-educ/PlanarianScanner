@@ -32,7 +32,6 @@ class ReductStoreBase(ABC):
         settings = BucketSettings(
             quota_type=self.quota_type,
             quota_size=self.quota_size,
-            exist_ok=True,
         )
         return await self.client.create_bucket(self.bucket_name, settings, exist_ok=True)
 

@@ -3,6 +3,11 @@
 
 {% block styles %}
     {{ block.super }}
+    <style>
+    :root {
+        --well-columns: 6; 
+    }
+    </style>   
     <link href="/static/scanner/css/scanning.css" rel="stylesheet">
 {% endblock %}
 {% block columns %}{% endblock %}
@@ -12,11 +17,15 @@
     <div class="w3-col w3-center" style="width: 30%">
         <div class="w3-col">
             <div>{% trans "Choix de la session" %}</div>
-            <select id="_session" class="w3-select">
-                {% for s in sessions %}
-                <option value="{{ s.id }}">{{ s }}</option>
-                {% endfor %}
-            </select>
+            <form method="post" class="w3-bar-item" action="">
+                {% csrf_token %}
+                <select id="_session" name="_session" class="w3-select" onchange="this.form.submit()">
+                    {% for s in sessions %}
+                    <option value="{{ s.id }}" {% if s.id == cursid %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+
         </div>
 	    <div class="w3-col">     
 	        <div class="w3-row w3-bold">

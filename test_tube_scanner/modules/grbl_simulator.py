@@ -15,6 +15,7 @@ import logging
 import time
 import threading
 import math
+from typing import Callable, Any
 
 
 logging.basicConfig(level=logging.INFO)
@@ -47,12 +48,11 @@ class GRBLController:
         if y_max is not None:
             self.Y_MAX = y_max
 
-        self._state = send_callback
-        if self._state is None:
-            self._state = self._send_msg
+        self._state: Callable[..., Any] = send_callback if send_callback is not None else self._send_msg
 
         # Position courante simulée
-        self.x, self.y = 0.0, 0.0
+        self.x: float | None = None
+        self.y: float | None = None
 
         # État interne de la machine simulée
         self._machine_state = 'Idle'   # Idle | Run | Alarm
@@ -150,7 +150,7 @@ class GRBLController:
             # Homing : retour à l'origine avec délai simulé
             self._machine_state = 'Run'
             self._state(state='send', msg="SIMULATOR: homing...")
-            distance = math.hypot(self.x, self.y)
+            distance = math.hypot(self.x or 0.0, self.y or 0.0)
             self._simulate_move_delay(distance, feed=3000)
             self.x, self.y = 0.0, 0.0
             self._machine_state = 'Idle'
@@ -158,7 +158,9 @@ class GRBLController:
 
         # --- Extraction des coordonnées X, Y et du feed F ---
         tokens = cmd_upper.replace(',', ' ').split()
-        new_x, new_y, feed = self.x, self.y, 1000.0
+        new_x: float = self.x or 0.0
+        new_y: float = self.y or 0.0
+        feed: float = 1000.0
 
         for token in tokens:
             if token.startswith('X'):
@@ -186,8 +188,10 @@ class GRBLController:
 
         # --- Mouvement effectif (G0, G1, G53 G1, etc.) ---
         has_move = any(t in tokens for t in ('G0', 'G1', 'G53'))
-        if has_move and (new_x != self.x or new_y != self.y):
-            distance = math.hypot(new_x - self.x, new_y - self.y)
+        cur_x = self.x or 0.0
+        cur_y = self.y or 0.0
+        if has_move and (new_x != cur_x or new_y != cur_y):
+            distance = math.hypot(new_x - cur_x, new_y - cur_y)
             self._machine_state = 'Run'
             self._simulate_move_delay(distance, feed)
             self.x = new_x
@@ -208,7 +212,9 @@ class GRBLController:
 
     def get_status(self):
         '''Retourne un status GRBL simulé au format <State|MPos:x,y,z>.'''
-        status = f"<{self._machine_state}|MPos:{self.x:.3f},{self.y:.3f},0.000|FS:0,0>"
+        x = self.x or 0.0
+        y = self.y or 0.0
+        status = f"<{self._machine_state}|MPos:{x:.3f},{y:.3f},0.000|FS:0,0>"
         logger.debug(f"SIMULATOR::get_status → {status}")
         return status
 
@@ -257,7 +263,7 @@ class GRBLController:
 
     def move_relative(self, dx=0, dy=0, feed=1000):
         x, y = self.get_mpos()   # Position actuelle
-        self.move_to(x + dx, y + dy, feed=feed)
+        self.move_to((x or 0.0) + dx, (y or 0.0) + dy, feed=feed)
 
     def move_relative__(self, dx=0, dy=0, feed=1000):
         self.send("G91")   # Mode relatif
