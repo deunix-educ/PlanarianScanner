@@ -50,7 +50,14 @@ high-performance storage of captures, and export to remote analysis machines.
 
 - CNC arm control through GRBL — automatic well-by-well movement
 - Multi-well calibration with database synchronization
-- High-definition image acquisition via ArduCam (OpenCV + Picamera2)
+- Three capture modes:
+  - **ArduCam** (Picamera2) — high-definition camera mounted on the arm
+  - **Webcam** — via OpenCV (development / testing)
+  - **Plate video** (`VideoPlateCapture`) — dynamic crop from a full-plate video replayed in loop; suitable for scans without an embedded camera
+- Assisted calibration:
+  - Automatic well-center detection (Hough + CLAHE, adjustable radius range per mode)
+  - Green Canny overlay to visualize well borders under difficult lighting
+  - Real-time controls: Debug, Annotation Overlay, Edge Enhance, Crop
 - Frame storage in ReductStore time-series database
 - Configurable scan sessions (full grid or selected wells)
 - Asynchronous export (Celery):
@@ -343,9 +350,24 @@ PlanarianScanner/
     │   └── webfonts
     └── templates
         └── admin
-4-Step Calibration Procedure
-Enable "Detection Debug" → display the circle and zones on the stream
-Enable cropping to isolate the tube
+## Calibration Procedure
+
+### Camera mode (ArduCam / Webcam)
+1. **Debug** → enables continuous HoughCircles detection (circle + zones displayed)
+2. **Overlay** → shows/hides annotations without stopping detection
+3. **Crop** → isolates the well and navigates to the Base position
+4. **Auto calibration** → automatic well-by-well centering with position save
+
+### Plate video mode
+1. Create a `VideoPlate` record in admin (upload video, set `px_per_mm`, `x_origin_mm`, `y_origin_mm`)
+2. **Edge Enhance** → green Canny overlay to locate well borders under variable lighting
+3. **Debug** → Hough detection with wider radius range (well fills the crop)
+4. **Crop** → activates circular crop + moves to Base position
+5. Navigate well by well and save positions
+
+![Auto calibration preview](assets/calibration-auto.png)
+
+[🎬 Auto Calibration Video](https://youtu.be/6RueJ3onUoY)
 
 ## Status
 

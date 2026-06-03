@@ -413,7 +413,10 @@ class ScannerProcess(Task):
                             self.cam._active_median = False
                             self.cam.set_edge_enhance(False)
                             if self.conf.capture_type == 'video':
+                                
                                 self.cam._active_crop = False
+                                
+                                
                                 self.cam.set_circular_crop(None)
                                 ctx = dict(state="crop", value=self.cam._active_crop)
                             else:

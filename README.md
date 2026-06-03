@@ -52,7 +52,14 @@ d'analyse distantes.
 
 - Pilotage du bras CNC en GRBL — déplacement automatique puits par puits
 - Calibration des multi-puits avec synchro base de données
-- Acquisition image haute définition via ArduCam (OpenCV + Picamera2)
+- Trois modes de capture :
+  - **ArduCam** (Picamera2) — caméra haute définition montée sur le bras
+  - **Webcam** — via OpenCV (développement / test)
+  - **Vidéo plaque** (`VideoPlateCapture`) — crop dynamique dans une vidéo plaque entière rejouée en boucle ; adapté aux scans sans caméra embarquée
+- Calibration assistée :
+  - Détection automatique du centre du puit (Hough + CLAHE, plage rayon adaptable selon le mode)
+  - Overlay Canny vert pour visualiser les bords en conditions d'éclairage difficile
+  - Contrôles temps réel : Debug, Overlay annotations, Contours, Recadrage
 - Stockage des frames en base time série ReductStore
 - Sessions de scan paramétrables (grille complète ou sélection de puits)
 - Export asynchrone (Celery) :
@@ -364,14 +371,22 @@ PlanarianScanner/
 
 ---
 
-## Procédure de calibration en 4 étapes
-1. Activer "Debug détection" → voir le cercle et les zones sur le stream
+## Procédure de calibration
 
-2. Activer recadrage pour isoler le tube
+### Mode caméra (ArduCam / Webcam)
+1. **Debug** → active la détection HoughCircles en continu (cercle + zones affiché)
+2. **Overlay** → affiche/masque les annotations sans couper la détection
+3. **Recadrer** → isole le puit et navigue vers la position Base
+4. **Calibrage auto** → centrage automatique puit par puit avec sauvegarde
 
-Calibration auto
+### Mode vidéo plaque
+1. Créer un enregistrement `VideoPlate` dans l'admin (upload vidéo, `px_per_mm`, `x_origin_mm`, `y_origin_mm`)
+2. **Contours** → overlay Canny vert pour repérer les bords des puits selon l'éclairage
+3. **Debug** → détection Hough adaptée (plage rayon élargie pour puit plein cadre)
+4. **Recadrer** → active le crop + déplace vers la Base
+5. Naviguer puit par puit, sauvegarder les positions
 
-![Aperçu de la vidéo](assets/calibration-auto.png) Calibration auto
+![Aperçu calibration auto](assets/calibration-auto.png)
 
 [🎬 Vidéo Calibration auto](https://youtu.be/6RueJ3onUoY)
 
