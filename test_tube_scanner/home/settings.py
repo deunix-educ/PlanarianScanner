@@ -404,7 +404,7 @@ DATETIME_FORMAT = '%d-%m-%Y-%m %H:%M:%S'
 # rpicam 4056x3040 2028x1080 2028x1520
 #===========================
 
-GRBL_SIMULATION = True
+GRBL_SIMULATION = config('GRBL_SIMULATION', cast=bool)
 
 EXPORTS_LOCAL_PATH = config("EXPORTS_LOCAL_PATH")
 EXPORT_REMOTE_PATH = config("EXPORT_REMOTE_PATH")
