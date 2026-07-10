@@ -101,7 +101,7 @@
         function download_all_images(sid) {
             const ok = confirm(export_msg +' '+ export_msg_long);
             if (!ok) return false;
- 	        fetch(image_endpoint, {
+ 	        csrfFetch(image_endpoint, {
 	            method: 'POST',
 	            headers: { 'Content-Type': 'application/json' },
 	            body: JSON.stringify({

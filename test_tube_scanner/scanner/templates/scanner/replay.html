@@ -86,8 +86,8 @@
 
     function download_all_videos(sid) {
         const ok = confirm(export_msg);
-        if (!ok) return false;    
-        fetch(image_endpoint, {
+        if (!ok) return false;
+        csrfFetch(image_endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

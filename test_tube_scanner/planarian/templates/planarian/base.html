@@ -58,7 +58,7 @@
 	        });
 	    });
 	    function export_csv(url, pid, mode) {
-	        fetch(url, {
+	        csrfFetch(url, {
 	            method: 'POST',
 	            headers: { 'Content-Type': 'application/json' },
 	            body: JSON.stringify({

@@ -171,7 +171,7 @@ class ReplayManager {
         const ok = confirm(`Télécharger le fichier ?\n\n${filename}`);
         if (!ok) return false;
 
-        fetch(this.video_endpoint, {
+        csrfFetch(this.video_endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

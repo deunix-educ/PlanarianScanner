@@ -6,7 +6,6 @@ from django.shortcuts import render #, redirect
 from django.http import JsonResponse, FileResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
 from django.utils import timezone
@@ -252,7 +251,6 @@ def export_medias(request):
 
 
 @require_POST
-@csrf_exempt
 def download_api(request):
     data = json.loads(request.body.decode() or "{}")
     try:
@@ -314,7 +312,6 @@ def replay_view(request):
 
 
 @require_POST
-@csrf_exempt
 def export_api(request):
     data = json.loads(request.body.decode() or "{}")
     session_id = data.get("sid")

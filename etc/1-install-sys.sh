@@ -17,7 +17,7 @@ echo
 
 # system
 echo "==== system essential"
-sudo apt -y install build-essential openssl git pkg-config redis supervisor sqlitebrowser samba-client cifs-utils gettext
+sudo apt -y install build-essential openssl git pkg-config redis supervisor sqlitebrowser samba-client cifs-utils gettext avahi-daemon
 
 echo "==== python3 install"
 sudo apt -y install python3-dev python3-pip python3-venv libpq-dev default-libmysqlclient-dev libmariadb-dev python3-picamera2

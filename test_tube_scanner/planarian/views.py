@@ -11,7 +11,6 @@ from django.contrib import messages
 from django.http import JsonResponse, FileResponse
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render #, redirect
 from django.views.decorators.http import require_GET
 from django.contrib.auth.decorators import login_required
@@ -85,8 +84,7 @@ def get_active_session(request, session_id=None, experiment_id=None):
 # Vue :Export CSV depuis ReductStore
 # ---------------------------------------------------------------------------
 @login_required
-@csrf_exempt
-def export_metrics(request):   
+def export_metrics(request):
     data = json.loads(request.body.decode() or "{}")
     action = data.get("action")
     pid = data.get("pid")

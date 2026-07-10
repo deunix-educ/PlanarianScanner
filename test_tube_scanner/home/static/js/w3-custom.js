@@ -40,3 +40,13 @@ function timestampToLocalISOString(timestamp) {
     return toLocalISOString(date);
 }
 
+function getCookie(name) {
+    const match = document.cookie.match('(?:^|; )' + name + '=([^;]*)');
+    return match ? decodeURIComponent(match[1]) : null;
+}
+
+function csrfFetch(url, options = {}) {
+    options.headers = { ...(options.headers || {}), 'X-CSRFToken': getCookie('csrftoken') };
+    return fetch(url, options);
+}
+
