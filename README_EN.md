@@ -359,6 +359,12 @@ PlanarianScanner/
 4. **Auto calibration** → automatic well-by-well centering with position save
 
 ### Plate video mode
+
+> **Note**: this mode lets you drive the scanner without a camera mounted on the CNC arm.
+> A single recording of the full plate is made once and replayed in a loop; each GRBL move
+> dynamically crops the current well's region from that video. Ideal for hardware-free
+> testing or labs without an ArduCam.
+
 1. Create a `VideoPlate` record in admin (upload video, set `px_per_mm`, `x_origin_mm`, `y_origin_mm`)
 2. **Edge Enhance** → green Canny overlay to locate well borders under variable lighting
 3. **Debug** → Hough detection with wider radius range (well fills the crop)

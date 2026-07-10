@@ -380,6 +380,12 @@ PlanarianScanner/
 4. **Calibrage auto** → centrage automatique puit par puit avec sauvegarde
 
 ### Mode vidéo plaque
+
+> **Note** : ce mode permet de piloter le scanner sans caméra embarquée sur le bras CNC.
+> Une vidéo de la plaque entière est enregistrée une seule fois puis rejouée en boucle ;
+> chaque déplacement GRBL extrait dynamiquement la zone du puit courant dans cette vidéo.
+> Idéal pour les tests sans matériel ou les laboratoires ne disposant pas de caméra ArduCam.
+
 1. Créer un enregistrement `VideoPlate` dans l'admin (upload vidéo, `px_per_mm`, `x_origin_mm`, `y_origin_mm`)
 2. **Contours** → overlay Canny vert pour repérer les bords des puits selon l'éclairage
 3. **Debug** → détection Hough adaptée (plage rayon élargie pour puit plein cadre)
