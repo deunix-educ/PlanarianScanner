@@ -234,14 +234,6 @@ or
 sudo supervisorctl start|stop|restart reductstore
 sudo supervisorctl start|stop|restart test_tube:*
 
-Add scanner.local to the hosts file on web clients:
-if 10.8.0.100 is the Raspberry Pi 4 local IP address of the server
-
-10.8.0.100 scanner.local
-
-- linux  : /etc/hosts
-- windows: C:\Windows\System32\drivers\etc\hosts
-- mac    : /private/etc/hosts
 Repository Organization
 PlanarianScanner/
 ├── assets
