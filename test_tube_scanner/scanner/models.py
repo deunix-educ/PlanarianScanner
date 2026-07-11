@@ -30,6 +30,10 @@ MULTIWELL_POSITION = [
     ('HD_48', _("MP 6x8: HD-Haut droit")),
     ('BG_48', _("MP 6x8: BG-Bas gauche")),
     ('BD_48', _("MP 6x8: BD-Bas droit")),    
+    ('HG_96', _("MP 8x12: HG-Haut gauche")),
+    ('HD_96', _("MP 8x12: HD-Haut droit")),
+    ('BG_96', _("MP 8x12: BG-Bas gauche")),
+    ('BD_96', _("MP 8x12: BD-Bas droit")),      
 ]
 
 FOURCC_FORMAT = [
