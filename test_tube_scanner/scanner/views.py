@@ -82,36 +82,36 @@ def admin_periodictask_view(request):
 @login_required
 @user_passes_test(is_staff_or_admin)
 def reductstore_view(request):
-    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:8383/'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:8383/'))
 
 
 @login_required
 @user_passes_test(is_staff_or_admin)
 def adminer_view(request):
-    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}/adminer/'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}/adminer/'))
 
 @login_required
 @user_passes_test(is_staff_or_admin)
 def portainer_view(request):
-    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9000/'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9000/'))
 
 
 @login_required
 @user_passes_test(is_staff_or_admin)
 def supervisor_view(request):
-    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9001/'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/'))
 
 
 @login_required
 @user_passes_test(is_staff_or_admin)
 def supervisor_worker(request):
-    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9001/logtail/test_tube:services'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/logtail/test_tube:services'))
 
 
 @login_required
 @user_passes_test(is_staff_or_admin)
 def supervisor_scheduler(request):
-    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.LOCAL_IP_SERVER}:9001/logtail/test_tube:planification'))
+    return render(request, "scanner/redirection.html", context=global_context(request, link=f'http://{settings.DOMAIN_SERVER}:9001/logtail/test_tube:planification'))
 
 
 def documentation(request, template=None):
@@ -245,7 +245,7 @@ def export_medias(request):
         choice_title=_("Exporter les fichiers médias"),
         sessions=models.Session.objects.filter(active=False).all(),
         current_session=current_session,
-        url=f'http://{settings.LOCAL_IP_SERVER}:9001/logtail/test_tube:services',
+        url=f'http://{settings.DOMAIN_SERVER}:9001/logtail/test_tube:services',
     )
     return render(request, "scanner/export_medias.html", context=global_context(request, **ctx))
 

@@ -14,10 +14,10 @@ from django.contrib.auth.models import User
 
 
 MULTIWELL_POSITION = [
-    ('HG', _("MP 6x24: HG-Haut gauche")),
-    ('HD', _("MP 6x24: HD-Haut droit")),
-    ('BG', _("MP 6x24: BG-Bas gauche")),
-    ('BD', _("MP 6x24: BD-Bas droit")),
+    ('HG',    _("MP 4x6: HG-Haut gauche")),
+    ('HD',    _("MP 4x6: HD-Haut droit")),
+    ('BG',    _("MP 4x6: BG-Bas gauche")),
+    ('BD',    _("MP 4x6: BD-Bas droit")),
     ('HG_6',  _("MP 2x3: HG-Haut gauche")),
     ('HD_6',  _("MP 2x3: HD-Haut droit")),
     ('BG_6',  _("MP 2x3: BG-Bas gauche")),

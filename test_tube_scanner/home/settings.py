@@ -365,9 +365,6 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-
-
-
 ## reductstore
 #
 REDUCTSTORE_TOKEN = config('REDUCTSTORE_TOKEN')
