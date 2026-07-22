@@ -13,28 +13,24 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-MULTIWELL_POSITION = [
-    ('HG',    _("MP 4x6: HG-Haut gauche")),
-    ('HD',    _("MP 4x6: HD-Haut droit")),
-    ('BG',    _("MP 4x6: BG-Bas gauche")),
-    ('BD',    _("MP 4x6: BD-Bas droit")),
-    ('HG_6',  _("MP 2x3: HG-Haut gauche")),
-    ('HD_6',  _("MP 2x3: HD-Haut droit")),
-    ('BG_6',  _("MP 2x3: BG-Bas gauche")),
-    ('BD_6',  _("MP 2x3: BD-Bas droit")),
-    ('HG_12', _("MP 3x4: HG-Haut gauche")),
-    ('HD_12', _("MP 3x4: HD-Haut droit")),
-    ('BG_12', _("MP 3x4: BG-Bas gauche")),
-    ('BD_12', _("MP 3x4: BD-Bas droit")),
-    ('HG_48', _("MP 6x8: HG-Haut gauche")),
-    ('HD_48', _("MP 6x8: HD-Haut droit")),
-    ('BG_48', _("MP 6x8: BG-Bas gauche")),
-    ('BD_48', _("MP 6x8: BD-Bas droit")),    
-    ('HG_96', _("MP 8x12: HG-Haut gauche")),
-    ('HD_96', _("MP 8x12: HD-Haut droit")),
-    ('BG_96', _("MP 8x12: BG-Bas gauche")),
-    ('BD_96', _("MP 8x12: BD-Bas droit")),      
-]
+class MultiWellPositionChoice(models.Model):
+    """
+    Référentiel des codes de position multi-puits (ex: HG_96), géré en base
+    plutôt qu'en liste Python figée — permet d'ajouter de nouveaux formats
+    de plaque sans modifier le code. `code` est la clé utilisée telle quelle
+    par MultiWell.position et Configuration.calibration_default_multiwell.
+    """
+    code = models.CharField(_("Code"), max_length=8, unique=True, help_text=_("Clé courte, ex: HG_96"))
+    label = models.CharField(_("Libellé"), max_length=100, help_text=_("Libellé affiché dans les menus"))
+    order = models.PositiveSmallIntegerField(_("Ordre"), default=0)
+
+    class Meta:
+        ordering = ['order', 'code']
+        verbose_name = _("Position multi-puits (référentiel)")
+        verbose_name_plural = _("Positions multi-puits (référentiel)")
+
+    def __str__(self):
+        return f"{self.code} — {self.label}"
 
 FOURCC_FORMAT = [
     ('mp4v', _("MP4")),
@@ -82,7 +78,7 @@ class Configuration(models.Model):
     # Calibration
     scan_simulation = models.BooleanField(_("Simuler balayage"), help_text=_("Autorise la simulation du balayage"), default=False)
     calibration_crop_radius = models.PositiveSmallIntegerField(_("Rayon de découpe pour la calibration"), help_text=_("Rayon en pixels pour découper les images de calibration en px"), default=150)
-    calibration_default_multiwell = models.CharField(_("Multi-puits de calibration par défaut"), help_text=_("Position du multi-puits de calibration par défaut"), max_length=8, choices=MULTIWELL_POSITION, default='HG')
+    calibration_default_multiwell = models.CharField(_("Multi-puits de calibration par défaut"), help_text=_("Position du multi-puits de calibration par défaut"), max_length=8, default='HG')
     calibration_default_feed = models.PositiveIntegerField(_("Vitesse de calibration"), help_text=_("Vitesse de déplacement pour la calibration en mm/mn"), default=1000)
     calibration_default_step = models.FloatField(_("Pas de calibration"), help_text=_("Pas de déplacement pour la calibration en mm"), default=1.0)
     calibration_default_duration = models.FloatField(_("Duruée calibration"), help_text=_("Durée de pose entre chaque puits en s"), default=3.0)

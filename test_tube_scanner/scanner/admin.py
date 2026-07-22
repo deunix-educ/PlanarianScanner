@@ -14,10 +14,26 @@ class WellAdmin(admin.ModelAdmin):
     model = models.Well
     list_display = ('name', 'author',)
 
+class MultiWellPositionChoiceAdmin(admin.ModelAdmin):
+    list_display = ('code', 'label', 'order')
+    list_editable = ('order',)
+    ordering = ('order', 'code')
+
+
+def multiwell_position_choices():
+    return [('', '---------')] + list(
+        models.MultiWellPositionChoice.objects.order_by('order', 'code').values_list('code', 'label')
+    )
+
+
 class ConfigurationAdmin(admin.ModelAdmin):
     list_display = ('name', 'author', 'capture_type', 'video_width_capture', 'video_height_capture', 'video_frame_rate', 'active',)
-    
-    
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == 'calibration_default_multiwell':
+            kwargs['widget'] = forms.Select(choices=multiwell_position_choices())
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
     fieldsets = (
         (_("Identification"), {
             "fields": ("name", "author", "active"),
@@ -52,6 +68,11 @@ class MultiWellAdmin(admin.ModelAdmin):
     list_filter = ('author', )
     list_display = ('label', 'position', 'author', 'order', 'xbase', 'ybase', 'duration', 'feed', 'default', 'well_position', 'capture_video', 'active',)
     ordering = ('label', 'order')
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == 'position':
+            kwargs['widget'] = forms.Select(choices=multiwell_position_choices())
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
     fieldsets = (
         (_("Identification"), {
             "fields": ("label", "author", "position", "default", "capture_video", "active"),
@@ -321,6 +342,7 @@ class VideoPlateAdmin(admin.ModelAdmin):
 admin.site.register(models.Configuration, ConfigurationAdmin)
 admin.site.register(models.Well, WellAdmin)
 admin.site.register(models.MultiWell, MultiWellAdmin)
+admin.site.register(models.MultiWellPositionChoice, MultiWellPositionChoiceAdmin)
 admin.site.register(models.WellPosition, WellPositionAdmin)
 admin.site.register(models.Experiment, ExperimentAdmin)
 admin.site.register(models.Session, SessionAdmin)
