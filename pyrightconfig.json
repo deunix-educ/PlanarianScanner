@@ -12,5 +12,6 @@
   "reportPossiblyUnboundVariable": "warning",
   "reportCallIssue": false,
   "reportArgumentType": false,
-  "reportAttributeAccessIssue": false
+  "reportAttributeAccessIssue": false,
+  "reportAssignmentType": false
 }
