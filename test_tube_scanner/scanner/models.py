@@ -124,7 +124,7 @@ class MultiWell(models.Model):
     # Identification
     label =  models.CharField(_("Label"), help_text=_("Label du multi-puit"), max_length=100, null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name="Auteur", null=True, blank=True)
-    position = models.CharField(_("Position"), help_text=_('Position du multi-puits sur la table'), unique=True, max_length=8, choices=MULTIWELL_POSITION, null=True, blank=False)
+    position = models.CharField(_("Position"), help_text=_('Position du multi-puits sur la table'), unique=True, max_length=8, null=True, blank=False)
     default = models.BooleanField(_("Défaut"), help_text=_('Multi-puit par défaut'), default=False)
     # Configuration   
     cols = models.PositiveSmallIntegerField(_("Colonnes"), help_text=_('Nombre de colonnes'), blank=False, default=6)
