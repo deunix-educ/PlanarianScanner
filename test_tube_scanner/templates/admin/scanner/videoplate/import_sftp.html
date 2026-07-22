@@ -1,0 +1,60 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans "Accueil" %}</a>
+    &rsaquo; <a href="{% url 'admin:scanner_videoplate_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+    &rsaquo; {{ title }}
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <p>
+        {% blocktrans %}Déposez le fichier vidéo par SFTP (SSH) dans le dossier suivant, puis sélectionnez-le
+        ci-dessous pour créer la vidéo plaque — le fichier ne transite jamais par le serveur web,
+        ce qui évite les blocages sur les gros fichiers.{% endblocktrans %}
+    </p>
+    <p><code>{{ incoming_path }}</code></p>
+
+    {% if not pending_files %}
+        <p class="help">{% trans "Aucun fichier vidéo en attente dans ce dossier pour le moment." %}</p>
+    {% else %}
+    <form method="post">
+        {% csrf_token %}
+        <fieldset class="module aligned">
+            <div class="form-row">
+                <div>
+                    <label for="id_filename">{% trans "Fichier déposé" %}</label>
+                    <select name="filename" id="id_filename" required>
+                        {% for f in pending_files %}
+                        <option value="{{ f }}">{{ f }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div>
+                    <label for="id_multiwell">{% trans "Multi-puits" %}</label>
+                    <select name="multiwell" id="id_multiwell" required>
+                        {% for mw in multiwells %}
+                        <option value="{{ mw.pk }}">{{ mw }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div>
+                    <label for="id_label">{% trans "Label" %}</label>
+                    <input type="text" name="label" id="id_label" maxlength="200">
+                </div>
+            </div>
+        </fieldset>
+        <div class="submit-row">
+            <input type="submit" value="{% trans "Importer" %}" class="default">
+        </div>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

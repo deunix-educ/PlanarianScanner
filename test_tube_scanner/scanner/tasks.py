@@ -269,6 +269,47 @@ def http_request(req_type='json_post', url=None, user=None, passwd=None, headers
             logger.error(f"Erreur inattendue: {str(e)}")  
             
 @shared_task
+def extract_video_plate_metadata(video_plate_id):
+    """
+    Extrait FPS/durée/résolution d'une VideoPlate en tâche de fond.
+    Évite de bloquer la requête admin le temps d'analyser un fichier volumineux.
+    """
+    try:
+        video_plate = models.VideoPlate.objects.get(pk=video_plate_id)
+    except models.VideoPlate.DoesNotExist:
+        logger.error("extract_video_plate_metadata: VideoPlate %s introuvable", video_plate_id)
+        return
+
+    if not video_plate.video_file:
+        return
+
+    import cv2
+    cap = cv2.VideoCapture(video_plate.video_file.path)
+    try:
+        if not cap.isOpened():
+            logger.error("extract_video_plate_metadata: impossible d'ouvrir %s", video_plate.video_file.path)
+            return
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+        frame_w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        frame_h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        models.VideoPlate.objects.filter(pk=video_plate_id).update(
+            native_fps=fps,
+            duration_s=(frame_count / fps) if fps else None,
+            frame_w=frame_w,
+            frame_h=frame_h,
+        )
+        logger.info(
+            "extract_video_plate_metadata: VideoPlate %s — %.2f fps, %dx%d",
+            video_plate_id, fps, frame_w, frame_h,
+        )
+    except Exception as e:
+        logger.error("extract_video_plate_metadata: erreur sur VideoPlate %s: %s", video_plate_id, e, exc_info=True)
+    finally:
+        cap.release()
+
+
+@shared_task
 def supervisor_restart_service(params):
     """
     Redémarre un service.

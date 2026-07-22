@@ -1,7 +1,12 @@
 from pathlib import Path
+from django import forms
+from django.conf import settings
+from django.core.files.uploadedfile import UploadedFile
+from django.shortcuts import render, redirect
+from django.urls import path
 from django.utils.translation import gettext_lazy as _
 from django.utils.html import format_html
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.db.models import Q
 from . import models
 
@@ -115,13 +120,48 @@ class SessionAdmin(admin.ModelAdmin):
         'scanning_finished_at'
     )
 
+VIDEO_INCOMING_DIRNAME = 'incoming'
+VIDEO_EXTENSIONS = ('.mp4', '.avi', '.mkv', '.mov', '.m4v')
+
+# Au-delà de cette taille, l'upload HTTP via l'admin risque de saturer la RAM
+# du Pi (Daphne bufférise le corps de la requête en mémoire) et de reproduire
+# le blocage observé — on redirige plutôt vers l'import SFTP (sans limite).
+MAX_VIDEO_UPLOAD_MB = 200
+
+
+class VideoPlateForm(forms.ModelForm):
+    class Meta:
+        model = models.VideoPlate
+        fields = '__all__'
+        help_texts = {
+            'video_file': _(
+                "%(limit)d Mo max pour l'upload direct. Au-delà, utilise "
+                "« Importer depuis le dépôt SFTP » depuis la liste des vidéos plaque."
+            ) % {'limit': MAX_VIDEO_UPLOAD_MB},
+        }
+
+    def clean_video_file(self):
+        file = self.cleaned_data.get('video_file')
+        if isinstance(file, UploadedFile) and file.size > MAX_VIDEO_UPLOAD_MB * 1024 * 1024:
+            raise forms.ValidationError(
+                _(
+                    "Fichier trop volumineux (%(size).0f Mo, limite %(limit)d Mo pour l'upload direct). "
+                    "Dépose la vidéo par SFTP dans media/videos/incoming/ puis utilise "
+                    "« Importer depuis le dépôt SFTP » depuis la liste des vidéos plaque."
+                ) % {'size': file.size / (1024 * 1024), 'limit': MAX_VIDEO_UPLOAD_MB}
+            )
+        return file
+
+
 @admin.register(models.VideoPlate)
 class VideoPlateAdmin(admin.ModelAdmin):
 
+    form = VideoPlateForm
     list_display  = ['multiwell', 'label', 'video_filename', 'active',
                      'fps_display', 'duration_display', 'resolution_display', 'uploaded_at']
     list_filter   = ['multiwell', 'active']
     list_editable = ['active']
+    change_list_template = 'admin/scanner/videoplate/change_list.html'
     readonly_fields = [
         'native_fps', 'duration_s', 'frame_w', 'frame_h',
         'uploaded_at', 'resolution_display', 'video_preview',
@@ -136,6 +176,80 @@ class VideoPlateAdmin(admin.ModelAdmin):
     class Media:
         css = {'all': ('scanner/css/video_upload.css',)}
         js  = ('scanner/js/video_upload.js',)
+
+    # ------------------------------------------------------------------
+    # Import depuis un fichier déposé en SFTP (évite l'upload HTTP pour
+    # les vidéos de plusieurs Go — cf. contrainte mémoire du Pi sous Daphne)
+    # ------------------------------------------------------------------
+
+    def get_urls(self):
+        return [
+            path(
+                'import-sftp/',
+                self.admin_site.admin_view(self.import_sftp_view),
+                name='scanner_videoplate_import_sftp',
+            ),
+        ] + super().get_urls()
+
+    @staticmethod
+    def _incoming_dir() -> Path:
+        incoming = Path(settings.MEDIA_ROOT) / 'videos' / VIDEO_INCOMING_DIRNAME
+        incoming.mkdir(parents=True, exist_ok=True)
+        return incoming
+
+    def import_sftp_view(self, request):
+        incoming = self._incoming_dir()
+        pending_files = sorted(
+            f.name for f in incoming.iterdir()
+            if f.is_file() and f.suffix.lower() in VIDEO_EXTENSIONS
+        )
+
+        if request.method == 'POST':
+            filename = request.POST.get('filename', '')
+            multiwell_id = request.POST.get('multiwell')
+            label = request.POST.get('label', '')
+
+            src = (incoming / filename).resolve()
+            if src.parent != incoming.resolve() or not src.is_file():
+                messages.error(request, _("Fichier introuvable dans le dépôt SFTP."))
+                return redirect('admin:scanner_videoplate_import_sftp')
+
+            multiwell = models.MultiWell.objects.filter(pk=multiwell_id).first()
+            if not multiwell:
+                messages.error(request, _("Multi-puits invalide."))
+                return redirect('admin:scanner_videoplate_import_sftp')
+
+            dest_dir = Path(settings.MEDIA_ROOT) / 'videos'
+            dest = dest_dir / src.name
+            n = 1
+            while dest.exists():
+                dest = dest_dir / f"{src.stem}_{n}{src.suffix}"
+                n += 1
+            src.rename(dest)
+
+            video_plate = models.VideoPlate.objects.create(
+                multiwell=multiwell,
+                label=label,
+                video_file=f'videos/{dest.name}',
+                active=True,
+            )
+            from .tasks import extract_video_plate_metadata
+            extract_video_plate_metadata.delay(video_plate.pk)  # @UndefinedVariable
+            messages.success(
+                request,
+                _("Vidéo « %(name)s » importée — analyse en cours en arrière-plan.") % {'name': dest.name},
+            )
+            return redirect('admin:scanner_videoplate_changelist')
+
+        context = {
+            **self.admin_site.each_context(request),
+            'title': _("Importer une vidéo déposée en SFTP"),
+            'opts': self.model._meta,
+            'pending_files': pending_files,
+            'multiwells': models.MultiWell.objects.order_by('label', 'order'),
+            'incoming_path': str(incoming),
+        }
+        return render(request, 'admin/scanner/videoplate/import_sftp.html', context)
 
     # ------------------------------------------------------------------
     # Colonnes liste
@@ -181,24 +295,12 @@ class VideoPlateAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         if obj.video_file:
-            self._extract_metadata(obj)
-
-    def _extract_metadata(self, obj):
-        try:
-            import cv2
-            cap = cv2.VideoCapture(obj.video_file.path)
-            if cap.isOpened():
-                fps = cap.get(cv2.CAP_PROP_FPS)
-                fc  = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-                models.VideoPlate.objects.filter(pk=obj.pk).update(
-                    native_fps = fps,
-                    duration_s = (fc / fps) if fps else None,
-                    frame_w    = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
-                    frame_h    = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)),
-                )
-                cap.release()
-        except Exception:
-            pass
+            from .tasks import extract_video_plate_metadata
+            extract_video_plate_metadata.delay(obj.pk)  # @UndefinedVariable
+            messages.info(
+                request,
+                _("Analyse de la vidéo (FPS, durée, résolution) en cours en arrière-plan — actualisez la page dans quelques instants."),
+            )
 
     # ------------------------------------------------------------------
     # Suppression : efface aussi le fichier physique
