@@ -1,8 +1,12 @@
 {% extends 'scanner/base.html' %}
-{% load i18n home_tags %}
-
+{% load i18n home_tags scanner_tags %}
 {% block styles %}
     {{ block.super }}
+    <style>
+        :root {
+            --well-columns: {% if current_experiment %}{{current_experiment.multiwell.cols}}{% else %}6{% endif %}; 
+        }
+    </style>    
     <link href="/static/scanner/css/replay.css" rel="stylesheet">
 {% endblock %}
 {% block columns %}{% endblock %}

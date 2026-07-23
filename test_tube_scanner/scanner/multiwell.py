@@ -62,11 +62,19 @@ class WellIterator:
             return self.wells[index]
         raise IndexError(f"Index {index} hors limites (0-{self.total_count - 1})")
     
+    def seek_by_name(self, name):
+        """Méthode seek() pour sauter à un index spécifique"""
+        for wl in self.wells:
+            if wl.well.name==name:
+                return wl
+        raise IndexError(f"Well name {name} not found!")   
+     
     def get_current(self):
         """Retourne l'élément courant"""
         if -1 < self.current_index < self.total_count:
             return self.wells[self.current_index]
         return None
+    
     
     def reset(self):
         """Réinitialise l'itérateur au début"""
@@ -129,6 +137,8 @@ class MultiWellManager:
             self.multiwell = models.MultiWell.objects.filter(default=True).first()
         else:
             self.multiwell = models.MultiWell.by_position(position)
+            
+        self.px_per_mm = self.multiwell.px_per_mm
         self.init_manager_values()
         return self.multiwell.config()
     
@@ -138,15 +148,29 @@ class MultiWellManager:
             self.multiwell = experiments[0].multiwell
             self.init_manager_values()
 
+    #def multiwell_buttons(self, btn_class="w3-button", onclick=''' onclick="goto_well(this)"'''):
+    #    multiwells = []
+    #    multiwells.append('''<div class="w3-border well-btn">''')
+    #    for wl in self.well_iterator: 
+    #        multiwells.append(f"""<button class="{btn_class} well" value="{wl.order}"{onclick}>{wl.well.name}</button>""")
+    #    multiwells.append('''</div>''')
+    #    self.well_iterator.reset()
+    #    return mark_safe("\n".join(multiwells))    
+ 
     def multiwell_buttons(self, btn_class="w3-button", onclick=''' onclick="goto_well(this)"'''):
         multiwells = []
         multiwells.append('''<div class="w3-border well-btn">''')
-        for wl in self.well_iterator: 
-            multiwells.append(f"""<button class="{btn_class} well" value="{wl.order}"{onclick}>{wl.well.name}</button>""")
+        row_def = self.multiwell.row_def.split(',') 
+        cols = self.multiwell.cols
+        
+        for row in range(self.multiwell.rows):
+            for col in range(cols):
+                btn = f'{row_def[row]}{col+1}'
+                wl = self.well_iterator.seek_by_name(btn)
+                multiwells.append(f"""<button class="{btn_class} well" value="{wl.order}"{onclick}>{wl.well.name}</button>""")
         multiwells.append('''</div>''')
-        self.well_iterator.reset()
-        return mark_safe("\n".join(multiwells))         
-    
+        return mark_safe("\n".join(multiwells))   
+       
     def set_circular_crop(self, crop_radius):
         crop = self.process.set_crop_radius(crop_radius)
         self.process.cam.set_circular_crop(crop)

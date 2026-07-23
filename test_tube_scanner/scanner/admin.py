@@ -78,7 +78,7 @@ class MultiWellAdmin(admin.ModelAdmin):
             "fields": ("label", "author", "position", "default", "capture_video", "active"),
         }),
         (_("Géométrie"), {
-            "fields": ("cols", "rows", "diameter", "crop_radius", "row_def", "row_order"),"classes": ("collapse",),
+            "fields": ("cols", "rows", "diameter", "crop_radius", 'px_per_mm', "row_def"),"classes": ("collapse",),
         }),
         (_("Déplacement"), {
             "fields": ("order", "duration", "xbase", "ybase", "dx", "dy", "feed"),"classes": ("collapse",),

@@ -295,14 +295,15 @@ def replay_view(request):
             oldest, latest, image = get_video(uuid)
             
     current_session = models.Session.get_session(cursid)
-    experiments, current_experiment = get_not_active_experiments(current_session, expid)            
+    experiments, current_experiment = get_not_active_experiments(current_session, expid)
+            
     ctx = dict(
         choice_title=_("Gestionnaire de vidéos"),
         ws_route=settings.REPLAY_WEBSOCKET_ROUTE,
         sessions=models.Session.objects.filter(active=False).all(),
         experiments=experiments or [],
         current_session=current_session,
-        current_experiment=current_experiment,        
+        current_experiment=current_experiment,      
         image=image,
         uuid=uuid,
         oldest=oldest,

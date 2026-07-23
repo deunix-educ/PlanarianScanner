@@ -11,7 +11,7 @@ def multiwell_cards(sid, experiment):
     multiwells.append(
     f'''
     <div class="w3-padding-small w3-sand">{experiment.title}</div>
-    <div class="w3-border multiwell_cards">
+    <div class="w3-border  multiwell_cards">
     ''')
     for row in range(experiment.multiwell.rows):
         for col in range(experiment.multiwell.cols):

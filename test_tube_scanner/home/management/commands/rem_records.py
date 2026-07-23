@@ -11,7 +11,7 @@ from scanner.models import MultiWell
 
 async def remove_video(sid, multiwells):
     for m in multiwells:
-        row_to_char = m.row_order.split(',')
+        row_to_char = m.row_def.split(',')
         for row in range(m.rows):
             for col in range(m.cols):
                 uuid = f'{sid}-{m.position}-{row_to_char[row]}{col+1}'

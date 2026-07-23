@@ -130,9 +130,10 @@ class MultiWell(models.Model):
     cols = models.PositiveSmallIntegerField(_("Colonnes"), help_text=_('Nombre de colonnes'), blank=False, default=6)
     rows = models.PositiveSmallIntegerField(_("Lignes"), help_text=_('Nombre de lignes'), blank=False, default=4)  
     diameter = models.FloatField(_("Diamètre"), help_text=_('Diamètre des tubes en mm'), blank=False, default=16.0)
-    row_def = models.CharField(_("Définition"), help_text=_('Définition des lignes'), max_length=16, null=True, blank=False, default="A,B,C,D")
-    row_order = models.CharField(_("Ordre ligne"), help_text=_('Ordre ligne de puit. Lecture en serpentin dans le sens des +- X'), max_length=16, null=True, blank=False, default="D,C,B,A")
+    row_def = models.CharField(_("Définition"), help_text=_('Définition des lignes'), max_length=16, null=True, blank=False, default="A,B,C,D,E,F,G,H")
+    #row_order = models.CharField(_("Ordre ligne"), help_text=_('Ordre ligne de puit. Lecture en serpentin dans le sens des +- X'), max_length=16, null=True, blank=False, default="D,C,B,A")
     crop_radius = models.PositiveSmallIntegerField(_("Rayon de découpe recadrage"), help_text=_("Rayon en pixels pour recadrer les images en px"), blank=False, default=500)
+    px_per_mm = models.FloatField(verbose_name=_("Pixels par mm"), help_text=_("Facteur de calibration optique par defaut"), blank=False, default=11.5)
     
     # Balayage
     order = models.PositiveSmallIntegerField(_("Ordre"), help_text=_('Ordre de lecture du multi-puit'), blank=False, default=0)
@@ -154,7 +155,6 @@ class MultiWell(models.Model):
             cols=self.cols,
             rows=self.rows,
             row_def=self.row_def,
-            row_order=self.row_order,
             dx=self.dx,
             dy=self.dy,
             duration=self.duration,
@@ -184,7 +184,10 @@ class MultiWell(models.Model):
         verbose_name = _("Multi-puits")
         verbose_name_plural = _("Multi-puits")
 
-
+    def save(self, *args, **kwargs):
+        self.px_per_mm = 2*(self.crop_radius)/self.diameter
+        super().save(*args, **kwargs)
+        
     def __str__(self):
         return f'{self.position}: {self.label}'
 
@@ -197,7 +200,7 @@ class WellPosition(models.Model):
     order = models.PositiveSmallIntegerField(_("Ordre"), help_text=_('Ordre de lecture du puit'), blank=False, default=0)
     x = models.FloatField(_("X"), help_text=_('Axe X en mm'), blank=False, default=10.0)
     y = models.FloatField(_("Y"), help_text=_('Axe Y en mm'), blank=False, default=10.0)
-    px_per_mm = models.FloatField( default=50.0, verbose_name=_("Pixels par mm"),  help_text=_("Facteur de calibration optique"))
+    px_per_mm = models.FloatField( default=11.5, verbose_name=_("Pixels par mm"),  help_text=_("Facteur de calibration optique"))
 
 
     @classmethod
@@ -223,24 +226,21 @@ def create_well_position(sender, instance, created, **kwargs):
     #if created:
     #    pass
     if not instance.well_position:
-        row_order = instance.row_order.split(',')
+        row_def = instance.row_def.split(',') or ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', ]   
         n = 0
         for row in range(instance.rows):
-            if row % 2 == 0:
-                cols = range(instance.cols)
-            else:
-                cols = range(instance.cols - 1, -1, -1)
+            cols = range(instance.cols)
             for col in cols:
                 x = instance.xbase + col * instance.dx
                 y = instance.ybase + row * instance.dy
                 try:
-                    name = f'{row_order[row]}{col+1}'
+                    name = f'{row_def[row]}{col+1}'
                     well = Well.objects.get(name__exact=name)
                     WellPosition.objects.update_or_create(
                         multiwell=instance, 
                         well=well, 
                         author=instance.author, 
-                        defaults={'order': n, 'x': round(x, 4), 'y': round(y, 4)}
+                        defaults={'order': n, 'x': round(x, 4), 'y': round(y, 4), 'px_per_mm': round(instance.px_per_mm, 4)}
                     )
                     n += 1
                 except:
