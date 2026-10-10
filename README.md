@@ -216,7 +216,7 @@ Interface : `http://scanner.local` — Adminer : `http://scanner.local/adminer/`
 | Mise à jour locale (sauvegarde BDD, pull, migrate, restart) | `make update` |
 | Mise à jour à distance | `make remote-update TARGET=user@hote` |
 | Adminer seul | `make adminer` |
-| Client WireGuard | `make wireguard` |
+| Client WireGuard (à la demande) | `make wireguard WG_CONF=fichier.conf` · `make wg-up` · `make wg-down` |
 
 Pour la production avec la CNC branchée, mettre `GRBL_SIMULATION=False` dans `.env`
 puis `sudo supervisorctl restart test_tube:*`.

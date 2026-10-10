@@ -27,7 +27,7 @@ APT_DEV    := redis-server sqlite3
 .DEFAULT_GOAL := help
 .PHONY: help deps-dev deps-prod venv env-dev env-prod reductstore db fixtures sim-videos \
         install-dev sim-config dev-deps dev dev-stop dev-status dev-logs test-sim \
-        install-prod mariadb services nginx adminer hostname hostname-check wireguard wireguard-status \
+        install-prod mariadb services nginx adminer hostname hostname-check wireguard wg-up wg-down wireguard-status \
         update remote-update deploy status clean-dev
 
 help:  ## cette aide
@@ -131,9 +131,13 @@ hostname:  ## scanner.local via Avahi/mDNS (SCANNER_HOSTNAME=nom pour changer)
 hostname-check:  ## diagnostic de scanner.local
 	$(S)/hostname.sh --check $(SCANNER_HOSTNAME)
 
-wireguard:  ## client WireGuard (WG_CONF=fichier.conf, sinon génère clés + modèle)
+wireguard:  ## client WireGuard, à la demande (WG_CONF=fichier.conf, sinon génère clés + modèle)
 	sudo $(S)/wireguard.sh install $(WG_CONF)
-wireguard-status:
+wg-up:  ## monte le tunnel WireGuard (avant une mise à jour distante)
+	sudo $(S)/wireguard.sh up
+wg-down:  ## coupe le tunnel WireGuard
+	sudo $(S)/wireguard.sh down
+wireguard-status:  ## état du tunnel
 	sudo $(S)/wireguard.sh status
 
 # ---------------------------------------------------------------- mises à jour

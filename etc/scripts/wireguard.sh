@@ -1,7 +1,9 @@
 #!/bin/bash
 # Client WireGuard : permet de mettre à jour le scanner à distance (make update via ssh).
 # usage: sudo wireguard.sh install [fichier.conf]   installe wg0 (génère clés + modèle si pas de fichier)
-#        sudo wireguard.sh status
+#        sudo wireguard.sh up | down | status
+# Montage à la demande : install n'active PAS wg0 au démarrage (4G momentanée) ;
+# utiliser up avant une mise à jour, down ensuite.
 # Le tunnel n'achemine que le sous-réseau VPN (AllowedIPs) : le LAN du labo reste inchangé,
 # et wg0 est exclu des annonces mDNS (voir hostname.sh).
 [ "$(id -u)" = 0 ] || { echo "lancer avec sudo"; exit 1; }
@@ -34,14 +36,24 @@ CONF
         echo "Compléter $WG/wg0.conf puis relancer: sudo systemctl enable --now wg-quick@wg0"
         exit 0
     fi
+    # DNS= impose resolvconf (absent) et détournerait le DNS du scanner : inutile avec AllowedIPs = sous-réseau VPN
+    sed -i '/^[[:space:]]*DNS[[:space:]]*=/d' $WG/wg0.conf
     grep -q '<' $WG/wg0.conf && { echo "wg0.conf contient encore des <valeurs> à compléter"; exit 1; }
-    systemctl enable wg-quick@wg0
-    systemctl restart wg-quick@wg0
+    systemctl disable wg-quick@wg0 2>/dev/null || true
+    echo "wg0 installé (non activé au démarrage). Monter le tunnel : make wg-up"
+    ;;
+up)
+    [ -f $WG/wg0.conf ] || { echo "$WG/wg0.conf absent : make wireguard WG_CONF=fichier.conf"; exit 1; }
+    systemctl start wg-quick@wg0
     wg show wg0
+    ;;
+down)
+    systemctl stop wg-quick@wg0
+    echo "wg0 arrêté"
     ;;
 status)
     systemctl is-active wg-quick@wg0 || true
     wg show 2>/dev/null || echo "wg0 non configuré"
     ;;
-*) echo "usage: $0 install [fichier.conf] | status"; exit 1 ;;
+*) echo "usage: $0 install [fichier.conf] | up | down | status"; exit 1 ;;
 esac

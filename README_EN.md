@@ -210,7 +210,7 @@ Interface: `http://scanner.local` — Adminer: `http://scanner.local/adminer/`
 | Local update (DB backup, pull, migrate, restart) | `make update` |
 | Remote update | `make remote-update TARGET=user@host` |
 | Adminer only | `make adminer` |
-| WireGuard client | `make wireguard` |
+| WireGuard client (on demand) | `make wireguard WG_CONF=file.conf` · `make wg-up` · `make wg-down` |
 
 With the CNC plugged in for production, set `GRBL_SIMULATION=False` in `.env`
 then `sudo supervisorctl restart test_tube:*`.
