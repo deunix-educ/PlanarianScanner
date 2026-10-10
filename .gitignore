@@ -1,5 +1,6 @@
 # ── Secrets & credentials ──────────────────────────────────────────────────
 test_tube_scanner/.env
+test_tube_scanner/.env.dev
 *.pem
 *.key
 *.crt
