@@ -27,7 +27,7 @@ APT_DEV    := redis-server sqlite3
 .DEFAULT_GOAL := help
 .PHONY: help deps-dev deps-prod venv env-dev env-prod reductstore db fixtures sim-videos \
         install-dev sim-config dev-deps dev dev-stop dev-status dev-logs test-sim \
-        install-prod mariadb services nginx hostname hostname-check wireguard wireguard-status \
+        install-prod mariadb services nginx adminer hostname hostname-check wireguard wireguard-status \
         update remote-update deploy status clean-dev
 
 help:  ## cette aide
@@ -95,7 +95,7 @@ clean-dev:  ## supprime base sqlite et données de dev (datas/)
 	$(S)/dev.sh stop; rm -rf $(ROOT)/datas
 
 # ---------------------------------------------------------------- production (RPi4)
-install-prod: deps-prod hostname venv env-prod reductstore mariadb services fixtures sim-videos nginx  ## installation complète RPi4
+install-prod: deps-prod hostname venv env-prod reductstore mariadb services fixtures sim-videos nginx adminer  ## installation complète RPi4
 	$(MANAGE) collectstatic --noinput -v0
 	sudo supervisorctl restart test_tube:*
 	@echo "OK -> http://$(SCANNER_HOSTNAME).local"
@@ -122,6 +122,9 @@ nginx:  ## reverse proxy port 80 -> daphne (+ static/media)
 	sudo ln -sf /etc/nginx/sites-available/scanner /etc/nginx/sites-enabled/scanner
 	sudo rm -f /etc/nginx/sites-enabled/default
 	sudo nginx -t && sudo systemctl enable --now nginx && sudo systemctl reload nginx
+
+adminer:  ## Adminer (php-fpm) sur /adminer/ (nginx déjà configuré)
+	sudo $(S)/adminer.sh
 
 hostname:  ## scanner.local via Avahi/mDNS (SCANNER_HOSTNAME=nom pour changer)
 	sudo $(S)/hostname.sh $(SCANNER_HOSTNAME)
