@@ -1,0 +1,12 @@
+[program:reductstore]
+process_name=%(program_name)s
+priority=10
+environment=RS_DATA_PATH="@REDUCT_DATA@",RS_API_TOKEN="@RS_TOKEN@"
+directory=@REDUCT_DATA@
+command=@REDUCT_BIN@
+user=@USER@
+group=@USER@
+stopasgroup=true
+stopsignal=SIGINT
+autostart=true
+autorestart=true

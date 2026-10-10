@@ -2,24 +2,24 @@
 
 server {
     listen 80;
-    server_name scanner.local;
+    server_name @HOSTNAME@.local @HOSTNAME@ _;
 
     keepalive_timeout       5;
     client_max_body_size    4G;
 
     # ---- Static
     location /static/ {
-        alias /home/rpi4/PlanarianScanner/test_tube_scanner/staticfiles/;
+        alias @ROOT@/test_tube_scanner/staticfiles/;
         expires 30d;
         access_log off;
     }
     location /favicon.ico {
-        alias /home/rpi4/PlanarianScanner/test_tube_scanner/staticfiles/img/logo.png;
+        alias @ROOT@/test_tube_scanner/staticfiles/img/logo.png;
     }
 
     # ---- Media
     location /media/ {
-        alias /home/rpi4/PlanarianScanner/test_tube_scanner/media/;
+        alias @ROOT@/test_tube_scanner/media/;
         expires 30d;
         access_log off;
     }
@@ -60,7 +60,7 @@ server {
         
         location ~ \.php$ {
             include snippets/fastcgi-php.conf;
-            fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
+            fastcgi_pass unix:/var/run/php/php-fpm.sock;
             fastcgi_param SCRIPT_FILENAME $request_filename;
             include fastcgi_params;
         }

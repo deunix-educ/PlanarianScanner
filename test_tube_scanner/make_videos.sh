@@ -4,7 +4,7 @@
 #   A1..A6, B1..B6, C1..C6, D1..D6
 #  
 MODE="$1"
-PATH="./media/simulation"
+OUT_DIR="${OUT_DIR:-./media/simulation}"
 default_width=1000      # px
 default_height=1000     # px
 default_diameter=16.0   # mm
@@ -80,9 +80,9 @@ export_video() {
                 photo_mode photo_strength photo_x photo_y photo_sine_freq photo_radius chemo_strength chemo_x chemo_y chemo_radius \
                 avoid_strength avoid_radius aggreg_strength aggreg_radius chem_repulsion chem_decay <<< "$args"
                 
-        echo "==== Exécution de $PATH/$key.mp4"
+        echo "==== Exécution de $OUT_DIR/$key.mp4"
         
-        ./planarian_sim.py --output "$PATH/$key.mp4" --default_width "$default_width" --default_height "$default_height" --default_diameter "$default_diameter"  --no-csv \
+        ./planarian_sim.py --output "$OUT_DIR/$key.mp4" --default_width "$default_width" --default_height "$default_height" --default_diameter "$default_diameter"  --no-csv \
             --count "$count" --length "$length" --width "$width" --duration "$duration" --fps "$fps" --seed "$seed" \
             --bg-color "$bg_color" --arena-color "$arena_color" --arena-border "$arena_border" --shadow-color "$shadow_color" \
             --body-color "$body_color" --body-dark  "$body_dark" --body-light "$body_light" --head-color "$head_color" \

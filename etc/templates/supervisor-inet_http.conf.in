@@ -1,4 +1,4 @@
 [inet_http_server]
-   port=*:9001 
+   port=@SUP_BIND@:9001 
    username=root
    password=toor

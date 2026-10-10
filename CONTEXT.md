@@ -38,18 +38,14 @@ Développé par dd@linuxtarn.org pour le **Laboratoire de Biologie, Université 
 
 ```
 PlanarianScanner/
-├── etc/                        # Scripts d'installation et configs système
-│   ├── 1-install-sys.sh        # Dépendances système
-│   ├── 2-cargo-reductstore-install.sh  # Build ReductStore (~15 min sur RPi4)
-│   ├── 3-install-samba-client.sh
-│   ├── 4-install_mariadb.sh
-│   ├── 5-install_adminer.sh
-│   ├── 6-install_django_app.sh # Init Django (migrations, fixtures, collectstatic)
+├── Makefile                    # TOUT passe par là : `make help`
+├── etc/                        # Installation et configs système
+│   ├── scripts/                # mkenv.py, dev.sh, hostname.sh, wireguard.sh, reductstore.sh,
+│   │                           # mariadb.sh, update.sh, render.sh, test_sim.py
+│   ├── templates/*.in          # supervisor / nginx (variables @ROOT@ @USER@ … rendues par make)
+│   ├── 3-install-samba-client.sh, 5-install_adminer.sh, install-linux-samba-server.sh
 │   ├── db/                     # Fixtures JSON initiales (configuration, multiwell, well)
-│   ├── requirements.txt
-│   ├── scanner_service.conf    # Supervisor : Django + Celery workers
-│   ├── reductstore_service.conf
-│   └── nginx_service.conf
+│   └── requirements.txt
 ├── datas/                      # Données hors Django (gitignored)
 │   ├── medias/                 # Images et vidéos capturées
 │   ├── exports/csv/            # Exports CSV EthoVision
@@ -153,30 +149,34 @@ DB_*               # MariaDB credentials
 
 ---
 
-## Démarrage des services
+## Installation, développement, production (Makefile)
 
-Tous gérés par **Supervisor** :
+| Contexte | Commandes |
+|---|---|
+| Dev (RPi5, sqlite, **caméra=fichier vidéo, GRBL simulé**) | `make install-dev` · `make dev` · `make test-sim` · `make dev-stop` |
+| Prod (RPi4, MariaDB, nginx :80, supervisor, matériel réel) | `make install-prod` (hostname, apt, venv, .env, ReductStore, MariaDB, supervisor, nginx) |
+| Mise à jour en local | `make update` (sauvegarde BDD, git pull --ff-only, pip, migrate, collectstatic, restart) |
+| Mise à jour à distance (LAN ou VPN) | `make remote-update TARGET=user@scanner.local` ou `TARGET=user@10.8.0.10` |
+| Sans accès git sur le RPi | `make deploy TARGET=user@hote` (rsync puis update --no-git) |
+| scanner.local | `make hostname` · diagnostic `make hostname-check` |
+| WireGuard (client) | `make wireguard [WG_CONF=wg0.conf]` — sans fichier : génère clés + modèle `/etc/wireguard/wg0.conf` |
 
+Points à retenir :
+- `.env` est généré par `etc/scripts/mkenv.py dev|prod` (jamais écrasé sans `--force`) ; `GRBL_SIMULATION` y est piloté.
+- Le code se connecte à **ReductStore et Redis dès l'import** (`scanner/process.py`) : ils doivent tourner
+  avant `migrate`/`runserver` (d'où `make dev-deps`). ReductStore ≥ 1.2x exige `RS_API_TOKEN` (= `REDUCTSTORE_TOKEN`).
+- ReductStore est installé en binaire précompilé (`/usr/local/bin/reductstore`), plus de compilation cargo.
+- Les migrations `scanner/` et `planarian/` sont versionnées (elles ne l'étaient pas).
+- Caméra simulée : `Configuration.capture_type='file'` (vidéo `media/simulation/<puit>.mp4`, repli sur `default_simulation.mp4`).
+  `make test-sim` déroule un balayage de 3 puits via redis et vérifie les frames dans ReductStore.
+- scanner.local = Avahi (mDNS) ; `hostname.sh` traite : /etc/hosts 127.0.1.1, cloud-init, nsswitch, conflit systemd-resolved,
+  collisions de nom, wg0 exclu des annonces, Wi-Fi powersave. Côté clients : Windows <10 a besoin de Bonjour, Android ne résout pas `.local` dans Chrome.
+- Supervisor : `http://root:toor@<ip>:9001` (changer le mot de passe / `SUP_BIND=127.0.0.1 make services` pour le restreindre).
+
+En dev sans Makefile :
 ```bash
-# Interface web Supervisor
-http://root:toor@<ip>:9001
-
-# CLI
-sudo supervisorctl start|stop|restart reductstore
-sudo supervisorctl start|stop|restart test_tube:*
+cd test_tube_scanner && ./manage.py runserver 0.0.0.0:8000   # + ./run-workers.sh
 ```
-
-En dev :
-```bash
-cd test_tube_scanner
-./manage.py runserver 0.0.0.0:8000
-# Workers Celery séparés :
-./run-workers.sh
-```
-
-Accès réseau : ajouter `<ip-rpi4> scanner.local` dans `/etc/hosts` des clients.
-
----
 
 ## Simulateur standalone
 
