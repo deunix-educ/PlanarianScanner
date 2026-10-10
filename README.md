@@ -185,56 +185,41 @@ Raspberry Pi 4
 
 > Documentation complète à venir.
 
-Avec piImager installez PI OS 64-bits Trixie sur le raspberry pi4.<br>
+Avec piImager installez PI OS 64-bits Trixie sur le raspberry pi.<br>
 Personnalisez votre raspberry avec au moins ssh (sshkey ou password)<br>
 Plus tard, par commodité vous installerez VNC server
 
+Tout passe par le `Makefile` (`make help` liste les cibles) :
 
 ```bash
-ssh rpi4@ip.du.raspi
+ssh user@ip.du.raspi
 
-git clone https://github.com/votre-repo/planarianscanner.git
-git@github.com:deunix-educ/PlanarianScanner.git
+git clone git@github.com:deunix-educ/PlanarianScanner.git
+cd PlanarianScanner
+git checkout video-plate-calibration
 
-# modifier les variables d'environnement si besoin
-cp .env.example .env
-# Éditer .env : SECRET_KEY, REDIS_URL, REDUCTSTORE_URL, ... 
+# installation complète : hostname (scanner.local), apt, venv, .env,
+# ReductStore (binaire précompilé), MariaDB, supervisor, nginx, Adminer
+make install-prod SCANNER_HOSTNAME=scanner
 
-cd PlanarianScanner/etc
-chmod +x *.sh
+# le .env est généré par etc/scripts/mkenv.py (mots de passe aléatoires) :
+# relire test_tube_scanner/.env (SUPERADMIN_PASS, GRBL_SIMULATION, ...)
 
-# installation des librairies systèmes
-./1-install-sys.sh
-
-# compilation reductstore 15 mn sur le raspberry pi4
-./2-cargo-reductstore-install.sh
-
-# installation samba client
-./3-install-samba-client.sh
-
-# installation de mariadb
-./4-install_mariadb.sh
-
-# installation de adminer
-./5-install_adminer.sh
-
-# Configuration des applications Django
-./6-install_django_app.sh
-
-# tester
-sudo supervisorctl stop test_tube:*
-./manage.py runserver 0.0.0.0:8000
-
-# tester en local
-# http://127.0.0.1:8000
-
-# tester en distant
-# http://ip.du.raspi:8000
-
-# fin du test
-sudo supervisorctl restart test_tube:*
-
+make status          # état des services
 ```
+
+Interface : `http://scanner.local` — Adminer : `http://scanner.local/adminer/`
+
+| Besoin | Commande |
+|---|---|
+| Développement (sqlite, caméra=fichier vidéo, GRBL simulé) | `make install-dev` · `make dev` · `make test-sim` |
+| Mise à jour locale (sauvegarde BDD, pull, migrate, restart) | `make update` |
+| Mise à jour à distance | `make remote-update TARGET=user@hote` |
+| Adminer seul | `make adminer` |
+| Client WireGuard | `make wireguard` |
+
+Pour la production avec la CNC branchée, mettre `GRBL_SIMULATION=False` dans `.env`
+puis `sudo supervisorctl restart test_tube:*`.
 
 Démarrage des services :
 
@@ -256,22 +241,15 @@ PlanarianScanner/
 │   └── logo.png
 ├── browser.py
 ├── etc
-│   ├── 1-install-sys.sh
-│   ├── 2-cargo-reductstore-install.sh
-│   ├── 3-install-samba-client.sh
-│   ├── 4-install_mariadb.sh
-│   ├── 5-install_adminer.sh
-│   ├── 6-install_django_app.sh
-│   ├── db
-│   │   ├── configuration.json
-│   │   ├── multiwell.json
-│   │   └── well.json
-│   ├── install-linux-samba-server.sh
-│   ├── nginx_service.conf
-│   ├── reductstore_service.conf
-│   ├── requirements.txt
-│   ├── scanner_service.conf
-│   └── supervisor-inet_http.conf
+│   ├── 3-install-samba-client.sh
+│   ├── db
+│   │   ├── configuration.json
+│   │   ├── multiwell.json
+│   │   └── well.json
+│   ├── install-linux-samba-server.sh
+│   ├── requirements.txt
+│   ├── scripts          # mkenv.py, dev.sh, mariadb.sh, adminer.sh, update.sh, ...
+│   └── templates        # supervisor / nginx (*.conf.in)
 ├── LICENSE
 ├── README.md
 └── test_tube_scanner

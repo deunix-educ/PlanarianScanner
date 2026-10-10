@@ -41,9 +41,9 @@ PlanarianScanner/
 ├── Makefile                    # TOUT passe par là : `make help`
 ├── etc/                        # Installation et configs système
 │   ├── scripts/                # mkenv.py, dev.sh, hostname.sh, wireguard.sh, reductstore.sh,
-│   │                           # mariadb.sh, update.sh, render.sh, test_sim.py
+│   │                           # mariadb.sh, adminer.sh, update.sh, render.sh, test_sim.py
 │   ├── templates/*.in          # supervisor / nginx (variables @ROOT@ @USER@ … rendues par make)
-│   ├── 3-install-samba-client.sh, 5-install_adminer.sh, install-linux-samba-server.sh
+│   ├── 3-install-samba-client.sh, install-linux-samba-server.sh
 │   ├── db/                     # Fixtures JSON initiales (configuration, multiwell, well)
 │   └── requirements.txt
 ├── datas/                      # Données hors Django (gitignored)
@@ -154,7 +154,7 @@ DB_*               # MariaDB credentials
 | Contexte | Commandes |
 |---|---|
 | Dev (RPi5, sqlite, **caméra=fichier vidéo, GRBL simulé**) | `make install-dev` · `make dev` · `make test-sim` · `make dev-stop` |
-| Prod (RPi4, MariaDB, nginx :80, supervisor, matériel réel) | `make install-prod` (hostname, apt, venv, .env, ReductStore, MariaDB, supervisor, nginx) |
+| Prod (RPi4, MariaDB, nginx :80, supervisor, matériel réel) | `make install-prod` (hostname, apt, venv, .env, ReductStore, MariaDB, supervisor, nginx, Adminer) |
 | Mise à jour en local | `make update` (sauvegarde BDD, git pull --ff-only, pip, migrate, collectstatic, restart) |
 | Mise à jour à distance (LAN ou VPN) | `make remote-update TARGET=user@scanner.local` ou `TARGET=user@10.8.0.10` |
 | Sans accès git sur le RPi | `make deploy TARGET=user@hote` (rsync puis update --no-git) |
