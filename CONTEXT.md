@@ -159,7 +159,8 @@ DB_*               # MariaDB credentials
 | Mise à jour à distance (LAN ou VPN) | `make remote-update TARGET=user@scanner.local` ou `TARGET=user@10.8.0.10` |
 | Sans accès git sur le RPi | `make deploy TARGET=user@hote` (rsync puis update --no-git) |
 | scanner.local | `make hostname` · diagnostic `make hostname-check` |
-| WireGuard (client, à la demande) | `make wireguard [WG_CONF=wg0.conf]` (installe, sans activer au boot ; lignes `DNS=` retirées) · `make wg-up` / `make wg-down` · sans fichier : génère clés + modèle `/etc/wireguard/wg0.conf` |
+| WireGuard (client, actif au boot : tunnel up en permanence, handshake dès que la 4G est connectée) | `make wireguard [WG_CONF=wg0.conf]` (lignes `DNS=` retirées ; `WG_ONDEMAND=1` = manuel avec `make wg-up`/`wg-down`) · sans fichier : génère clés + modèle |
+| Pousser + mettre à jour (poste de dev) | `make push-update TARGET=user@10.10.0.5` (git push de la branche courante puis `make update` via ssh) |
 
 Points à retenir :
 - `.env` est généré par `etc/scripts/mkenv.py dev|prod` (jamais écrasé sans `--force`) ; `GRBL_SIMULATION` y est piloté.

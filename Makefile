@@ -28,7 +28,7 @@ APT_DEV    := redis-server sqlite3
 .PHONY: help deps-dev deps-prod venv env-dev env-prod reductstore db fixtures sim-videos \
         install-dev sim-config dev-deps dev dev-stop dev-status dev-logs test-sim \
         install-prod mariadb services nginx adminer hostname hostname-check wireguard wg-up wg-down wireguard-status \
-        update remote-update deploy status clean-dev
+        update remote-update push-update deploy status clean-dev
 
 help:  ## cette aide
 	@grep -hE '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  \033[1m%-16s\033[0m %s\n", $$1, $$2}'
@@ -131,9 +131,9 @@ hostname:  ## scanner.local via Avahi/mDNS (SCANNER_HOSTNAME=nom pour changer)
 hostname-check:  ## diagnostic de scanner.local
 	$(S)/hostname.sh --check $(SCANNER_HOSTNAME)
 
-wireguard:  ## client WireGuard, à la demande (WG_CONF=fichier.conf, sinon génère clés + modèle)
+wireguard:  ## client WireGuard, actif au boot (WG_CONF=fichier.conf ; WG_ONDEMAND=1 = manuel ; sans fichier : génère clés + modèle)
 	sudo $(S)/wireguard.sh install $(WG_CONF)
-wg-up:  ## monte le tunnel WireGuard (avant une mise à jour distante)
+wg-up:  ## monte le tunnel WireGuard (si WG_ONDEMAND=1 à l'installation)
 	sudo $(S)/wireguard.sh up
 wg-down:  ## coupe le tunnel WireGuard
 	sudo $(S)/wireguard.sh down
@@ -147,6 +147,12 @@ update:  ## sur le Raspberry : sauvegarde BDD, git pull, pip, migrate, static, r
 remote-update:  ## depuis un poste (LAN ou VPN) : make remote-update TARGET=pi@10.8.0.10
 	@test -n "$(TARGET)" || { echo "TARGET=user@hote requis"; exit 1; }
 	ssh -t $(TARGET) 'cd PlanarianScanner && make update'
+
+push-update:  ## poste de dev : git push de la branche courante puis mise à jour du scanner (TARGET=user@hote)
+	@test -n "$(TARGET)" || { echo "TARGET=user@hote requis (ex. TARGET=rpi5@10.10.0.5)"; exit 1; }
+	@git diff --quiet && git diff --cached --quiet || { echo "modifications non commitées : commiter d'abord"; git status --short; exit 1; }
+	git push origin HEAD
+	ssh -t $(TARGET) 'cd PlanarianScanner && make update UPDATE_ARGS=$(shell git rev-parse --abbrev-ref HEAD)'
 
 deploy:  ## sans accès git sur le RPi : rsync du code puis update --no-git (TARGET=user@hote)
 	@test -n "$(TARGET)" || { echo "TARGET=user@hote requis"; exit 1; }
