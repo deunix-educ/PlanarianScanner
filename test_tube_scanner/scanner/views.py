@@ -18,6 +18,7 @@ from .tasks import download_video, export_all_images, export_all_videos
 from .process import CameraRecordManager, cameraDB
 from . import models
 from .constants import ScannerConstants
+from .busy import get_busy
 
 record_manager = CameraRecordManager(cameraDB)
 start_background_updater()
@@ -310,6 +311,31 @@ def replay_view(request):
         latest=latest,
     )
     return render(request, "scanner/replay.html", context=global_context(request, **ctx))
+
+
+@require_POST
+@login_required
+@user_passes_test(is_staff_or_admin)
+def reorder_wells_api(request):
+    """Réordonne en serpentin les puits du multi-puits `position` (xbase/ybase réalignés sur l'ordre 0)."""
+    data = json.loads(request.body.decode() or "{}")
+    dry_run = bool(data.get("dry_run", True))
+    mw = models.MultiWell.by_position(data.get("position"))
+    if not mw:
+        return JsonResponse({"success": False, "msg": str(_("Multi-puits absent"))})
+
+    busy = None if dry_run else get_busy()
+    if busy:
+        kind = str(_("un balayage")) if busy == 'scan' else str(_("un test de calibration"))
+        return JsonResponse({"success": False, "msg": f'{_("Refusé")} : {kind} {_("est en cours. Arrêter avant de réordonner les puits.")}'})
+
+    r = mw.reorder_well_positions(realign_base=True, dry_run=dry_run)
+    if r["error"]:
+        return JsonResponse({"success": False, "msg": f"{mw.position}: {r['error']}"})
+    o = r["origin"]
+    prefix = str(_("Simulation")) if dry_run else str(_("Réordonné"))
+    msg = f"{prefix} — {mw.position}: {r['changed']} ordre(s), origine {o['name']} ({o['x']}, {o['y']})"
+    return JsonResponse({"success": True, "dry_run": dry_run, "msg": msg})
 
 
 @require_POST

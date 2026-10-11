@@ -114,7 +114,12 @@
                         title="{% trans 'Centrage auto et sauvegarde des positions' %}">
                     {% trans 'Calibrage auto' %}<br><i class="fa-solid fa-robot w3-text-orange w3-xlarge"></i>
                     </button>                   
-                </div>  
+                </div> 
+                <div class="w3-col">
+                    <button id="_halt" class="w3-button w3-red w3-round-large w3-margin-top w3-block">
+                        {% trans 'ARRET' %}<br><i class="fa-solid fa-hand w3-xlarge"></i>
+                    </button>
+                </div>                
             </div>
         </div>
     </div>
@@ -215,16 +220,22 @@
                     <option value="30">30 s</option>
                 </select>               
             </div>
+            {% if user.is_staff or user.is_superuser %}
+            <div class="w3-col w3-small w3-margin-top">
+                {% csrf_token %}
+                <label><input id="_reorder_dry" type="checkbox" class="w3-check" checked> {% trans "Simulation (dry-run)" %}</label>
+                <button id="_reorder" type="button" class="w3-button w3-dark-xlight w3-round-large w3-block w3-margin-top"
+                        title="{% trans 'Réordonne les puits en serpentin selon row_def et réaligne la base sur le puits d\'ordre 0' %}">
+                    {% trans 'Réordonner les puits' %}<br><i class="fa-solid fa-arrow-down-up-across-line w3-text-amber w3-large"></i>
+                </button>
+                <div id="_reorder_msg" class="w3-small w3-text-amber w3-margin-top w3-justify"></div>
+            </div>
+            {% endif %}
             <div class="w3-col">
 		        <button id="_test" class="w3-button w3-dark-xlight w3-round-large w3-margin-top w3-block">
 		            {% trans 'Tester le cirduit' %}<br><i class="fa-solid fa-circle-check w3-text-orange w3-xlarge"></i>
 		        </button>
 	        </div>		        
-	        <div class="w3-col">
-		        <button id="_halt" class="w3-button w3-red w3-round-large w3-margin-top w3-block">
-		            {% trans 'ARRET' %}<br><i class="fa-solid fa-hand w3-xlarge"></i>
-		        </button>
-	        </div>
 	     </div>   
     </div>
 </div>
@@ -296,6 +307,31 @@
         manager.registerSocket(socket);
 
         function goto_well(b) { manager.goto_well(b);  }    
+
+        const reorderBtn = sId("_reorder");
+        if (reorderBtn) {
+            reorderBtn.addEventListener("click", async () => {
+                const dry = sId("_reorder_dry").checked;
+                const msg = sId("_reorder_msg");
+                const sel = sId("_well");
+                if (!dry && !confirm("{% trans 'Réordonner les puits et réaligner la base sur le puits d\'ordre 0 ? Ne pas lancer pendant un balayage.' %}")) return;
+                const csrf = document.querySelector("[name=csrfmiddlewaretoken]").value;
+                msg.textContent = "…";
+                try {
+                    const resp = await fetch("{% url 'scanner:reorder_wells_api' %}", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json", "X-CSRFToken": csrf},
+                        body: JSON.stringify({position: sel.value, dry_run: dry}),
+                    });
+                    const data = await resp.json();
+                    msg.textContent = data.msg;
+                    // recharge la liste des puits côté worker (mêmes effets qu'un changement de position)
+                    if (data.success && !dry) sel.dispatchEvent(new Event("change"));
+                } catch (e) {
+                    msg.textContent = "Erreur : " + e;
+                }
+            });
+        }
     </script>
 {% endblock %}
 

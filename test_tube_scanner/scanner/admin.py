@@ -66,7 +66,7 @@ class ConfigurationAdmin(admin.ModelAdmin):
 
 class MultiWellAdmin(admin.ModelAdmin):
     list_filter = ('author', )
-    list_display = ('label', 'position', 'author', 'order', 'xbase', 'ybase', 'duration', 'feed', 'default', 'well_position', 'capture_video', 'active',)
+    list_display = ('label', 'position', 'author', 'order', 'row_def', 'xbase', 'ybase', 'duration', 'feed', 'default', 'well_position', 'capture_video', 'active',)
     ordering = ('label', 'order')
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):

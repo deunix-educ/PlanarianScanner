@@ -17,7 +17,7 @@ from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.conf import settings
 from planarian.models import ExperimentConfig
-from . import models
+from . import models, busy
 
 
 logger = logging.getLogger(__name__)
@@ -358,6 +358,7 @@ class MultiWellManager:
 
         self.scan_thread = Thread(target=self._start_scanning, args=(session, experiments, simulate, ), daemon=True)
         self.scan_thread.start()
+        busy.start_heartbeat(self._busy_kind)
 
 
     def previous_well(self):
@@ -480,11 +481,19 @@ class MultiWellManager:
         self.goto_0()
         self.process._send(current=self.get_well_order())
 
+    def _busy_kind(self):
+        if self.scan_thread:
+            return 'scan'
+        if self.test_thread:
+            return 'test'
+        return None
+
     def scan_test(self, auto=False):
         if self.test_thread:
             return
         self.test_thread = Thread(target=self._scanning_test, args=(auto, ), daemon=True)
         self.test_thread.start()
+        busy.start_heartbeat(self._busy_kind)
 
     @property
     def position(self):

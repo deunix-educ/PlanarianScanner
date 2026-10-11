@@ -9,7 +9,7 @@ from django_celery_beat.models import PeriodicTask, ClockedSchedule
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
 from django.utils import timezone
-from django.db import models
+from django.db import models, transaction
 from django.contrib.auth.models import User
 
 
@@ -164,6 +164,46 @@ class MultiWell(models.Model):
         )
         return {}
 
+    def serpentine_names(self):
+        """Noms des puits dans l'ordre de lecture en serpentin (ex. D1..D6, C6..C1, B1..B6, A6..A1)."""
+        row_def = (self.row_def or "A,B,C,D,E,F,G,H").split(',')
+        names = []
+        for row in range(self.rows):
+            cols = range(self.cols) if row % 2 == 0 else reversed(range(self.cols))
+            names.extend(f'{row_def[row]}{col+1}' for col in cols)
+        return names
+
+    def reorder_well_positions(self, realign_base=False, dry_run=False):
+        """Recalcule WellPosition.order en serpentin (x/y conservés).
+
+        Retourne un dict : position, names, changed, origin, xbase, ybase, error.
+        realign_base : xbase/ybase = coordonnées du puits d'ordre 0.
+        """
+        names = self.serpentine_names()
+        wps = {wp.well.name: wp for wp in WellPosition.objects.filter(multiwell=self).select_related("well")}
+        missing = [n for n in names if n not in wps]
+        extra = [n for n in wps if n not in names]
+        report = dict(position=self.position, names=names, changed=0, origin=None,
+                      xbase=self.xbase, ybase=self.ybase, error=None)
+        if missing or extra:
+            report["error"] = f"puits manquants {missing} / hors grille {extra}"
+            return report
+
+        changed = [(n, i) for i, n in enumerate(names) if wps[n].order != i]
+        first = wps[names[0]]
+        report.update(changed=len(changed), origin=dict(name=first.well.name, x=first.x, y=first.y))
+        if dry_run:
+            return report
+
+        with transaction.atomic():
+            for n, new in changed:
+                WellPosition.objects.filter(pk=wps[n].pk).update(order=new)
+            if realign_base:
+                MultiWell.objects.filter(pk=self.pk).update(xbase=first.x, ybase=first.y)
+                self.xbase, self.ybase = first.x, first.y
+                report.update(xbase=first.x, ybase=first.y)
+        return report
+
     @classmethod
     def config_by_position(cls, position):
         qs = MultiWell.objects.filter(position__exact=position).values()
@@ -229,7 +269,9 @@ def create_well_position(sender, instance, created, **kwargs):
         row_def = instance.row_def.split(',') or ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', ]   
         n = 0
         for row in range(instance.rows):
-            cols = range(instance.cols)
+            # lecture en serpentin : sens +X sur les lignes paires, -X sur les impaires
+            # ex. D1..D6, C6..C1, B1..B6, A6..A1 ; x reste lié à la colonne physique
+            cols = range(instance.cols) if row % 2 == 0 else reversed(range(instance.cols))
             for col in cols:
                 x = instance.xbase + col * instance.dx
                 y = instance.ybase + row * instance.dy

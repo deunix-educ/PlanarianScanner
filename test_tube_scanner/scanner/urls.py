@@ -28,4 +28,5 @@ urlpatterns = [
     path('api/stats/', views.stats_view, name='api_stats'),
     path('api/video/', views.download_api, name='download_api'),
     path('api/export/', views.export_api, name='export_api'),
+    path('api/reorder-wells/', views.reorder_wells_api, name='reorder_wells_api'),
 ]
