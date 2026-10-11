@@ -45,6 +45,7 @@ PlanarianScanner/
 │   ├── templates/*.in          # supervisor / nginx (variables @ROOT@ @USER@ … rendues par make)
 │   ├── 3-install-samba-client.sh, install-linux-samba-server.sh
 │   ├── db/                     # Fixtures JSON initiales (configuration, multiwell, well)
+│   ├── multi-puits/            # Documentation : plans PDF des plaques (2x3, 3x4, 4x6, 6x8)
 │   └── requirements.txt
 ├── datas/                      # Données hors Django (gitignored)
 │   ├── medias/                 # Images et vidéos capturées
