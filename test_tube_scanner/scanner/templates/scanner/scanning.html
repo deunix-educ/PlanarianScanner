@@ -17,6 +17,9 @@
     <div class="w3-col w3-center" style="width: 30%">
         <div class="w3-col">
             <div>{% trans "Choix de la session" %}</div>
+            {% if not sessions %}
+            <div class="w3-panel w3-orange w3-round">{% trans "Aucune session active : créez ou activez une session." %}</div>
+            {% endif %}
             <form method="post" class="w3-bar-item" action="">
                 {% csrf_token %}
                 <select id="_session" name="_session" class="w3-select" onchange="this.form.submit()">

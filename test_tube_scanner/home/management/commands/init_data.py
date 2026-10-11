@@ -11,7 +11,7 @@ def create_user():
     try:
         User = get_user_model()
         if User.objects.count() == 0:
-            for email, username, password, is_superuser in settings.ADMINS:
+            for email, username, password, is_superuser in settings.INITIAL_USERS:
                 if is_superuser:
                     User.objects.create_superuser(  # type: ignore[attr-defined]
                         email=email,

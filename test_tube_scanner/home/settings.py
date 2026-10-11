@@ -294,9 +294,12 @@ LOGOUT_REDIRECT_URL = "/"
 ##
 # application
 SUPERADMIN_MAIL = config('SUPERADMIN_MAIL')
-ADMINS = [
+# (email, username, password, is_superuser) — utilisé par `init_data`
+INITIAL_USERS = [
     (SUPERADMIN_MAIL, config('SUPERADMIN'), config('SUPERADMIN_PASS'), True),
 ]
+# Django 6 : liste d'adresses email (mail_admins)
+ADMINS = [SUPERADMIN_MAIL]
 MANAGERS = ADMINS
 
 # w3 css

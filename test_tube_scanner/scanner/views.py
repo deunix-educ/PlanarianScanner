@@ -129,8 +129,8 @@ def scanning_view(request):
         cursid = request.POST.get('_session', 0)
     if not cursid:
         current_session = models.Session.objects.filter(active=True).first()
-        cursid = current_session.pk
-        
+        cursid = current_session.pk if current_session else 0
+
     ctx = dict(
         ws_route=settings.SCANNER_WEBSOCKET_ROUTE,
         cursid=int(cursid),
