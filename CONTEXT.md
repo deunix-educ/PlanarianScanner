@@ -91,6 +91,17 @@ Signaux Django :
 - `post_save(Session)` → crée les `PeriodicTask` Celery Beat (export + scanning)
 - `post_delete(Session)` → supprime les `PeriodicTask` associées
 
+Implantation des multi-puits (règle) :
+- Chaque plaque est posée avec **D1 à l'origine** (`MultiWell.xbase/ybase`), les colonnes vers **+X** (`dx`) et
+  les lignes de D vers A vers **+Y** (`dy`). `row_def` liste les lignes de l'origine vers +Y (ex. `D,C,B,A`).
+- Sur la table (X → droite, Y ↑) : **HD** et **HG** en bas, **BD** et **BG** en haut ; D1 en bas à gauche de chaque plaque.
+- Les `WellPosition` (x, y) sont ce que le bras visite. Elles ne suivent l'origine que si `MultiWell.well_position`
+  est décoché puis enregistré (signal `create_well_position`, perd la calibration puits par puits) :
+  changer `xbase/ybase` seul ne les déplace pas. `reorder_well_positions --realign-base` **remplace**
+  `xbase/ybase` par les coordonnées du puits d'ordre 0 : ne pas l'utiliser si les bases ont été posées à la main.
+- Seuls les multi-puits `active=True` sont proposés (liste de la page calibration, table de la vue CNC). Les variantes
+  d'un même emplacement partagent le préfixe de position (`HD`, `HD_6`) et ne sont jamais posées ensemble.
+
 Tâches Celery (`scanner/tasks.py`, `scanner/export_tasks.py`) :
 - `run_scanning(session_id)` — parcours serpentin des puits (GRBL + capture)
 - `run_session_exports(session_id)` — génération ZIP JPEG + MP4 + transfert distant
@@ -106,7 +117,7 @@ Modèle `ExperimentConfig` : paramètres de tracking par puit (px_per_mm, fps, s
 | Module | Rôle |
 |---|---|
 | `grbl.py` | Pilotage CNC via port série (G-code, homing, déplacement XY) |
-| `grbl_simulator.py` | Simulateur GRBL pour dev sans matériel |
+| `grbl_simulator.py` | Simulateur GRBL pour dev sans matériel ; émet l'événement `move` (début, fin, durée) animé par la vue CNC |
 | `capture_interface.py` | Interface abstraite de capture — crop circulaire, edge enhance, debug overlay, tracking |
 | `picamera2_capture.py` | Capture ArduCam via Picamera2 |
 | `webcam_capture.py` | Capture webcam via OpenCV |
@@ -229,6 +240,28 @@ VideoPlateCapture.capture_frame()
 Ajuste la plage de recherche HoughCircles en fraction de `min(w,h)` :
 - Mode caméra : `0.26–0.37` (tube occupe ~30% du champ)
 - Mode vidéo  : `0.38–0.47` (puit remplit le crop, ratio ~0.43–0.50)
+
+---
+
+## Vue isométrique du bras CNC (simulation, PC uniquement)
+
+Panneau SVG en bas de la page calibration (à gauche du journal de debug), affiché seulement si
+`GRBL_SIMULATION` est vrai **ou** si `capture_type == 'video'` (le mode vidéo force le simulateur).
+Absent en production (RPi4, matériel réel).
+
+- **Montage dessiné** : le bras (portique Y + chariot X) est **sous** un plateau transparent ; la caméra pointe
+  **vers le haut** et filme les éprouvettes par en dessous ; l'éclairage est **au-dessus** des plaques.
+- **Géométrie** : `views.cnc_geometry()` (injectée par `json_script`, id `cnc-geometry`) donne le plateau
+  `grbl_xmax × grbl_ymax` et les plaques actives. Les puits sont calculés **depuis l'origine** (règle ci-dessus), pas
+  depuis `WellPosition`. Une plaque dont les `WellPosition` ne suivent pas l'origine D1 est marquée ⚠.
+- **Mouvement** : `grbl_simulator._announce_move()` envoie `move = {x0, y0, x1, y1, ms}` au début de chaque
+  déplacement (durée × `TIME_SCALE`, 0.1 = 10× plus rapide que réel) ; `calibration.js` → `CncView.moveTo()` anime côté
+  navigateur ; le message `xy` (position faisant foi) recale via `setPosition()`.
+- **Boutons** : *loupe* = zoom sur la plaque active + origine / plateau entier (état mémorisé dans `localStorage`
+  `cnc.zoom`) ; *agrandir* = panneau en pleine fenêtre en CSS (`position: fixed`, Échap pour revenir). L'API
+  Fullscreen n'est volontairement **pas** utilisée : Brave referme le plein écran d'un élément après ~1 s.
+- **Fichiers** : `scanner/static/scanner/js/cnc_view.js` (classe `CncView`), `css/cnc_view.css`. Les fichiers statiques
+  sont chargés avec `?v=<mtime>` (`views.asset_version`) pour éviter un cache périmé.
 
 ---
 

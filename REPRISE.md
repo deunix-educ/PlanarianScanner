@@ -3,48 +3,52 @@
 Note de passage entre postes. Le contexte technique est dans `CONTEXT.md`, les pièges et
 l'architecture dans `CLAUDE.md` : les lire d'abord, ce fichier ne contient que l'état du travail.
 
-État au **2026-10-13** — branche `video-plate-calibration`, dernier commit poussé `7af6015`.
+État au **2026-10-13** — branche `video-plate-calibration` (dernier commit : voir `git log`).
 
 ## Fait
 
-- **Plaques partielles** (`rows` > nombre de lettres de `row_def`, ex. HD_6 : `B,A`) : ne lèvent plus
-  `IndexError` (`serpentine_names`, `uuid_from_session`, `multiwell_buttons`, `multiwell_cards`).
-  Symptômes d'origine : boutons de puits figés en calibration, réordonnancement en HTTP 500.
-- **Erreurs worker visibles** : une exception dans `_listen_to_redis` envoie `state='error'` à l'UI.
-  Le JS de réordonnancement affiche `Erreur serveur : HTTP <code>` au lieu d'un échec de parsing JSON.
-- **Page calibration** : boutons de déplacement en croix (+Y haut, -X / Sauver / +X, -Y bas, flèches
-  dans leur direction). Les ids (`_up`, `_down`, `_left`, `_right`) et les commandes n'ont pas changé.
-- **Grille des puits** (calibration et scanning) : A en haut → D en bas, colonnes 1 → N ; flèches du
-  serpentin dans les marges (`→`/`←` première ligne lue, `↱`/`↰` ensuite), lues depuis
-  `WellPosition.order`. CSS : classe `.well-dir`, grille `auto repeat(cols,1fr) auto`.
-- `CONTEXT.md` : Django 6.0.
+- **Plaques partielles** (`rows` > lettres de `row_def`, ex. HD_6 : `B,A`) : plus d'`IndexError`
+  (`serpentine_names`, `uuid_from_session`, `multiwell_buttons`, `multiwell_cards`).
+- **Erreurs worker visibles** : une exception dans `_listen_to_redis` envoie `state='error'` à l'UI ; le JS de
+  réordonnancement affiche `Erreur serveur : HTTP <code>`.
+- **Page calibration** : boutons de déplacement en croix (+Y haut, -X / Sauver / +X, -Y bas) ; grille des puits
+  A en haut → D en bas avec les flèches du serpentin.
+- **Vue isométrique du bras CNC** (simulation PC) : voir « Vue isométrique » dans `CONTEXT.md`. Caméra sous un
+  plateau transparent, objectif vers le haut, éclairage au-dessus ; animation des déplacements (événement `move`
+  du simulateur) ; zoom et agrandissement dans la page ; seules les plaques **actives** sont posées.
+- **Liste déroulante de la calibration** : seuls les multi-puits `active=True` sont proposés.
+- `CONTEXT.md` : Django 6.0, règle d'implantation des plaques, vue CNC.
 
 ## À faire / non vérifié
 
-- **Mise à jour du RPi4 (prod) en ssh 4G** : annoncée, non confirmée.
-  `git pull --ff-only` puis `make update` (détaché : `nohup make update > ~/update.log 2>&1 &`).
-  Pas pendant un balayage (le restart interrompt les workers). Voir « Mise à jour » dans `CONTEXT.md`.
-- **Vérification physique** après mise à jour : l'ordre 0 est le puits D1 (origine `xbase/ybase`). Les
-  anciennes plaques avaient A1 comme origine : le premier déplacement ira vers un autre bout de plaque.
-  Lancer `manage.py reorder_well_positions --dry-run`, puis par plaque avec `--realign-base`.
-- **Sens des flèches de déplacement** : elles suivent les libellés (+X → droite, etc.). Si l'image
-  caméra est tournée par rapport aux axes CNC, le sens visuel peut différer du mouvement réel.
+- **Positions des puits en retard sur les origines (⚠ sur les 4 plaques en dev)** : les bases ont été posées à
+  HG (160;25), HD (25;25), BG (160;120), BD (25;120) mais les `WellPosition` datent d'avant. Régénérer en admin :
+  décocher « Positions » du multi-puits puis enregistrer (D1 à la base, A vers +Y ; perd la calibration par puits).
+  À refaire à la main sur le RPi4.
+- **Mise à jour du RPi4 (prod) en ssh 4G** : annoncée, non confirmée. `git pull --ff-only` puis `make update`
+  (détaché : `nohup make update > ~/update.log 2>&1 &`), jamais pendant un balayage.
+- **Vérification physique** de l'origine D1 après mise à jour (le premier déplacement peut aller vers un autre bout
+  de plaque si les bases ne sont pas celles de la règle).
+- **Sens des flèches de déplacement** : elles suivent les libellés ; si l'image caméra est tournée par rapport aux
+  axes CNC, le sens visuel peut différer du mouvement réel.
 - Balayage avec une `Session` réelle : jamais exercé (la base dev n'en a aucune).
-- Idée non faite : valider `rows == len(row_def.split(','))` dans `MultiWell.clean()` pour ne plus
-  créer d'incohérence en admin (le code la tolère maintenant).
-- Mineur : `payload.current >= 0` dans `static/scanner/js/calibration.js` est vrai pour `null`
-  (`null >= 0`) ; sans effet visible aujourd'hui.
+- Vue CNC non branchée sur la page **scanning** (idée : `payload.move` + `payload.current` pour colorer les puits).
+- Idées non faites : valider `rows == len(row_def.split(','))` dans `MultiWell.clean()` ;
+  `payload.current >= 0` dans `calibration.js` est vrai pour `null` (sans effet visible).
+- `HD_6` (plaque 2×3) est **inactive** en base : elle n'apparaît ni dans la liste ni sur la table.
 
-## Pièges rencontrés cette session
+## Pièges rencontrés
 
-- La base « dev » de ce poste est **MariaDB** (`MARIADB=default` dans `.env`, base `test_tube`), pas
-  sqlite. `datas/db.sqlite3` est un reliquat périmé (migration 0001 seule) : ne pas s'y fier.
-  Interroger via `manage.py shell` (Redis et ReductStore doivent tourner).
-- `DEBUG=False` : les statiques sont servis depuis `test_tube_scanner/staticfiles/`. Après un
-  changement de CSS/JS : `manage.py collectstatic --noinput` (fait par `make update`).
-- Les workers Celery gardent le code en mémoire : redémarrer (`make dev-stop && make dev`) après un
-  changement dans `process.py`, `multiwell.py`, `models.py`. Le HTML de `multiwell_buttons()` est
-  généré côté worker, pas par le template.
+- La base « dev » de ce poste est **MariaDB** (`MARIADB=default`, base `test_tube`), pas sqlite ;
+  `datas/db.sqlite3` est un reliquat périmé. Interroger via `manage.py shell` (Redis et ReductStore tournent).
+- `DEBUG=False` : statiques servis depuis `test_tube_scanner/staticfiles/` (`collectstatic` après un changement de
+  CSS/JS) **et gabarits mis en cache par processus** : redémarrer le web pour voir un changement de template.
+- Les workers Celery gardent le code en mémoire : redémarrer (`make dev-stop && make dev`) après un changement dans
+  `process.py`, `multiwell.py`, `models.py`, `grbl_simulator.py`.
+- `reorder_well_positions --realign-base` écrase `xbase/ybase` : à ne pas lancer si les bases ont été posées à
+  la main (incident du 2026-10-13, restauré depuis une sauvegarde JSON ; voir `datas/backup/mariadb/`).
+- Tests navigateur en local : une instance `daphne` de test laissée sur un autre port garde l'ancien gabarit en
+  cache et fausse les essais ; la couper par son port, pas avec `pkill -f` (motif présent dans la commande).
 
 ## Reprendre sur un autre poste
 
