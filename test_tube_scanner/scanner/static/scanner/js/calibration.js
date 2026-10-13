@@ -44,6 +44,7 @@ class ScannerManager {
         this.crop         = options.crop;
         this.crop_radius = options.crop_radius;
         this.calib_auto  = options.calib_auto;
+        this.cnc         = options.cnc || null;   // vue isométrique du bras (simulation)
         
         try {
             this.min_area_px = options.min_area_px;
@@ -105,6 +106,10 @@ class ScannerManager {
             if (payload.jpeg)   { this.container.src = `data:image/jpeg;base64,${payload.jpeg}`; }
             if (payload.xbase)  { this.xbase.textContent = payload.xbase;  this.ybase.textContent = payload.ybase; }
             if (payload.xy)     { this.x.textContent=payload.x.toFixed(2); this.y.textContent=payload.y.toFixed(2); }
+            if (this.cnc) {
+                if (payload.move)                              { this.cnc.moveTo(payload.move.x1, payload.move.y1, payload.move.ms); }
+                else if (payload.xy && payload.x != null)      { this.cnc.setPosition(payload.x, payload.y); }
+            }
             if (payload.state)  { 
                 if (payload.state == 'debug') {
                     const span = this.calib_debug.querySelector("span.debug"); span.style.color = payload.value ? '#f0f': '#fff';

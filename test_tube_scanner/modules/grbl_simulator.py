@@ -151,6 +151,7 @@ class GRBLController:
             self._machine_state = 'Run'
             self._state(state='send', msg="SIMULATOR: homing...")
             distance = math.hypot(self.x or 0.0, self.y or 0.0)
+            self._announce_move(self.x or 0.0, self.y or 0.0, 0.0, 0.0, distance, feed=3000)
             self._simulate_move_delay(distance, feed=3000)
             self.x, self.y = 0.0, 0.0
             self._machine_state = 'Idle'
@@ -193,11 +194,19 @@ class GRBLController:
         if has_move and (new_x != cur_x or new_y != cur_y):
             distance = math.hypot(new_x - cur_x, new_y - cur_y)
             self._machine_state = 'Run'
+            self._announce_move(cur_x, cur_y, new_x, new_y, distance, feed)
             self._simulate_move_delay(distance, feed)
             self.x = new_x
             self.y = new_y
             self._machine_state = 'Idle'
             logger.debug(f"SIMULATOR: moved to ({self.x:.2f}, {self.y:.2f})")
+
+    def _announce_move(self, x0, y0, x1, y1, distance_mm, feed):
+        '''Signale un déplacement (début, fin, durée simulée en ms) : la vue CNC l'anime côté navigateur.'''
+        if feed <= 0:
+            return
+        ms = int((distance_mm / feed) * 60.0 * self.TIME_SCALE * 1000)
+        self._state(move=dict(x0=x0, y0=y0, x1=x1, y1=y1, ms=ms))
 
     def _simulate_move_delay(self, distance_mm, feed):
         '''Simule le temps de déplacement : distance / feed (mm/min) → secondes.'''

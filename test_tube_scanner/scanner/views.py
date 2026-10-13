@@ -144,24 +144,65 @@ def scanning_view(request):
 @login_required
 def calibration_view(request):
     context = global_context(request)
-    wells = models.MultiWell.objects.filter(capture_video=False).all()
+    # seuls les multi-puits actifs sont proposés (liste déroulante et table CNC)
+    wells = models.MultiWell.objects.filter(capture_video=False, active=True).all()
     capture_type = context['conf'].capture_type
     config = ScannerConstants.get_config()
     
     if capture_type == 'video':
-        mw = models.MultiWell.objects.filter(default=True, capture_video=True).first()
+        mw = models.MultiWell.objects.filter(default=True, capture_video=True, active=True).first()
         if mw:
             context['conf'].default_position = mw.position
-            wells = models.MultiWell.objects.filter(capture_video=True).all()
+            wells = models.MultiWell.objects.filter(capture_video=True, active=True).all()
 
+    # le multi-puits « défaut » est peut-être inactif : on présélectionne alors le premier actif
+    positions = [w.position for w in wells]
+    if positions and context['default_position'] not in positions:
+        context['default_position'] = positions[0]
+
+    # le mode vidéo force le simulateur GRBL (voir process.py) : la vue CNC y est aussi utile
+    simulation = bool(settings.GRBL_SIMULATION or capture_type == 'video')
     ctx = dict(
         ws_route=settings.SCANNER_WEBSOCKET_ROUTE,
         choice_title=f'{str(_("Calibration"))} {config.get_capture_type_display()}',
         wells = wells,
         capture_type=capture_type,
+        simulation=simulation,
     )
+    if simulation:
+        ctx['cnc_geometry'] = cnc_geometry(wells, context['conf'])
+    ctx['asset_v'] = asset_version('scanner/js/calibration.js', 'scanner/js/cnc_view.js', 'scanner/css/cnc_view.css')
     context.update(ctx)
     return render(request, "scanner/calibration.html", context=context)
+
+
+def asset_version(*paths):
+    """Date de modification la plus récente des fichiers statiques servis (anti-cache `?v=`)."""
+    versions = []
+    for p in paths:
+        try:
+            versions.append(int(os.path.getmtime(os.path.join(settings.STATIC_ROOT, p))))
+        except OSError:
+            pass
+    return max(versions, default=0)
+
+
+def cnc_geometry(multiwells, conf):
+    """Plateau et plaques (coordonnées CNC en mm) pour la vue isométrique du bras, en simulation."""
+    plates = []
+    for mw in multiwells:
+        # La plaque est placée par son origine : le puits de la 1re ligne de row_def (D1) est en
+        # (xbase, ybase) ; les colonnes vont vers +X (dx) et les lignes vers +Y (dy), D -> A.
+        letters = (mw.row_def or '').split(',')[:mw.rows]
+        order = {name: i for i, name in enumerate(mw.serpentine_names())}
+        wells = [dict(name=f'{letter}{c + 1}', order=order.get(f'{letter}{c + 1}', 0),
+                      x=round(mw.xbase + c * mw.dx, 3), y=round(mw.ybase + r * mw.dy, 3))
+                 for r, letter in enumerate(letters) for c in range(mw.cols)]
+        # positions enregistrées (celles que le bras visite) en retard sur l'origine ?
+        origin = models.WellPosition.objects.filter(multiwell=mw, well__name=f'{letters[0]}1').first() if letters else None
+        stale = origin is None or abs(origin.x - mw.xbase) > 0.5 or abs(origin.y - mw.ybase) > 0.5
+        plates.append(dict(position=mw.position, label=mw.label, diameter=mw.diameter, wells=wells, stale=stale))
+    return dict(bed=dict(x=conf.grbl_xmax, y=conf.grbl_ymax), plates=plates)
 
 def get_not_active_experiments(session, expid=None) -> tuple[list, "models.Experiment | None"]:
     if session:

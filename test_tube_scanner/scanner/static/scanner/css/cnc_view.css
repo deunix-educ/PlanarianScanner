@@ -1,0 +1,85 @@
+/* Vue isométrique du bras CNC (simulation, PC uniquement) */
+.cnc-view {
+    --cnc-bg: #0b1117;
+    --cnc-accent: #ffa726;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at 50% 40%, #16212c 0%, var(--cnc-bg) 75%);
+    border-radius: 8px;
+    overflow: hidden;
+}
+.cnc-view.cnc-expanded { position: fixed; inset: 0; z-index: 2000; width: 100vw; height: 100vh; border-radius: 0; }
+html.cnc-noscroll, html.cnc-noscroll body { overflow: hidden; }
+.cnc-svg { width: 100%; height: 100%; display: block; }
+
+/* boîtes isométriques : faces gauche / droite / dessus */
+.iso-box .face-top   { stroke: rgba(255,255,255,.18); stroke-width: .6; }
+.iso-box .face-left  { stroke: rgba(0,0,0,.35);       stroke-width: .6; }
+.iso-box .face-right { stroke: rgba(0,0,0,.35);       stroke-width: .6; }
+.frame .face-top   { fill: #4a5561; } .frame .face-left  { fill: #2f3740; } .frame .face-right { fill: #3a434d; }
+.bed   .face-top   { fill: #1b2631; } .bed   .face-left  { fill: #121a22; } .bed   .face-right { fill: #161f28; }
+.plate-body .face-top   { fill: rgba(60,92,124,.42); } .plate-body .face-left  { fill: rgba(31,45,58,.6); } .plate-body .face-right { fill: rgba(37,53,74,.6); }
+.glass .face-top   { fill: rgba(150,200,255,.10); stroke: rgba(150,200,255,.35); }
+.glass .face-left  { fill: rgba(150,200,255,.12); stroke: rgba(150,200,255,.25); }
+.glass .face-right { fill: rgba(150,200,255,.14); stroke: rgba(150,200,255,.25); }
+.post .face-top   { fill: #7a8795; } .post .face-left  { fill: #55606c; } .post .face-right { fill: #66717d; }
+.light .face-top   { fill: rgba(255,214,102,.05); stroke: rgba(255,214,102,.7); }
+.light .face-left  { fill: rgba(255,214,102,.10); stroke: rgba(255,214,102,.5); }
+.light .face-right { fill: rgba(255,214,102,.12); stroke: rgba(255,214,102,.5); }
+.light-label { font: 600 11px sans-serif; fill: #ffd166; text-anchor: end; }
+.ray { stroke: rgba(255,214,102,.45); stroke-width: 1; stroke-dasharray: 3 4; vector-effect: non-scaling-stroke; }
+.rail  .face-top   { fill: #9aa7b4; } .rail  .face-left  { fill: #6c7885; } .rail  .face-right { fill: #838f9c; }
+.slider .face-top  { fill: #b0bcc8; } .slider .face-left { fill: #7b8896; } .slider .face-right { fill: #96a2af; }
+.bar   .face-top   { fill: #c4cfda; } .bar   .face-left  { fill: #8794a2; } .bar   .face-right { fill: #a6b2bf; }
+.carriage .face-top   { fill: #eceff1; } .carriage .face-left  { fill: #90a4ae; } .carriage .face-right { fill: #b0bec5; }
+
+.grid  { stroke: rgba(255,255,255,.07); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.axis  { stroke-width: 2; vector-effect: non-scaling-stroke; }
+.axis-x { stroke: #ef5350; fill: #ef5350; }
+.axis-y { stroke: #66bb6a; fill: #66bb6a; }
+.axis-label { font: 600 13px sans-serif; }
+.axis-label.axis-x { text-anchor: start; }   /* s'étend hors du châssis, vers l'extérieur */
+.axis-label.axis-y { text-anchor: end; }
+
+.plate.hidden { display: none; }
+.plate .well { fill: rgba(13,20,27,.72); stroke: #5b7a99; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.plate .well.visited { fill: #1d4a2a; stroke: #66bb6a; }
+.plate .well.under   { fill: #ffb300; stroke: #fff3c4; }
+.plate.active .plate-body .face-top { fill: rgba(80,125,168,.5); }
+.plate-label { font: 600 12px sans-serif; fill: #8fa6bd; text-anchor: middle; }
+.plate.active .plate-label { fill: var(--cnc-accent); }
+
+.trail-line { fill: none; stroke: var(--cnc-accent); stroke-width: 1.5; stroke-dasharray: 5 4; opacity: .8;
+              vector-effect: non-scaling-stroke; }
+.trail-head { fill: var(--cnc-accent); }
+.trail-start { fill: #66bb6a; }
+
+.cam-path { fill: none; stroke: #ffa726; stroke-width: 2; opacity: .75; stroke-linecap: round;
+            stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.shadow { fill: rgba(0,0,0,.38); }
+.foot   { fill: rgba(79,195,247,.22); stroke: #4fc3f7; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.cone   { fill: rgba(79,195,247,.16); }
+.cam-side { fill: #37474f; }
+.cam-base { fill: #263238; stroke: #90a4ae; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.cam-ring { fill: #0b1a24; stroke: #4fc3f7; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+
+.cnc-readout {
+    position: absolute; left: 10px; top: 8px;
+    display: flex; gap: 12px; align-items: baseline;
+    font: 13px/1.2 sans-serif; color: #b8c4d0;
+    background: rgba(0,0,0,.35); padding: 4px 10px; border-radius: 6px;
+}
+.cnc-readout b { color: #fff; font-variant-numeric: tabular-nums; }
+.cnc-readout .state { font-weight: 600; }
+.cnc-readout .state.run  { color: var(--cnc-accent); }
+.cnc-readout .state.idle { color: #66bb6a; }
+.cnc-readout .well-name { color: #ffd180; font-weight: 600; }
+.cnc-fs {
+    position: absolute; right: 8px; top: 6px; z-index: 2;
+    background: rgba(0,0,0,.35); color: #b8c4d0; border: 0; border-radius: 6px; padding: 4px 8px; cursor: pointer;
+}
+.cnc-fs:hover { color: #fff; }
+.cnc-zoom { right: 46px; }
+.cnc-fs.on { background: var(--cnc-accent); color: #111; }
+.plate.stale .plate-label { fill: #ff7043; }

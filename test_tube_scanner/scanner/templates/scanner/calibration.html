@@ -10,6 +10,7 @@
     </style>
 
     <link href="/static/scanner/css/calibration.css" rel="stylesheet">
+    {% if simulation %}<link href="/static/scanner/css/cnc_view.css?v={{ asset_v }}" rel="stylesheet">{% endif %}
 {% endblock %}
 {% block columns %}{% endblock %}
 
@@ -239,14 +240,51 @@
 	     </div>   
     </div>
 </div>
+{% if simulation %}
+<div class="w3-row">
+    <div class="w3-half" style="height: 30vh">
+        <div id="_cnc_view">
+            <button id="_cnc_zoom" type="button" class="cnc-fs cnc-zoom" title="{% trans 'Zoom sur la plaque / plateau entier' %}"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+            <button id="_cnc_fs" type="button" class="cnc-fs" title="{% trans 'Ecran plein' %}"><i class="fa-solid fa-maximize"></i></button>
+        </div>
+    </div>
+    <div class="w3-half">
+{% endif %}
 <ul id="_debug" class="w3-scroll-y" style="height: 30vh"></ul>
+{% if simulation %}
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block js_footer %}
     {{ block.super }}
+    {% if simulation %}
+    {{ cnc_geometry|json_script:"cnc-geometry" }}
+    <script src="/static/scanner/js/cnc_view.js?v={{ asset_v }}"></script>
+    {% endif %}
     <script>
         const container = sId("scan-img");
         const ws_route = "{{ ws_route }}";   
+        {% if simulation %}
+        const cnc = new CncView(sId("_cnc_view"), JSON.parse(sId("cnc-geometry").textContent));
+        cnc.setActivePlate(sId("_well").value);
+        sId("_well").addEventListener("change", (e) => cnc.setActivePlate(e.target.value));
+        const cncZoom = sId("_cnc_zoom"), cncFs = sId("_cnc_fs");
+        const syncCnc = () => {
+            cncZoom.classList.toggle("on", cnc.zoom);
+            cncZoom.setAttribute("aria-pressed", cnc.zoom);
+            cncFs.classList.toggle("on", cnc.expanded);
+            cncFs.setAttribute("aria-pressed", cnc.expanded);
+            cncFs.innerHTML = cnc.expanded ? '<i class="fa-solid fa-minimize"></i>' : '<i class="fa-solid fa-maximize"></i>';
+        };
+        cncZoom.addEventListener("click", () => { cnc.setZoom(!cnc.zoom); syncCnc(); });
+        cncFs.addEventListener("click", () => { cnc.toggleExpand(); syncCnc(); });
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape") syncCnc(); });
+        syncCnc();
+        {% else %}
+        const cnc = null;
+        {% endif %}
         const use_tracking = "{{ use_tracking }}" == "True";
         
         const options = {
@@ -275,6 +313,7 @@
 	        feed    : sId("_feed"),
 	        step    : sId("_step"),
 	        well    : sId("_well"),
+            cnc     : cnc,
 	        debug   : sId("_debug"),
 	        calib_debug : sId("_calib_debug"),
         draw_debug  : sId("_draw_debug"),
@@ -296,7 +335,7 @@
             draw : sId("_draw")
         };          
     </script>
-    <script src="/static/scanner/js/calibration.js"></script>
+    <script src="/static/scanner/js/calibration.js?v={{ asset_v }}"></script>
     <script>
         const manager  = new ScannerManager(container, options);
         const protocol = location.protocol === "https:" ? "wss" : "ws";
