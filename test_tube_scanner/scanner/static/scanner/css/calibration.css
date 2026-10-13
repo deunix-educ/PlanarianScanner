@@ -5,8 +5,15 @@
 
 .well-btn {
   display: grid; 
-  grid-template-columns: repeat(var(--well-columns, 6), 1fr);
+  grid-template-columns: auto repeat(var(--well-columns, 6), 1fr) auto;
   justify-items: center; 
   align-items: center; 
 }
 
+/* flèches du serpentin (marges gauche/droite de chaque ligne) */
+.well-dir {
+  min-width: 1em;
+  text-align: center;
+  color: #ffa726;
+  opacity: 0.85;
+}

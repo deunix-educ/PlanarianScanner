@@ -160,14 +160,37 @@ class MultiWellManager:
     def multiwell_buttons(self, btn_class="w3-button", onclick=''' onclick="goto_well(this)"'''):
         multiwells = []
         multiwells.append('''<div class="w3-border well-btn">''')
-        row_def = self.multiwell.row_def.split(',') 
+        # row_def peut être plus court que rows (plaque partielle, ex. "B,A" avec rows=4) :
+        # on s'en tient aux lignes réellement définies plutôt que de lever IndexError.
+        # Affichage de la plaque : A en haut → D en bas, colonnes 1 → N de gauche à droite
+        # (indépendant de l'ordre de balayage, qui est donné par WellPosition.order).
+        row_def = sorted(self.multiwell.row_def.split(',')[:self.multiwell.rows])
         cols = self.multiwell.cols
-        
-        for row in range(self.multiwell.rows):
+
+        grid = []
+        for letter in row_def:
+            row = []
             for col in range(cols):
-                btn = f'{row_def[row]}{col+1}'
-                wl = self.well_iterator.seek_by_name(btn)
-                multiwells.append(f"""<button class="{btn_class} well" value="{wl.order}"{onclick}>{wl.well.name}</button>""")
+                try:
+                    row.append(self.well_iterator.seek_by_name(f'{letter}{col+1}'))
+                except IndexError:
+                    row.append(None)    # garde la cellule pour ne pas décaler la grille
+            grid.append(row)
+
+        # Sens du serpentin : une flèche par ligne, dans la marge du côté où la ligne commence.
+        #   1re ligne lue : → ou ←   ;   suivantes : ↱ ou ↰ (on monte, puis on repart dans le sens de la ligne)
+        orders = [[wl.order for wl in row if wl] for row in grid]
+        first = min((i for i, o in enumerate(orders) if o), key=lambda i: min(orders[i]), default=None)
+        for i, row in enumerate(grid):
+            leftward = len(orders[i]) > 1 and orders[i][0] > orders[i][-1]
+            arrow = ('←' if leftward else '→') if i == first else ('↰' if leftward else '↱')
+            multiwells.append(f'<span class="well-dir">{"" if leftward else arrow}</span>')
+            for wl in row:
+                if wl:
+                    multiwells.append(f"""<button class="{btn_class} well" value="{wl.order}"{onclick}>{wl.well.name}</button>""")
+                else:
+                    multiwells.append('<span></span>')
+            multiwells.append(f'<span class="well-dir">{arrow if leftward else ""}</span>')
         multiwells.append('''</div>''')
         return mark_safe("\n".join(multiwells))   
        

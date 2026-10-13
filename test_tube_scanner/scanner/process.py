@@ -625,6 +625,7 @@ class ScannerProcess(Task):
                         )
                 except Exception as e:
                     logger.error(f'scanner listen_to_redis: {e}')
+                    self._send(state='error', msg=f'{type(e).__name__}: {e}')
         finally:
             pubsub.unsubscribe()
             pubsub.close()

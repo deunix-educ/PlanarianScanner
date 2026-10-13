@@ -21,7 +21,7 @@ Développé par dd@linuxtarn.org pour le **Laboratoire de Biologie, Université 
 
 | Couche | Technologie |
 |---|---|
-| Backend | Django 5.1 + Django Channels (WebSocket) |
+| Backend | Django 6.0 + Django Channels (WebSocket) |
 | Serveur ASGI | Daphne |
 | Broker/cache | Redis |
 | Tâches async | Celery + django-celery-beat (one-shot via ClockedSchedule) |

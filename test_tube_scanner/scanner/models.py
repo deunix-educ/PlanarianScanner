@@ -166,11 +166,12 @@ class MultiWell(models.Model):
 
     def serpentine_names(self):
         """Noms des puits dans l'ordre de lecture en serpentin (ex. D1..D6, C6..C1, B1..B6, A6..A1)."""
-        row_def = (self.row_def or "A,B,C,D,E,F,G,H").split(',')
+        # row_def peut être plus court que rows (plaque partielle) : seules ses lettres comptent
+        row_def = (self.row_def or "A,B,C,D,E,F,G,H").split(',')[:self.rows]
         names = []
-        for row in range(self.rows):
+        for row, letter in enumerate(row_def):
             cols = range(self.cols) if row % 2 == 0 else reversed(range(self.cols))
-            names.extend(f'{row_def[row]}{col+1}' for col in cols)
+            names.extend(f'{letter}{col+1}' for col in cols)
         return names
 
     def reorder_well_positions(self, realign_base=False, dry_run=False):
@@ -451,10 +452,10 @@ class SessionExperiment(models.Model):
         experiments = [ss.experiment for ss in SessionExperiment.objects.filter(session__id=sid, session__active=False)]
         uuid_list = []
         for obs in experiments:
-            row_def = obs.multiwell.row_def.split(',')
-            for row in range(obs.multiwell.rows):
+            row_def = obs.multiwell.row_def.split(',')[:obs.multiwell.rows]
+            for letter in row_def:
                 for col in range(obs.multiwell.cols):
-                    uuid = f'{sid}-{obs.multiwell.position}-{row_def[row]}{col+1}'
+                    uuid = f'{sid}-{obs.multiwell.position}-{letter}{col+1}'
                     uuid_list.append(uuid)
         return uuid_list
 

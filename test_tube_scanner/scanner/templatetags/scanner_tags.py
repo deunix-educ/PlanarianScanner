@@ -7,15 +7,15 @@ register = template.Library()
 @register.simple_tag
 def multiwell_cards(sid, experiment):
     multiwells = []
-    row_def = experiment.multiwell.row_def.split(',')   
+    row_def = experiment.multiwell.row_def.split(',')[:experiment.multiwell.rows]
     multiwells.append(
     f'''
     <div class="w3-padding-small w3-sand">{experiment.title}</div>
     <div class="w3-border  multiwell_cards">
     ''')
-    for row in range(experiment.multiwell.rows):
+    for letter in row_def:
         for col in range(experiment.multiwell.cols):
-            btn = f'{row_def[row]}{col+1}'
+            btn = f'{letter}{col+1}'
             uuid = f'{sid}-{experiment.multiwell.position}-{btn}'
             multiwells.append(f"""<button id="btn-{uuid}" name="_multiwell" class="multiwell w3-button" value="{uuid}" onclick="this.form.submit()">{btn}</button>""")
     multiwells.append('''</div>''')
