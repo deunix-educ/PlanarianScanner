@@ -41,7 +41,7 @@
     <div id="replay-grid" class="w3-black">
     {% if image %}
         <div class="w3-card-4 w3-border">
-            <img id="_replay_img" src="{{ image }}" style="max-width: 800px;">
+            <img id="_replay_img" src="{{ image }}" style="display: block; margin: 0 auto; max-width: min(100%, 800px); height: auto;">
             <div class="w3-bar w3-padding-small w3-light-grey">
                 <span class="w3-bar-item w3-marging-right w3-dark-xlight" >{{ uuid }}</span>
                 <button id="_replay_play" class="w3-bar-item w3-btn"><i class="fa-solid fa-play"></i></button>
