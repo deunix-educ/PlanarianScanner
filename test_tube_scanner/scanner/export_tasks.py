@@ -41,13 +41,22 @@ async def remove_video(uuid, start_ts, end_ts, when=None):
     await remove_video_by_uuid(uuid, start_ts, end_ts, when=when)
 
 async def shm_download_video(uuid, start_ts, end_ts, frame_rate=5, opencv_fourcc_format='mp4v', opencv_video_type='mp4'):
-    video_path = os.path.join(settings.MEDIA_ROOT, f"output.{opencv_video_type}")
-    try:        
+    """
+    Assemble les frames de [start_ts, end_ts] en un fichier vidéo dans MEDIA_ROOT (téléchargement du replay).
+
+    Retourne {"status": 200, "success": True, "video_path"} ou {"status": 500, "success": False, "error"}.
+    """
+    # nom unique : deux téléchargements simultanés ne doivent pas s'écraser
+    video_path = os.path.join(settings.MEDIA_ROOT, f"download_{uuid}_{int(start_ts or 0)}.{opencv_video_type}")
+    shm = mm = video = None
+    try:
         record_manager = CameraRecordManager(cameraDB)
         total_size = await record_manager.size(uuid, start_ts, end_ts)
+        if not total_size:
+            raise Exception("No frame found!")
 
         # segment de mémoire partagée pour stocker les frames
-        shm_size = int((total_size or 0) * 1.5)
+        shm_size = int(total_size * 1.5)
         shm_name = f"/video_frames_{uuid}"
         try:
             shm = posix_ipc.SharedMemory(shm_name, posix_ipc.O_CREAT | posix_ipc.O_EXCL, size=shm_size)
@@ -64,7 +73,6 @@ async def shm_download_video(uuid, start_ts, end_ts, frame_rate=5, opencv_fourcc
         queries = record_manager.query(uuid, start_ts, end_ts)
         offset = 0
         frame_sizes = []
-        total = 0
         async for record in queries:
             frame_bytes = await record.read_all()
             frame_size = len(frame_bytes)
@@ -72,40 +80,50 @@ async def shm_download_video(uuid, start_ts, end_ts, frame_rate=5, opencv_fourcc
             mm[offset:offset + frame_size] = frame_bytes
             frame_sizes.append(frame_size)
             offset += frame_size
-            total += 1
 
         if not frame_sizes:
             raise Exception("No frame found!")
-            #return JsonResponse({'error': 'Aucune frame trouvée'}, status=404)
 
-        #video_path = os.path.join(settings.MEDIA_ROOT, f"output.{opencv_video_type}")
         fourcc = cv2.VideoWriter_fourcc(*opencv_fourcc_format)  # type: ignore[attr-defined]
 
         # Lit les frames depuis la mémoire partagée
+        total = len(frame_sizes)
         current_offset = 0
-        i = 0
-        video = None
+        written = 0
         for size in frame_sizes:
             frame_bytes = mm[current_offset:current_offset + size]
-            nparr = np.frombuffer(frame_bytes, np.uint8)
-            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            if 'video' not in locals():
+            current_offset += size
+            frame = cv2.imdecode(np.frombuffer(frame_bytes, np.uint8), cv2.IMREAD_COLOR)
+            if frame is None:
+                continue
+            if video is None:       # le VideoWriter est créé sur la 1re frame valide
                 height, width, _ = frame.shape
                 video = cv2.VideoWriter(video_path, fourcc, frame_rate, (width, height))
             video.write(frame)
-            current_offset += size
-            
-            progress_bar(i + 1, total, prefix=f'Progress {uuid}:', suffix='Ended', length=30)
-            i+=1
-        if video:                        
-            video.release()
+            written += 1
+            progress_bar(written, total, prefix=f'Progress {uuid}:', suffix='Ended', length=30)
 
-        # Nettoie la mémoire partagée
-        shm.unlink()
-            
-        return { "status": 404, "success": True, "video_path": video_path}        
+        if video is not None:
+            video.release()
+            video = None
+
+        if not written or not os.path.exists(video_path) or os.path.getsize(video_path) == 0:
+            raise Exception(f"Aucune image valide : vidéo non créée ({written}/{total} images)")
+
+        return {"status": 200, "success": True, "video_path": video_path}
     except Exception as e:
+        logger.error("shm_download_video [%s]: %s", uuid, e, exc_info=True)
         return {"status": 500, "success": False, "video_path": video_path, "error": str(e)}
+    finally:
+        if video is not None:
+            video.release()
+        if mm:
+            mm.close()
+        if shm:
+            try:
+                shm.unlink()
+            except posix_ipc.ExistentialError:
+                pass
 
 # ─────────────────────────────────────────────
 ##

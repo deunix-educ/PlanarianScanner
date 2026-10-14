@@ -312,10 +312,10 @@ def download_api(request):
                 response['Content-Length'] = os.path.getsize(video_path)
                 os.remove(video_path)
                 return response
-            return JsonResponse(result)
+            return JsonResponse(result, status=500)
     except Exception as e:
         print("download_api error",  e)
-    return JsonResponse({"state":  False, "success":  False, "msg": str(_("Erreur d'exportation")), })
+    return JsonResponse({"state":  False, "success":  False, "msg": str(_("Erreur d'exportation")), }, status=500)
 
     
 def get_video(uuid):

@@ -194,6 +194,7 @@ class ReplayManager {
             window.URL.revokeObjectURL(url);
         }).catch(error => {
             console.error('Erreur:', error);
+            alert(`Échec du téléchargement de la vidéo (${error.message}).`);
         });
 
     }
