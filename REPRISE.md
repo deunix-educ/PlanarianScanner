@@ -17,6 +17,12 @@ l'architecture dans `CLAUDE.md` : les lire d'abord, ce fichier ne contient que l
   plateau transparent, objectif vers le haut, éclairage au-dessus ; animation des déplacements (événement `move`
   du simulateur) ; zoom et agrandissement dans la page ; seules les plaques **actives** sont posées.
 - **Liste déroulante de la calibration** : seuls les multi-puits `active=True` sont proposés.
+- **Téléchargement de vidéo depuis le replay** (bouton vidéo) : `shm_download_video` ne créait jamais le
+  `VideoWriter` (`video = None` avant `'video' not in locals()`) et le navigateur enregistrait le JSON d'erreur
+  comme « vidéo » ; corrigé (fichier unique par téléchargement, erreurs en HTTP 500, alerte côté page). L'export
+  par lot (`export_videos`) n'était pas concerné.
+- **Vue CNC sur la page balayage multi-puits** : même composant ; la plaque suivie vient du champ `position` des
+  messages du worker (`process.py`, `multiwell.py`) ; boutons zoom / agrandir partagés (`bindControls`).
 - `CONTEXT.md` : Django 6.0, règle d'implantation des plaques, vue CNC.
 
 ## À faire / non vérifié
@@ -32,7 +38,8 @@ l'architecture dans `CLAUDE.md` : les lire d'abord, ce fichier ne contient que l
 - **Sens des flèches de déplacement** : elles suivent les libellés ; si l'image caméra est tournée par rapport aux
   axes CNC, le sens visuel peut différer du mouvement réel.
 - Balayage avec une `Session` réelle : jamais exercé (la base dev n'en a aucune).
-- Vue CNC non branchée sur la page **scanning** (idée : `payload.move` + `payload.current` pour colorer les puits).
+- **Vue CNC en balayage** : le suivi de plaque pendant un balayage (`position` envoyé par le worker) n'a été vérifié
+  que côté navigateur avec des messages simulés ; à valider avec une vraie `Session` après redémarrage des workers.
 - Idées non faites : valider `rows == len(row_def.split(','))` dans `MultiWell.clean()` ;
   `payload.current >= 0` dans `calibration.js` est vrai pour `null` (sans effet visible).
 - `HD_6` (plaque 2×3) est **inactive** en base : elle n'apparaît ni dans la liste ni sur la table.

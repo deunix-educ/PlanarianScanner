@@ -245,9 +245,10 @@ Ajuste la plage de recherche HoughCircles en fraction de `min(w,h)` :
 
 ## Vue isométrique du bras CNC (simulation, PC uniquement)
 
-Panneau SVG en bas de la page calibration (à gauche du journal de debug), affiché seulement si
-`GRBL_SIMULATION` est vrai **ou** si `capture_type == 'video'` (le mode vidéo force le simulateur).
-Absent en production (RPi4, matériel réel).
+Panneau SVG en bas des pages **calibration** et **balayage multi-puits** (à gauche du journal de debug), affiché
+seulement si `GRBL_SIMULATION` est vrai **ou** si `capture_type == 'video'` (le mode vidéo force le simulateur).
+Absent en production (RPi4, matériel réel). Contexte commun : `views.cnc_context()` (géométrie des plaques actives,
+`table_multiwells()`, version des statiques).
 
 - **Montage dessiné** : le bras (portique Y + chariot X) est **sous** un plateau transparent ; la caméra pointe
   **vers le haut** et filme les éprouvettes par en dessous ; l'éclairage est **au-dessus** des plaques.
@@ -257,9 +258,13 @@ Absent en production (RPi4, matériel réel).
 - **Mouvement** : `grbl_simulator._announce_move()` envoie `move = {x0, y0, x1, y1, ms}` au début de chaque
   déplacement (durée × `TIME_SCALE`, 0.1 = 10× plus rapide que réel) ; `calibration.js` → `CncView.moveTo()` anime côté
   navigateur ; le message `xy` (position faisant foi) recale via `setPosition()`.
-- **Boutons** : *loupe* = zoom sur la plaque active + origine / plateau entier (état mémorisé dans `localStorage`
-  `cnc.zoom`) ; *agrandir* = panneau en pleine fenêtre en CSS (`position: fixed`, Échap pour revenir). L'API
-  Fullscreen n'est volontairement **pas** utilisée : Brave referme le plein écran d'un élément après ~1 s.
+- **Plaque suivie** : en calibration, la liste déroulante `#_well` ; en balayage, le champ `position` des messages du
+  worker (envoyé à l'init, au début de chaque expérience et à chaque puits), avec repli sur la plaque de la session
+  puis sur la plaque par défaut. Les puits visités du balayage se colorent au passage de la caméra.
+- **Boutons** (`CncView.bindControls`) : *loupe* = zoom sur la plaque active + origine / plateau entier (état mémorisé
+  dans `localStorage` `cnc.zoom`) ; *agrandir* = panneau en pleine fenêtre en CSS (`position: fixed`, Échap pour
+  revenir). L'API Fullscreen n'est volontairement **pas** utilisée : Brave referme le plein écran d'un élément
+  après ~1 s.
 - **Fichiers** : `scanner/static/scanner/js/cnc_view.js` (classe `CncView`), `css/cnc_view.css`. Les fichiers statiques
   sont chargés avec `?v=<mtime>` (`views.asset_version`) pour éviter un cache périmé.
 
