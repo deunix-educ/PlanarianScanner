@@ -132,13 +132,24 @@ def scanning_view(request):
         current_session = models.Session.objects.filter(active=True).first()
         cursid = current_session.pk if current_session else 0
 
+    context = global_context(request)
+    capture_type = context['conf'].capture_type
     ctx = dict(
         ws_route=settings.SCANNER_WEBSOCKET_ROUTE,
         cursid=int(cursid),
         sessions=models.Session.objects.filter(active=True).all(),
         choice_title=_("Balayage multi-puits")
     )
-    return render(request, "scanner/scanning.html", context=global_context(request, **ctx))
+    ctx.update(cnc_context(table_multiwells(capture_type), context['conf'], capture_type))
+    if ctx['simulation']:
+        # plaque de la session choisie, sinon celle par défaut (la suite est suivie par le message
+        # `position` du worker pendant le balayage)
+        experiments = models.SessionExperiment.experiment_by_session(int(cursid)) if cursid else []
+        active = experiments[0].multiwell.position if experiments and experiments[0].multiwell else context['default_position']
+        positions = [p['position'] for p in ctx['cnc_geometry']['plates']]
+        ctx['cnc_active'] = active if active in positions else (positions[0] if positions else '')
+    context.update(ctx)
+    return render(request, "scanner/scanning.html", context=context)
 
 ## Calibration
 @login_required
@@ -160,20 +171,33 @@ def calibration_view(request):
     if positions and context['default_position'] not in positions:
         context['default_position'] = positions[0]
 
-    # le mode vidéo force le simulateur GRBL (voir process.py) : la vue CNC y est aussi utile
-    simulation = bool(settings.GRBL_SIMULATION or capture_type == 'video')
     ctx = dict(
         ws_route=settings.SCANNER_WEBSOCKET_ROUTE,
         choice_title=f'{str(_("Calibration"))} {config.get_capture_type_display()}',
         wells = wells,
         capture_type=capture_type,
-        simulation=simulation,
     )
-    if simulation:
-        ctx['cnc_geometry'] = cnc_geometry(wells, context['conf'])
-    ctx['asset_v'] = asset_version('scanner/js/calibration.js', 'scanner/js/cnc_view.js', 'scanner/css/cnc_view.css')
+    ctx.update(cnc_context(wells, context['conf'], capture_type, js='scanner/js/calibration.js'))
     context.update(ctx)
     return render(request, "scanner/calibration.html", context=context)
+
+
+def table_multiwells(capture_type):
+    """Multi-puits actifs posés sur la table : ceux de la capture vidéo en mode vidéo (s'il y en a), sinon les autres."""
+    qs = models.MultiWell.objects.filter(active=True)
+    if capture_type == 'video' and qs.filter(capture_video=True, default=True).exists():
+        return qs.filter(capture_video=True)
+    return qs.filter(capture_video=False)
+
+
+def cnc_context(multiwells, conf, capture_type, js='scanner/js/scanning.js'):
+    """Contexte de la vue isométrique du bras : actif en simulation (le mode vidéo force le simulateur GRBL)."""
+    simulation = bool(settings.GRBL_SIMULATION or capture_type == 'video')
+    ctx = dict(simulation=simulation,
+               asset_v=asset_version(js, 'scanner/js/cnc_view.js', 'scanner/css/cnc_view.css'))
+    if simulation:
+        ctx['cnc_geometry'] = cnc_geometry(multiwells, conf)
+    return ctx
 
 
 def asset_version(*paths):

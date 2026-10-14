@@ -270,18 +270,7 @@
         const cnc = new CncView(sId("_cnc_view"), JSON.parse(sId("cnc-geometry").textContent));
         cnc.setActivePlate(sId("_well").value);
         sId("_well").addEventListener("change", (e) => cnc.setActivePlate(e.target.value));
-        const cncZoom = sId("_cnc_zoom"), cncFs = sId("_cnc_fs");
-        const syncCnc = () => {
-            cncZoom.classList.toggle("on", cnc.zoom);
-            cncZoom.setAttribute("aria-pressed", cnc.zoom);
-            cncFs.classList.toggle("on", cnc.expanded);
-            cncFs.setAttribute("aria-pressed", cnc.expanded);
-            cncFs.innerHTML = cnc.expanded ? '<i class="fa-solid fa-minimize"></i>' : '<i class="fa-solid fa-maximize"></i>';
-        };
-        cncZoom.addEventListener("click", () => { cnc.setZoom(!cnc.zoom); syncCnc(); });
-        cncFs.addEventListener("click", () => { cnc.toggleExpand(); syncCnc(); });
-        document.addEventListener("keydown", (e) => { if (e.key === "Escape") syncCnc(); });
-        syncCnc();
+        cnc.bindControls(sId("_cnc_zoom"), sId("_cnc_fs"));
         {% else %}
         const cnc = null;
         {% endif %}

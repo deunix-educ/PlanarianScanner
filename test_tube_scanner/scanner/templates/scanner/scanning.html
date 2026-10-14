@@ -9,6 +9,7 @@
     }
     </style>   
     <link href="/static/scanner/css/scanning.css" rel="stylesheet">
+    {% if simulation %}<link href="/static/scanner/css/cnc_view.css?v={{ asset_v }}" rel="stylesheet">{% endif %}
 {% endblock %}
 {% block columns %}{% endblock %}
 
@@ -85,14 +86,39 @@
        {% include 'scanner/scan-image.html' %}    
     </div>	    
 </div>
+{% if simulation %}
+<div class="w3-row">
+    <div class="w3-half" style="height: 50vh">
+        <div id="_cnc_view">
+            <button id="_cnc_zoom" type="button" class="cnc-fs cnc-zoom" title="{% trans 'Zoom sur la plaque / plateau entier' %}"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+            <button id="_cnc_fs" type="button" class="cnc-fs" title="{% trans 'Agrandir' %}"><i class="fa-solid fa-maximize"></i></button>
+        </div>
+    </div>
+    <div class="w3-half">
+{% endif %}
  <ul id="_debug" class="w3-scroll-y" style="height: 50vh"></ul>
+{% if simulation %}
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block js_footer %}
     {{ block.super }}
+    {% if simulation %}
+    {{ cnc_geometry|json_script:"cnc-geometry" }}
+    <script src="/static/scanner/js/cnc_view.js?v={{ asset_v }}"></script>
+    {% endif %}
     <script>
         const container = sId("scan-img");
         const ws_route  = "{{ ws_route }}";
+        {% if simulation %}
+        const cnc = new CncView(sId("_cnc_view"), JSON.parse(sId("cnc-geometry").textContent));
+        cnc.setActivePlate("{{ cnc_active|default:'' }}");
+        cnc.bindControls(sId("_cnc_zoom"), sId("_cnc_fs"));
+        {% else %}
+        const cnc = null;
+        {% endif %}
         const use_tracking = "{{ use_tracking }}" == "True";
         const options = {
             ts: sId("_ts"),
@@ -114,11 +140,12 @@
             scan_state  : sId("_scan_state"),
             simulate    : sId("_simulate"),
             well_btn    : sId("_well_btn"),
-            well_state    : sId("_well_state")
+            well_state    : sId("_well_state"),
+            cnc           : cnc
 
         };                      
     </script>        
-    <script src="/static/scanner/js/scanning.js"></script>
+    <script src="/static/scanner/js/scanning.js?v={{ asset_v }}"></script>
     <script>
         const manager  = new ScannerManager(container, options);
         const protocol = location.protocol === "https:" ? "wss" : "ws";

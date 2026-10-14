@@ -454,6 +454,7 @@ class ScannerProcess(Task):
                             buttons=self.manager.multiwell_buttons(btn_class="w3-btn well", onclick=""),
                             columns=self.manager.multiwell.cols,
                             current=self.manager.get_well_order(),
+                            position=self.manager.multiwell.position,
                             **ctx
                         )                                
                     elif cmd["type"]=="calibrate":

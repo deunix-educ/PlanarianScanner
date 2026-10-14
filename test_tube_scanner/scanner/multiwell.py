@@ -226,7 +226,7 @@ class MultiWellManager:
             self.process.data.uuid = uuid
             if not simulate:
                 self.process.data.record = True
-            self.process._send(current=well_position.order)
+            self.process._send(current=well_position.order, position=multiwell.position)
             
             msg = f"Starting capture for {uuid} ordre: {well_position.order}"
             logger.info(msg)
@@ -332,7 +332,7 @@ class MultiWellManager:
                 
                 msg = f"Starting scan for {obs} (well {pos}/{len(experiments)})"
                 logger.warning(msg)
-                self.process._send(well_state=msg)
+                self.process._send(well_state=msg, position=obs.multiwell.position)
                 
                 if self.stop_playing.is_set():
                     break

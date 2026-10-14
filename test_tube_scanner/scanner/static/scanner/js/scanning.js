@@ -26,6 +26,7 @@ class ScannerManager {
         this.sim_bt       = options.simulate || null;
         this.well_btn     = options.well_btn;  
         this.well_state   = options.well_state;  
+        this.cnc          = options.cnc || null;   // vue isométrique du bras (simulation)
     }
 
     init_controls() {
@@ -45,6 +46,11 @@ class ScannerManager {
 
     update(payload) {
         try {
+            if (this.cnc) {
+                if (payload.move)                              { this.cnc.moveTo(payload.move.x1, payload.move.y1, payload.move.ms); }
+                else if (payload.xy && payload.x != null)      { this.cnc.setPosition(payload.x, payload.y); }
+                if (payload.position && payload.position !== this.cnc.active) { this.cnc.setActivePlate(payload.position); }
+            }
             if (payload.jpeg)   { this.container.src = `data:image/jpeg;base64,${payload.jpeg}`; }
             if (payload.xy)     { this.x.textContent=payload.x.toFixed(2); this.y.textContent=payload.y.toFixed(2); }
             if (payload.state)  { 

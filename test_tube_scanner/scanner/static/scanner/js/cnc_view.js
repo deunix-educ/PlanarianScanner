@@ -15,6 +15,7 @@
  *   setActivePlate(p)  plaque sélectionnée dans la page (met en évidence + trace du serpentin)
  *   setZoom(bool)      vue resserrée sur la plaque active (+ l'origine) ou plateau entier
  *   toggleExpand()     panneau agrandi à toute la fenêtre (CSS ; Échap pour revenir)
+ *   bindControls(zoomBtn, expandBtn)  branche les deux boutons et leur état visible
  *
  * Les variantes d'un même emplacement (ex. HD 4x6 et HD_6 2x3, préfixe de position identique) ne
  * sont pas posées en même temps : seule la plaque active est dessinée.
@@ -293,6 +294,21 @@ class CncView {
     }
 
     get expanded() { return this.container.classList.contains("cnc-expanded"); }
+
+    /** Branche le bouton de zoom et le bouton d'agrandissement (état « enfoncé » et icône suivis). */
+    bindControls(zoomBtn, expandBtn) {
+        const sync = () => {
+            zoomBtn.classList.toggle("on", this.zoom);
+            zoomBtn.setAttribute("aria-pressed", this.zoom);
+            expandBtn.classList.toggle("on", this.expanded);
+            expandBtn.setAttribute("aria-pressed", this.expanded);
+            expandBtn.innerHTML = this.expanded ? '<i class="fa-solid fa-minimize"></i>' : '<i class="fa-solid fa-maximize"></i>';
+        };
+        zoomBtn.addEventListener("click", () => { this.setZoom(!this.zoom); sync(); });
+        expandBtn.addEventListener("click", () => { this.toggleExpand(); sync(); });
+        document.addEventListener("keydown", (e) => { if (e.key === "Escape") sync(); });
+        sync();
+    }
 
     /**
      * Agrandit le panneau à toute la fenêtre. Volontairement en CSS (position: fixed) et non via
