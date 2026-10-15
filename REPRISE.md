@@ -3,7 +3,13 @@
 Note de passage entre postes. Le contexte technique est dans `CONTEXT.md`, les pièges et
 l'architecture dans `CLAUDE.md` : les lire d'abord, ce fichier ne contient que l'état du travail.
 
-État au **2026-10-13** — branche `video-plate-calibration` (dernier commit : voir `git log`).
+État au **2026-10-15** — branche `video-plate-calibration` (dernier commit : voir `git log`).
+
+**Fonctionnement vérifié** après les modifications du 2026-10-15 (conflit de merge `views.py`, recréation
+supervisor/nginx, nettoyage page calibration, champs hauteur/largeur plaque, bras virtuel en GRBL réel) :
+`manage.py check` OK, pages `calibration` et `scanning` rendues (HTTP 200) via le client de test Django en
+simulation et en GRBL réel simulé (`override_settings(GRBL_SIMULATION=False)`), `supervisorctl status` tous
+`RUNNING`, `nginx -t` OK.
 
 ## Fait
 
@@ -24,6 +30,20 @@ l'architecture dans `CLAUDE.md` : les lire d'abord, ce fichier ne contient que l
 - **Vue CNC sur la page balayage multi-puits** : même composant ; la plaque suivie vient du champ `position` des
   messages du worker (`process.py`, `multiwell.py`) ; boutons zoom / agrandir partagés (`bindControls`).
 - `CONTEXT.md` : Django 6.0, règle d'implantation des plaques, vue CNC.
+- **Conflit de merge non résolu commité** (`views.py::scanning_view`, marqueurs `Updated upstream` /
+  `Stashed changes`) : résolu en gardant la branche qui définit `context`/`capture_type` (utilisés juste après),
+  `manage.py check` + `py_compile` OK, commit amendé et re-poussé en force.
+- **Mise à jour du RPi4 (prod)** effectuée ; a fait perdre les configs supervisor/nginx (voir Pièges) — recréées
+  via `make services` / `make nginx`.
+- **Page calibration** : retrait de la case « Simulation (dry-run) » et du bouton « Réordonner les puits » (plus
+  leur JS mort associé) ; bouton ARRET déplacé sous « Tester le circuit ».
+- **`MultiWell`** : ajout `plate_height` (85.48 mm) et `plate_width` (127.76 mm), placés dans le fieldset
+  « Géométrie » de l'admin ; migration `0014_multiwell_plate_height_multiwell_plate_width`.
+- **Bras virtuel disponible en GRBL réel** (pas seulement en simulation/vidéo) : le message websocket `xy`
+  (position faisant foi) est déjà envoyé sans condition par le worker, donc pas de coût supplémentaire ; seule
+  l'animation du déplacement (événement `move`) reste propre au simulateur (le bras réel « saute » directement à
+  la position). Case à cocher « Bras virtuel » sur calibration et balayage, état mémorisé en `localStorage`
+  (`cnc.visible`), par défaut coché si déjà en simulation/vidéo, décoché sinon.
 
 ## À faire / non vérifié
 
@@ -56,6 +76,13 @@ l'architecture dans `CLAUDE.md` : les lire d'abord, ce fichier ne contient que l
   la main (incident du 2026-10-13, restauré depuis une sauvegarde JSON ; voir `datas/backup/mariadb/`).
 - Tests navigateur en local : une instance `daphne` de test laissée sur un autre port garde l'ancien gabarit en
   cache et fausse les essais ; la couper par son port, pas avec `pkill -f` (motif présent dans la commande).
+- **`make update` peut faire perdre les configs supervisor/nginx** (`/etc/supervisor/conf.d/`,
+  `/etc/nginx/sites-available/`) : après mise à jour, vérifier `sudo supervisorctl status` et `sudo nginx -t` ;
+  recréer avec `make services` / `make nginx` si besoin. Repéré aussi un symlink nginx fantôme hérité d'un ancien
+  montage manuel (`etc/nginx_service.conf`, avant le passage aux templates) pointant vers un fichier inexistant :
+  supprimé. `reductstore` peut aussi rester en `FATAL` si `/usr/local/bin/reductstore` (binaire précompilé attendu,
+  voir `CONTEXT.md`) est absent et qu'une ancienne install cargo existe ailleurs (`~/.cargo/bin/reductstore`) :
+  soit installer le binaire officiel (`make reductstore`), soit relancer `make services REDUCT_BIN=<chemin>`.
 
 ## Reprendre sur un autre poste
 
