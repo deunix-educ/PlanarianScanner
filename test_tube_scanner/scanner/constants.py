@@ -22,6 +22,8 @@ class DefaultConfig:
     video_frame_rate: float = 5.0
     video_width_capture: int = 2028
     video_height_capture: int = 1520
+    camera_rotation: int = 0
+    camera_flip_horizontal: bool = False
     scan_simulation: bool = False
     calibration_crop_radius: int = 500
     calibration_default_multiwell: str = 'HD'
