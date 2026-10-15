@@ -25,6 +25,7 @@ Commandes Django : depuis `test_tube_scanner/`, avec `../.venv/bin/python manage
 - **Redis et ReductStore doivent tourner avant tout `manage.py`** (`migrate`, `shell`, `check`…) : `scanner/process.py` s'y connecte à l'import. Un `manage.py` qui échoue à l'import vient presque toujours de là.
 - **URLs préfixées par la langue** : `/fr-fr/scanner/calibration/`. Un test avec `Client` sans préfixe renvoie 302. Les URLs de `scanner/urls.py` sont dans le namespace `scanner:` (`{% url 'scanner:reorder_wells_api' %}`).
 - `.env` est ignoré par git et contient des secrets : ne jamais le lire en entier ni le commiter. Il est généré par `etc/scripts/mkenv.py`.
+- **Tout nouveau champ `Configuration` lu via `self.conf` dans `scanner/process.py`** doit aussi être ajouté à `DefaultConfig` (`scanner/constants.py`) : cette dataclass miroir (secours si BD indisponible) ne requête que les champs qu'elle connaît (`ScannerConstants.__init__`, `.values(*v)`) ; un champ oublié provoque un `AttributeError` silencieux seulement au démarrage du scanner (`scanner.tasks.scanner_start`), pas à `manage.py check`.
 
 ## Architecture : deux processus qui ne partagent pas la mémoire
 

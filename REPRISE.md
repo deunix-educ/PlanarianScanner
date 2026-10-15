@@ -44,6 +44,14 @@ simulation et en GRBL réel simulé (`override_settings(GRBL_SIMULATION=False)`)
   l'animation du déplacement (événement `move`) reste propre au simulateur (le bras réel « saute » directement à
   la position). Case à cocher « Bras virtuel » sur calibration et balayage, état mémorisé en `localStorage`
   (`cnc.visible`), par défaut coché si déjà en simulation/vidéo, décoché sinon.
+- **Rotation / miroir caméra** (`Configuration.camera_rotation` 0/90/180/270° + `camera_flip_horizontal`) pour
+  aligner l'image sur les axes du bras quand le montage (caméra sous plateau transparent, visée vers le haut)
+  rend l'alignement manuel impossible. Appliqué en dernier dans `capture_frame()` des 4 implémentations de
+  capture, coût négligeable. **Confirmé fonctionnel en conditions réelles (2026-10-15)** après correction :
+  `scanner/constants.py::DefaultConfig` (dataclass miroir de `Configuration`, secours si BD indisponible,
+  utilisée par `ScannerConstants`/`process.py::self.conf`) ne connaissait pas les deux nouveaux champs →
+  `AttributeError` au démarrage du scanner ; ajoutés, workers redémarrés, OK. **Piège à retenir** : tout
+  nouveau champ `Configuration` lu via `self.conf` dans `process.py` doit aussi être ajouté à `DefaultConfig`.
 
 ## À faire / non vérifié
 
