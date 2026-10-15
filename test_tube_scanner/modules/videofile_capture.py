@@ -41,6 +41,8 @@ class VideoFileCapture(VideoCaptureInterface):
         use_tracking: bool = False,
         display = None,
         parent = None,
+        camera_rotation: int = 0,
+        camera_flip_horizontal: bool = False,
     ):
         """
         :param video_file:   fichier video
@@ -49,7 +51,8 @@ class VideoFileCapture(VideoCaptureInterface):
         :param width:         Largeur souhaitée (None = valeur par défaut du pilote)
         :param height:        Hauteur souhaitée (None = valeur par défaut du pilote)
         """
-        super().__init__(fps=fps, use_tracking=use_tracking, display=display, parent=parent, jpeg_quality=jpeg_quality)
+        super().__init__(fps=fps, use_tracking=use_tracking, display=display, parent=parent, jpeg_quality=jpeg_quality,
+                          camera_rotation=camera_rotation, camera_flip_horizontal=camera_flip_horizontal)
         self._video_file: str | None = video_file
         self._jpeg_quality: int = jpeg_quality
         self._width: Optional[int] = width
@@ -115,6 +118,8 @@ class VideoFileCapture(VideoCaptureInterface):
         ret, frame = self._cap.read()
         if not ret or frame is None:
             raise CaptureError("Échec de lecture de la trame ou fin de fichier")
+
+        frame = self._apply_transform(frame)
 
         # Encodage BGR → JPEG avec la qualité configurée
         encode_params = [cv2.IMWRITE_JPEG_QUALITY, self._jpeg_quality]

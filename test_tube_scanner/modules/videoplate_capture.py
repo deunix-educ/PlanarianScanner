@@ -53,8 +53,11 @@ class VideoPlateCapture(VideoCaptureInterface):
         x_offset_mm: float = 0.0,
         y_offset_mm: float = 0.0,
         initial_video_path: str | None = None,
+        camera_rotation: int = 0,
+        camera_flip_horizontal: bool = False,
     ):
-        super().__init__(fps, use_tracking, display, parent, jpeg_quality)
+        super().__init__(fps, use_tracking, display, parent, jpeg_quality,
+                          camera_rotation=camera_rotation, camera_flip_horizontal=camera_flip_horizontal)
         self._video_dir = Path(video_dir)
         self._cap: cv2.VideoCapture | None = None
         self._cap_lock = threading.Lock()
@@ -185,6 +188,7 @@ class VideoPlateCapture(VideoCaptureInterface):
 
         # À l'origine CNC (0, 0) : retourner la plaque entière à sa résolution native
         if x_mm == 0.0 and y_mm == 0.0:
+            frame = self._apply_transform(frame)
             ok, buf = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, self.jpeg_quality])
             if not ok:
                 raise CaptureError("Encodage JPEG échoué")
@@ -207,6 +211,7 @@ class VideoPlateCapture(VideoCaptureInterface):
             padded[:crop.shape[0], :crop.shape[1]] = crop
             crop = padded
 
+        crop = self._apply_transform(crop)
         ok, buf = cv2.imencode('.jpg', crop, [cv2.IMWRITE_JPEG_QUALITY, self.jpeg_quality])
         if not ok:
             raise CaptureError("Encodage JPEG échoué")

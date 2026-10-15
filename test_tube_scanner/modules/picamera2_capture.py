@@ -8,6 +8,8 @@ import io
 import logging
 from typing import Optional
 
+import cv2
+
 from .capture_interface import CaptureError, VideoCaptureInterface
 
 logger = logging.getLogger(__name__)
@@ -47,7 +49,9 @@ class PiCamera2Capture(VideoCaptureInterface):
         use_video_config: bool = True,
         use_tracking: bool = False,
         display = None,
-        parent = None
+        parent = None,
+        camera_rotation: int = 0,
+        camera_flip_horizontal: bool = False,
 
     ):
         """
@@ -59,7 +63,8 @@ class PiCamera2Capture(VideoCaptureInterface):
         :param use_video_config: True = VideoConfiguration (flux continu, basse latence)
                                  False = StillConfiguration (haute résolution, plus lent)
         """
-        super().__init__(fps=fps, use_tracking=use_tracking, display=display, parent=parent, jpeg_quality=jpeg_quality)
+        super().__init__(fps=fps, use_tracking=use_tracking, display=display, parent=parent, jpeg_quality=jpeg_quality,
+                          camera_rotation=camera_rotation, camera_flip_horizontal=camera_flip_horizontal)
         self._width: int = width
         self._height: int = height
         self._jpeg_quality: int = jpeg_quality
@@ -217,6 +222,7 @@ class PiCamera2Capture(VideoCaptureInterface):
 
             # Récupération du tableau RGB depuis le flux libcamera
             arr = self._picam2.capture_array("main")  # shape (H, W, 3) uint8
+            arr = self._apply_transform(arr)
 
             # Encodage manuel en JPEG avec la qualité configurée
             buf = io.BytesIO()
@@ -256,6 +262,7 @@ class PiCamera2Capture(VideoCaptureInterface):
             request = self._picam2.capture_request()
             arr = request.make_array("main")      # shape (H, W, 3) uint8 RGB
             request.release()
+            arr = self._apply_transform(arr)
 
             buf = io.BytesIO()
             Image.fromarray(arr).save(buf, format="JPEG", quality=self._jpeg_quality)

@@ -62,17 +62,23 @@ class VideoCaptureInterface(abc.ABC):
     )
     
 
-    def __init__(self, fps: float = DEFAULT_FPS, use_tracking: bool = False, display=None, parent=None, jpeg_quality=85):
+    def __init__(self, fps: float = DEFAULT_FPS, use_tracking: bool = False, display=None, parent=None, jpeg_quality=85,
+                 camera_rotation: int = 0, camera_flip_horizontal: bool = False):
         """
         Initialise l'interface de capture.
 
         :param fps: Cadence cible en images par seconde
+        :param camera_rotation: Rotation de l'image par pas de 90° (0, 90, 180, 270), pour aligner
+            la caméra sur les axes du bras CNC quand le montage rend l'alignement manuel impossible
+        :param camera_flip_horizontal: Miroir horizontal appliqué après la rotation
         """
         self._fps: float = fps
         self.display = display
         self.parent = parent
         self.use_tracking = use_tracking
         self.jpeg_quality = jpeg_quality
+        self._camera_rotation = camera_rotation if camera_rotation in (0, 90, 180, 270) else 0
+        self._camera_flip_h = camera_flip_horizontal
         self._interval: float = 1.0 / fps       # Intervalle en secondes entre chaque capture
         self._running: bool = False              # Indique si la capture est en cours
         self._thread: Optional[threading.Thread] = None
@@ -295,6 +301,23 @@ class VideoCaptureInterface(abc.ABC):
         logger.info(f"{self.__class__.__name__}: edge_enhance={enabled}")
         if self.display is not None:
             self.display(state='edge_enhance', value=enabled, msg=f"Edge enhance: {enabled}")
+
+    def _apply_transform(self, frame: np.ndarray) -> np.ndarray:
+        """
+        Aligne l'image sur les axes du bras CNC : rotation par pas de 90° puis miroir horizontal
+        optionnel. À appeler en dernier, juste avant l'encodage JPEG, dans chaque capture_frame()
+        — la position GRBL->pixel (ex. VideoPlateCapture) reste ainsi calculée dans l'orientation
+        native de la source, et seule l'image finale est corrigée.
+        """
+        if self._camera_rotation == 90:
+            frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+        elif self._camera_rotation == 180:
+            frame = cv2.rotate(frame, cv2.ROTATE_180)
+        elif self._camera_rotation == 270:
+            frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        if self._camera_flip_h:
+            frame = cv2.flip(frame, 1)
+        return frame
 
     def _apply_edge_enhance(self, frame: np.ndarray) -> np.ndarray:
         """Overlay Canny vert additif sur l'image originale.

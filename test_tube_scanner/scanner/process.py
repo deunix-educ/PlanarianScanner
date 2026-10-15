@@ -213,6 +213,8 @@ class ScannerProcess(Task):
                     use_tracking=self.use_tracking,
                     display=self._display,
                     parent=self,
+                    camera_rotation=self.conf.camera_rotation,
+                    camera_flip_horizontal=self.conf.camera_flip_horizontal,
                 )
             elif capture_type == 'video':
                 from modules.videoplate_capture import VideoPlateCapture
@@ -236,6 +238,8 @@ class ScannerProcess(Task):
                     x_offset_mm=vp.x_origin_mm,
                     y_offset_mm=vp.y_origin_mm,
                     initial_video_path=initial_path,
+                    camera_rotation=self.conf.camera_rotation,
+                    camera_flip_horizontal=self.conf.camera_flip_horizontal,
                 )
             elif capture_type == 'webcam':
                 from modules.webcam_capture import WebcamCapture
@@ -248,6 +252,8 @@ class ScannerProcess(Task):
                     use_tracking=self.use_tracking,
                     display=self._display,
                     parent=self,
+                    camera_rotation=self.conf.camera_rotation,
+                    camera_flip_horizontal=self.conf.camera_flip_horizontal,
                 )
             else:
                 from modules.picamera2_capture import PiCamera2Capture
@@ -259,6 +265,8 @@ class ScannerProcess(Task):
                     use_tracking=self.use_tracking,
                     display=self._display,
                     parent=self,
+                    camera_rotation=self.conf.camera_rotation,
+                    camera_flip_horizontal=self.conf.camera_flip_horizontal,
                 )
             
             self.cam.set_frame_callback(self._on_frame)

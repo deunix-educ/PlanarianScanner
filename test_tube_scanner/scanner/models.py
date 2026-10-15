@@ -53,6 +53,13 @@ TUBE_AXIS_TYPE = [
     ('vertical', _("Vertical")),
     ('horizontal', _("Horizontal")),
 ]
+
+CAMERA_ROTATION = [
+    (0, "0°"),
+    (90, "90°"),
+    (180, "180°"),
+    (270, "270°"),
+]
     
 class Configuration(models.Model):
     name = models.CharField(_("Nom de la Configuration"), help_text=_("Nom de la configuration"), max_length=100, null=True, blank=False, default=_("Configuration par défaut"))
@@ -75,6 +82,8 @@ class Configuration(models.Model):
     video_frame_rate = models.FloatField(_("Fréquence vidéos (fps)"), help_text=_("Fréquence d'extraction des images des vidéos (images par seconde)"), default=5.0)
     video_width_capture = models.PositiveSmallIntegerField(_("Largeur de capture vidéo"), help_text=_("Largeur de capture vidéo en pixels"), default=1280)
     video_height_capture = models.PositiveSmallIntegerField(_("Hauteur de capture vidéo"), help_text=_("Hauteur de capture vidéo en pixels"), default=720)
+    camera_rotation = models.PositiveSmallIntegerField(_("Rotation caméra"), help_text=_("Rotation de l'image par pas de 90°, pour aligner la caméra sur les axes du bras CNC"), choices=CAMERA_ROTATION, default=0)
+    camera_flip_horizontal = models.BooleanField(_("Miroir horizontal"), help_text=_("Retourne l'image horizontalement (après rotation), si le montage caméra est inversé"), default=False)
     # Calibration
     scan_simulation = models.BooleanField(_("Simuler balayage"), help_text=_("Autorise la simulation du balayage"), default=False)
     calibration_crop_radius = models.PositiveSmallIntegerField(_("Rayon de découpe pour la calibration"), help_text=_("Rayon en pixels pour découper les images de calibration en px"), default=150)

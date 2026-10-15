@@ -49,7 +49,7 @@ class ConfigurationAdmin(admin.ModelAdmin):
             "classes": ("collapse",),
         }),
         (_("Camera"), {
-            "fields": ("scan_simulation", "capture_type", "webcam_device_index", "image_quality", "video_jpeg_quality", "video_frame_rate", "video_width_capture", "video_height_capture"),
+            "fields": ("scan_simulation", "capture_type", "webcam_device_index", "image_quality", "video_jpeg_quality", "video_frame_rate", "video_width_capture", "video_height_capture", "camera_rotation", "camera_flip_horizontal"),
             "classes": ("collapse",),
         }),
         (_("Calibration / Balayage"), {
