@@ -10,7 +10,7 @@
     </style>
 
     <link href="/static/scanner/css/calibration.css" rel="stylesheet">
-    {% if simulation %}<link href="/static/scanner/css/cnc_view.css?v={{ asset_v }}" rel="stylesheet">{% endif %}
+    <link href="/static/scanner/css/cnc_view.css?v={{ asset_v }}" rel="stylesheet">
 {% endblock %}
 {% block columns %}{% endblock %}
 
@@ -227,40 +227,52 @@
 	     </div>
     </div>
 </div>
-{% if simulation %}
-<div class="w3-row">
-    <div class="w3-half" style="height: 30vh">
+<div class="w3-row w3-padding-small">
+    <label class="w3-small" title="{% trans 'Afficher le bras virtuel (position exacte, sans animation de déplacement hors simulation)' %}">
+        <input type="checkbox" id="_cnc_toggle" class="w3-check"> {% trans 'Bras virtuel' %}
+    </label>
+</div>
+<div class="w3-row" id="_cnc_row">
+    <div class="w3-half" id="_cnc_view_col" style="height: 30vh">
         <div id="_cnc_view">
             <button id="_cnc_zoom" type="button" class="cnc-fs cnc-zoom" title="{% trans 'Zoom sur la plaque / plateau entier' %}"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
             <button id="_cnc_fs" type="button" class="cnc-fs" title="{% trans 'Ecran plein' %}"><i class="fa-solid fa-maximize"></i></button>
         </div>
     </div>
-    <div class="w3-half">
-{% endif %}
-<ul id="_debug" class="w3-scroll-y" style="height: 30vh"></ul>
-{% if simulation %}
+    <div class="w3-half" id="_debug_col">
+        <ul id="_debug" class="w3-scroll-y" style="height: 30vh"></ul>
     </div>
 </div>
-{% endif %}
 {% endblock %}
 
 {% block js_footer %}
     {{ block.super }}
-    {% if simulation %}
     {{ cnc_geometry|json_script:"cnc-geometry" }}
     <script src="/static/scanner/js/cnc_view.js?v={{ asset_v }}"></script>
-    {% endif %}
     <script>
         const container = sId("scan-img");
-        const ws_route = "{{ ws_route }}";   
-        {% if simulation %}
+        const ws_route = "{{ ws_route }}";
         const cnc = new CncView(sId("_cnc_view"), JSON.parse(sId("cnc-geometry").textContent));
         cnc.setActivePlate(sId("_well").value);
         sId("_well").addEventListener("change", (e) => cnc.setActivePlate(e.target.value));
         cnc.bindControls(sId("_cnc_zoom"), sId("_cnc_fs"));
-        {% else %}
-        const cnc = null;
-        {% endif %}
+
+        const cncToggle = sId("_cnc_toggle");
+        const cncViewCol = sId("_cnc_view_col");
+        const cncDebugCol = sId("_debug_col");
+        function applyCncVisibility(show) {
+            cncViewCol.classList.toggle("w3-hide", !show);
+            cncDebugCol.classList.toggle("w3-half", show);
+            cncDebugCol.classList.toggle("w3-col", !show);
+        }
+        const cncVisible = CncView._stored("cnc.visible", {{ simulation|yesno:"true,false" }});
+        cncToggle.checked = cncVisible;
+        applyCncVisibility(cncVisible);
+        cncToggle.addEventListener("change", () => {
+            try { localStorage.setItem("cnc.visible", cncToggle.checked ? "1" : "0"); } catch (e) { /* stockage indisponible */ }
+            applyCncVisibility(cncToggle.checked);
+        });
+
         const use_tracking = "{{ use_tracking }}" == "True";
         
         const options = {

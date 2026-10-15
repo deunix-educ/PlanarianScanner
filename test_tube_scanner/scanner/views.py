@@ -191,12 +191,13 @@ def table_multiwells(capture_type):
 
 
 def cnc_context(multiwells, conf, capture_type, js='scanner/js/scanning.js'):
-    """Contexte de la vue isométrique du bras : actif en simulation (le mode vidéo force le simulateur GRBL)."""
+    """Contexte de la vue isométrique du bras : affichée par défaut en simulation (le mode vidéo
+    force le simulateur GRBL) ; disponible aussi en GRBL réel via la case à cocher côté page (la
+    position affichée reste exacte, seule l'animation du déplacement est propre au simulateur)."""
     simulation = bool(settings.GRBL_SIMULATION or capture_type == 'video')
     ctx = dict(simulation=simulation,
+               cnc_geometry=cnc_geometry(multiwells, conf),
                asset_v=asset_version(js, 'scanner/js/cnc_view.js', 'scanner/css/cnc_view.css'))
-    if simulation:
-        ctx['cnc_geometry'] = cnc_geometry(multiwells, conf)
     return ctx
 
 
