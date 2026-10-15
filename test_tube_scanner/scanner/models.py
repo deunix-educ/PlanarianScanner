@@ -130,6 +130,8 @@ class MultiWell(models.Model):
     cols = models.PositiveSmallIntegerField(_("Colonnes"), help_text=_('Nombre de colonnes'), blank=False, default=6)
     rows = models.PositiveSmallIntegerField(_("Lignes"), help_text=_('Nombre de lignes'), blank=False, default=4)  
     diameter = models.FloatField(_("Diamètre"), help_text=_('Diamètre des tubes en mm'), blank=False, default=16.0)
+    plate_height = models.FloatField(_("Hauteur"), help_text=_('Hauteur de la plaque en mm'), blank=False, default=85.48)
+    plate_width = models.FloatField(_("Largeur"), help_text=_('Largeur de la plaque en mm'), blank=False, default=127.76)
     row_def = models.CharField(_("Définition"), help_text=_('Définition des lignes'), max_length=16, null=True, blank=False, default="A,B,C,D,E,F,G,H")
     #row_order = models.CharField(_("Ordre ligne"), help_text=_('Ordre ligne de puit. Lecture en serpentin dans le sens des +- X'), max_length=16, null=True, blank=False, default="D,C,B,A")
     crop_radius = models.PositiveSmallIntegerField(_("Rayon de découpe recadrage"), help_text=_("Rayon en pixels pour recadrer les images en px"), blank=False, default=500)
