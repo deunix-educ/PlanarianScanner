@@ -22,6 +22,11 @@ button.multiwell {
 
 }
 
+#_replay_img {
+    display: block;
+    margin: 0 auto;
+}
+
 .replay-slider, .replay-sub-slide, .replay_ts_cursor{
     width: 100%;
     flex: 0 0 auto;

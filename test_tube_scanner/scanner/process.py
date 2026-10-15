@@ -265,8 +265,8 @@ class ScannerProcess(Task):
             self.cam._active_median = False
             self.cam.set_circular_crop(None)
             
-            # Mode vidéo : toujours simuler le GRBL (pas de CNC physique)
-            if capture_type == 'video':
+            # Modes vidéo et fichier : toujours simuler le GRBL (pas de CNC physique)
+            if capture_type in ('video', 'file'):
                 from modules.grbl_simulator import GRBLController as _GRBLCtrl
             else:
                 _GRBLCtrl = GRBLController
