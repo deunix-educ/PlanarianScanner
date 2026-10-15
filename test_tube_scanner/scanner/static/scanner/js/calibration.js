@@ -81,19 +81,22 @@ class ScannerManager {
         this.halt.addEventListener('click',         (e) => { this._send({ type: 'calibrate', topic: "halt" }); });
         this.calib_debug.addEventListener('click', (e) => { this._send({ type: 'calibrate', topic: "calib_debug" }); });
         this.draw_debug.addEventListener('click',  (e) => { this._send({ type: 'calibrate', topic: "draw_debug" }); });
-        try { 
-   
+        try {
             this.previous.addEventListener('click',    (e) => { this._send({ type: 'calibrate', topic: "previous" }); });
-            this.next.addEventListener('click',        (e) => { this._send({ type: 'calibrate', topic: "next" }); }); 
+            this.next.addEventListener('click',        (e) => { this._send({ type: 'calibrate', topic: "next" }); });
             this.calib_center.addEventListener('click', (e) => { this._send({ type: 'calibrate', topic: "center" }); });
-            this.calib_auto.addEventListener('click',   (e) => { this._send({ type: 'calibrate', topic: "auto" }); });            
+            this.calib_auto.addEventListener('click',   (e) => { this._send({ type: 'calibrate', topic: "auto" }); });
+        } catch(e) {console.log(e);}
+
+        // Réglages tracking — présents dans le DOM seulement si conf.tracking et conf.tracking_setting
+        if (this.min_area_px) {
             this.min_area_px.addEventListener('change',         (e) => { this._send({ type: 'calibrate', topic: "min_area_px", value: e.target.value }); });
             this.max_area_ratio.addEventListener('change',      (e) => { this._send({ type: 'calibrate', topic: "max_area_ratio", value: e.target.value }); });
             this.max_planarians.addEventListener('change',      (e) => { this._send({ type: 'calibrate', topic: "max_planarians",  value: e.target.value}); });
             this.merge_kernel_size.addEventListener('change',   (e) => { this._send({ type: 'calibrate', topic: "merge_kernel_size",  value: e.target.value}); });
             this.min_contour_dist_px.addEventListener('change', (e) => { this._send({ type: 'calibrate', topic: "min_contour_dist_px", value: e.target.value }); });
             this.draw.addEventListener('click',                (e) => { this._send({ type: 'calibrate', topic: "draw", value: e.target.value }); });
-        } catch(e) {console.log(e);}    
+        }
     }
 
     registerSocket(socket)  {
