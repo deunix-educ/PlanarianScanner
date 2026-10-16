@@ -27,7 +27,7 @@ APT_DEV    := redis-server sqlite3
 .DEFAULT_GOAL := help
 .PHONY: help deps-dev deps-prod venv env-dev env-prod reductstore db fixtures sim-videos \
         install-dev sim-config dev-deps dev dev-stop dev-status dev-logs test-sim \
-        install-prod mariadb services nginx adminer hostname hostname-check wireguard wg-up wg-down wireguard-status \
+        install-prod mariadb services nginx adminer camera-watchdog hostname hostname-check wireguard wg-up wg-down wireguard-status \
         update remote-update push-update deploy status clean-dev
 
 help:  ## cette aide
@@ -125,6 +125,15 @@ nginx:  ## reverse proxy port 80 -> daphne (+ static/media)
 
 adminer:  ## Adminer (php-fpm) sur /adminer/ (nginx déjà configuré)
 	sudo $(S)/adminer.sh
+
+camera-watchdog:  ## redémarre test_tube:services si la caméra ne produit plus de frames (défaut matériel, ex. ruban CSI)
+	chmod +x $(S)/camera_watchdog.sh
+	$(S)/render.sh etc/templates/camera-watchdog.service.in /tmp/camera-watchdog.service
+	sudo install -m 644 /tmp/camera-watchdog.service /etc/systemd/system/camera-watchdog.service
+	sudo install -m 644 etc/templates/camera-watchdog.timer.in /etc/systemd/system/camera-watchdog.timer
+	sudo systemctl daemon-reload
+	sudo systemctl enable --now camera-watchdog.timer
+	@echo "OK -> sudo systemctl status camera-watchdog.timer"
 
 hostname:  ## scanner.local via Avahi/mDNS (SCANNER_HOSTNAME=nom pour changer)
 	sudo $(S)/hostname.sh $(SCANNER_HOSTNAME)

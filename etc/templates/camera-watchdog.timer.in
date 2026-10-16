@@ -1,0 +1,10 @@
+[Unit]
+Description=Vérifie périodiquement que la caméra produit des frames (voir camera-watchdog.service)
+
+[Timer]
+OnBootSec=60
+OnUnitActiveSec=20
+AccuracySec=5
+
+[Install]
+WantedBy=timers.target

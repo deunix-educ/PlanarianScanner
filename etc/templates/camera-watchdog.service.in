@@ -1,0 +1,7 @@
+[Unit]
+Description=Chien de garde caméra PlanarianScanner (redémarre test_tube:services si la capture est bloquée)
+After=supervisor.service
+
+[Service]
+Type=oneshot
+ExecStart=@ROOT@/etc/scripts/camera_watchdog.sh

@@ -15,6 +15,7 @@ import cv2
 import numpy as np
 
 import abc
+import tempfile
 import time
 import threading
 import logging
@@ -51,6 +52,13 @@ class VideoCaptureInterface(abc.ABC):
     
     # Cadence par défaut en images par seconde
     DEFAULT_FPS: float = 5.0
+
+    # Battement de vie (fichier touché à chaque frame capturée) : un blocage matériel (ex. ruban
+    # CSI qui flanche pendant un déplacement CNC) peut figer capture_frame() indéfiniment sans
+    # jamais lever d'exception Python — rien ne le détecte depuis ce process. Surveillé par un
+    # watchdog externe (etc/scripts/camera_watchdog.sh, hors du process Celery, donc jamais
+    # lui-même bloqué) qui redémarre le worker si ce fichier devient trop vieux.
+    HEARTBEAT_PATH = Path(tempfile.gettempdir()) / "planarian_camera_heartbeat"
 
     DEFAULT_TRACKER_CONFIG = dict(
         tube_axis = settings.TRACKER_TUBE_AXIS,
@@ -244,6 +252,13 @@ class VideoCaptureInterface(abc.ABC):
             logger.info("Ouverture du périphérique avant démarrage")
             self.open()
 
+        # Repart sans battement : le watchdog ne doit rien voir tant qu'aucune frame n'a encore
+        # été capturée après ce démarrage (évite un faux positif pendant l'ouverture de la caméra).
+        try:
+            self.HEARTBEAT_PATH.unlink(missing_ok=True)
+        except OSError:
+            pass
+
         self._running = True
         self._frame_count = 0
         self._thread = threading.Thread(
@@ -266,6 +281,10 @@ class VideoCaptureInterface(abc.ABC):
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout=5.0)        # Attente max 5 secondes
         self.close()
+        try:
+            self.HEARTBEAT_PATH.unlink(missing_ok=True)
+        except OSError:
+            pass
         logger.info(
             "%s : capture arrêtée — %d images capturées",
             self.__class__.__name__,
@@ -458,6 +477,10 @@ class VideoCaptureInterface(abc.ABC):
                 jpeg, metrics = self.process_frame(jpeg)  # Recadrage circulaire si configuré
 
                 self._frame_count += 1
+                try:
+                    self.HEARTBEAT_PATH.touch()
+                except OSError:
+                    pass
                 ts = datetime.now(timezone.utc)
 
                 if self._on_frame:
